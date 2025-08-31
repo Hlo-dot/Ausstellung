@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #fff;
+  color: #111;
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+.wrap {
+  max-width: 700px;
+  text-align: center;
+}
+.top-logo {
+  max-width: 100px;
+}
+.actions {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn {
+  padding: 10px 15px;
+  border: 2px solid #111;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #111;
+}
+.btn:hover {
+  background: #eee;
+}
+.player-card {
+  margin-top: 20px;
+}
+.note {
+  font-size: 12px;
+  color: #b00020;
+  margin-top: 10px;
+}
+.footer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #666;
+}

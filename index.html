@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ausstellung – Werk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <main class="wrap">
+      <img class="top-logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
+      <h1 id="ort">Kühlhaus Berlin</h1>
+      <div class="sub" id="ausstellungDatum">Bridging Cultures · 03.10.25 – 05.10.25</div>
+      <h2 id="werkSerie">Kernbruch – ein Werk aus der Werkserie „Was bleibt“</h2>
+      <div class="actions">
+        <a class="btn" id="audio-link" href="audio/kernbruch.mp3" target="_blank">🎧 Audio</a>
+        <a class="btn" id="pdf-link" href="pdf/kernbruch.pdf" target="_blank">📄 PDF anzeigen</a>
+        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank">ℹ️ Info Künstler</a>
+      </div>
+      <div class="player-card">
+        <audio controls preload="metadata" id="player" aria-label="Audiobeschreibung">
+          <source src="audio/kernbruch.mp3" type="audio/mpeg">
+          Dein Browser unterstützt das Audio-Element nicht.
+        </audio>
+      </div>
+      <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="brand"><a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a></div>
+    <div>© 2025 Flu – New Fine Art</div>
+  </footer>
+</body>
+</html>
