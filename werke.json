@@ -11,13 +11,13 @@
   }
 
 {
-  "id": "der-moment-eingefroren",
-  "ort": "Kunstverein Hattingen - Neue Galerie",
-  "ausstellung": "Ein Raum aus Spuren",
-  "datum": "28.09.25 – 26.10.25",
-  "werk": "Der Moment eingefroren",
-  "serie": "Grenzzeit",
-  "audio": "audio/Voice Der Moment eingefroren.mp3",
-  "pdf": "pdf/Der Moment eingefroren.pdf"
+    "id": "der-moment-eingefroren",
+    "ort": "Kunstverein Hattingen - Neue Galerie",
+    "ausstellung": "Ein Raum aus Spuren",
+    "datum": "28.09.25 - 26.10.25",
+    "werk": "Der Moment eingefroren",
+    "serie": "Grenzzeit",
+    "audio": "audio/Voice%20Der%20Moment%20eingefroren.mp3",
+    "pdf": "pdf/Der%20Moment%20eingefroren.pdf"
 }
   ]
