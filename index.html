@@ -1,143 +1,89 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ausstellungsort</title>
-  <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
-    .wrap { margin: 2rem auto; max-width: 800px; }
-    h1 { margin-bottom: 0.2em; }
-    .buttons { margin: 1.5em 0; }
-    button, a.button {
-      padding: 0.6em 1.2em;
-      margin: 0.4em;
-      border: 1px solid #444;
-      background: #fff;
-      cursor: pointer;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #000;
-      display: inline-block;
-    }
-    audio { margin: 1em 0; }
-    .note { color: red; font-size: 0.9em; }
-    footer { margin-top: 3rem; font-size: 0.8em; color: #666; }
-
-    /* PDF Modal */
-    .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0;
-             background: rgba(0,0,0,0.7); z-index: 1000; }
-    .modal.open { display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: #fff; width: 90%; height: 90%; position: relative; }
-    .modal-content iframe { width: 100%; height: 100%; border: none; }
-    .modal-content .close { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.2em; }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <script src="werke.js" defer></script>
 </head>
 <body>
-  <div class="wrap">
-    <img src="logo.jpg" alt="Flu – New Fine Art" style="max-height:100px" onerror="this.style.display='none'">
+  <div class="container">
+
+    <!-- Logo -->
+    <div class="logo">
+      <img src="logo.jpg" alt="Flu – New Fine Art" style="max-height:100px;" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Ort + Titel -->
     <h1 id="ort">Ausstellungsort</h1>
-    <div id="ausstellungDatum">Titel · Datum</div>
-    <p><em id="werkSerie">Werk + Serie</em></p>
+    <p id="meta">Titel · Datum</p>
+    <p id="werk"><em>Werk + Serie</em></p>
 
+    <!-- Buttons -->
     <div class="buttons">
-      <a id="audio-link" href="#" class="button">Audio</a>
-      <a id="pdf-link" href="#" class="button">PDF anzeigen</a>
-      <a id="info-link" href="https://www.flu.ruhr" target="_blank" class="button">Info Künstler</a>
+      <button id="audioBtn">Audio</button>
+      <button id="pdfBtn">PDF anzeigen</button>
+      <button id="infoBtn">Info Künstler</button>
     </div>
 
-    <audio id="player" controls>
-      <source id="audio-src" src="" type="audio/mpeg" />
-      Dein Browser unterstützt kein Audio.
-    </audio>
-
-    <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br>
-      dass andere Besucher nicht gestört werden.</p>
-  </div>
-
-  <footer>
-    <a href="https://www.flu.ruhr">www.flu.ruhr</a><br/>
-    © 2025 Flu – New Fine Art
-  </footer>
-
-  <!-- PDF Modal -->
-  <div id="pdfModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <span id="closePdf" class="close">✖</span>
-      <h2 id="pdfTitle" style="margin:0.5em;"></h2>
-      <iframe id="pdfFrame"></iframe>
-      <p><a id="pdfNewTab" href="#" target="_blank">PDF in neuem Tab öffnen</a></p>
+    <!-- Audioplayer -->
+    <div id="audioPlayer" style="margin-top:20px;">
+      <audio id="audio" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Dein Browser unterstützt das Audio-Element nicht.
+      </audio>
     </div>
+
+    <!-- Hinweis -->
+    <p style="color:red; margin-top:10px;">
+      Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br>
+      dass andere Besucher nicht gestört werden.
+    </p>
+
+    <!-- Footer -->
+    <footer>
+      <a href="https://www.flu.ruhr" target="_blank">www.flu.ruhr</a><br>
+      © 2025 Flu – New Fine Art
+    </footer>
   </div>
 
-  <!-- Laden der Werke -->
-  <script src="werke.js"></script>
-
-  <!-- Hauptlogik -->
   <script>
-  (function () {
-    function init() {
-      const params = new URLSearchParams(location.search);
-      const wanted = (params.get('id') || '').toLowerCase();
+    // URL-Parameter lesen (?id=Montan)
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
 
-      const werke = Array.isArray(window.WERKE) ? window.WERKE : [];
-      const werk = werke.find(w => (w.id || '').toLowerCase() === wanted);
+    fetch("werke.json")
+      .then(res => res.json())
+      .then(data => {
+        if (data[id]) {
+          const werk = data[id];
+          document.getElementById("ort").textContent = werk.ort || "Ausstellungsort";
+          document.getElementById("meta").textContent = `${werk.titel} · ${werk.datum}`;
+          document.getElementById("werk").textContent = `${werk.name} – ein Werk aus der Werkserie „${werk.serie}“`;
 
-      if (!werk) {
-        document.querySelector(".wrap").innerHTML = "<p>Kein gültiges Werk gefunden.</p>";
-        return;
-      }
+          // Audio laden
+          const audioSource = document.getElementById("audioSource");
+          audioSource.src = `audio/${werk.audio}`;
+          document.getElementById("audio").load();
 
-      // Texte setzen
-      document.title = `${werk.ort} – ${werk.werk}`;
-      document.getElementById("ort").textContent = werk.ort;
-      document.getElementById("ausstellungDatum").textContent = `${werk.ausstellung} · ${werk.datum}`;
-      document.getElementById("werkSerie").textContent = `${werk.werk} – ein Werk aus der Werkserie „${werk.serie}“`;
+          // PDF Button
+          document.getElementById("pdfBtn").onclick = () => {
+            window.open(`pdf/${werk.pdf}`, "_blank");
+          };
 
-      // Audio setzen
-      const audioLink = document.getElementById("audio-link");
-      const audioSrc  = document.getElementById("audio-src");
-      const player    = document.getElementById("player");
-      audioLink.href = werk.audio;
-      audioSrc.src   = werk.audio;
-      player.load();
+          // Audio Button (scroll zum Player)
+          document.getElementById("audioBtn").onclick = () => {
+            document.getElementById("audio").scrollIntoView({behavior:"smooth"});
+            document.getElementById("audio").play();
+          };
 
-      // PDF-Viewer (externer PDF.js-Viewer)
-      const pdfUrl    = location.origin + "/" + werk.pdf;
-      const viewerUrl = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" + encodeURIComponent(pdfUrl);
-      document.getElementById("pdfFrame").src = viewerUrl;
-      document.getElementById("pdfNewTab").href = "/" + werk.pdf;
-      document.getElementById("pdfTitle").textContent = "PDF: " + werk.werk;
-    }
-
-    // Warten bis werke.json geladen ist
-    if (window.WERKE) {
-      init();
-    } else {
-      document.addEventListener('werke:ready', init, { once: true });
-    }
-
-    // Modal öffnen/schließen
-    const modal = document.getElementById('pdfModal');
-    document.getElementById('pdf-link').addEventListener('click', (e) => {
-      e.preventDefault();
-      modal.classList.add('open'); 
-      modal.setAttribute('aria-hidden','false'); 
-      document.body.style.overflow='hidden';
-    });
-    document.getElementById('closePdf').addEventListener('click', () => {
-      modal.classList.remove('open'); 
-      modal.setAttribute('aria-hidden','true'); 
-      document.body.style.overflow='';
-    });
-    modal.addEventListener('click', (e) => { 
-      if (e.target === modal) { 
-        modal.classList.remove('open'); 
-        modal.setAttribute('aria-hidden','true'); 
-        document.body.style.overflow=''; 
-      }
-    });
-  })();
+          // Info Button
+          document.getElementById("infoBtn").onclick = () => {
+            window.open("https://www.flu.ruhr", "_blank");
+          };
+        }
+      });
   </script>
 </body>
 </html>
