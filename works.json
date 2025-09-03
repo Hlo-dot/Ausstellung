@@ -28,10 +28,38 @@
     "pdf": "pdf/FLU_Resonanzkern.pdf"
   },
   {
-    "id": "Zwischen_Traum_und_Tuer",
+    "id": "zwischen-traum-und-tuer",
     "werk": "Zwischen Traum und Tür",
     "serie": "Grenzzeit",
-    "audio": "audio/MP3_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.mp3",
-    "pdf": "pdf/PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.pdf"
+    "audio": "audio/Zwischen_Traum_und_Tuer.mp3",
+    "pdf": "pdf/Zwischen_Traum_und_Tuer.pdf"
+  },
+  {
+    "id": "leuchtlast",
+    "werk": "Leuchtlast",
+    "serie": "Grenzzeit",
+    "audio": "audio/Leuchtlast.mp3",
+    "pdf": "pdf/Leuchtlast.pdf"
+  },
+  {
+    "id": "partitur-des-lichts",
+    "werk": "Partitur des Lichts",
+    "serie": "Einzelwerke",
+    "audio": "audio/Partitur_des_Lichts.mp3",
+    "pdf": "pdf/Partitur_des_Lichts.pdf"
+  },
+  {
+    "id": "rot-in-ruhe",
+    "werk": "Rot in Ruhe",
+    "serie": "Grenzzeit",
+    "audio": "audio/Rot_in_Ruhe.mp3",
+    "pdf": "pdf/Rot_in_Ruhe.pdf"
+  },
+  {
+    "id": "verdichtetrot",
+    "werk": "verdichtetROT",
+    "serie": "Grenzzeit",
+    "audio": "audio/verdichtetROT.mp3",
+    "pdf": "pdf/verdichtetROT.pdf"
   }
 ]
