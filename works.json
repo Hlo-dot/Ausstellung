@@ -37,8 +37,8 @@
   {
     "id": "leuchtlast",
     "werk": "Leuchtlast",
-    "serie": "Grenzzeit",
-    "audio": "audio/Voice_Leuchtlast.mp3",
+    "serie": "Einzelwerke",
+    "audio": "audio/_Leuchtlast.mp3",
     "pdf": "pdf/Leuchtlast.pdf"
   },
   {
@@ -51,14 +51,14 @@
   {
     "id": "rot-in-ruhe",
     "werk": "Rot in Ruhe",
-    "serie": "Grenzzeit",
+    "serie": "Einzelwerke",
     "audio": "audio/Voice_Rot_in_Ruhe.mp3",
     "pdf": "pdf/FLU_Rot_in_Ruhe.pdf"
   },
   {
     "id": "verdichtetrot",
     "werk": "verdichtetROT",
-    "serie": "Grenzzeit",
+    "serie": "Einzelwerke",
     "audio": "audio/Voice_verdichtetROT.mp3",
     "pdf": "pdf/FLU_verdichtetROT.pdf"
   }
