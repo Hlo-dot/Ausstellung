@@ -10,7 +10,28 @@
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
     "serie": "Grenzzeit",
-    "audio": "audio/Voice-Der-Moment-eingefroren.mp3",
-    "pdf": "pdf/Der-Moment-eingefroren.pdf"
+    "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
+    "pdf": "pdf/Der_Moment_eingefroren.pdf"
+  },
+  {
+    "id": "jenseits-der-grenzen",
+    "werk": "Jenseits der Grenzen",
+    "serie": "Grenzzeit",
+    "audio": "audio/Voice_Jenseits_der_Grenzen.mp3",
+    "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf"
+  },
+  {
+    "id": "resonanzkern",
+    "werk": "Resonanzkern",
+    "serie": "Grenzzeit",
+    "audio": "audio/Voice_Resonanzkern.mp3",
+    "pdf": "pdf/FLU_Resonanzkern.pdf"
+  },
+  {
+    "id": "tuer-2025-3x-20x50cm",
+    "werk": "Tür 2025 · 3× 20×50 cm",
+    "serie": "Grenzzeit",
+    "audio": "audio/Tuer_2025_3x_20x50cm.mp3",
+    "pdf": "pdf/Tuer_2025_3x_20x50cm.pdf"
   }
 ]
