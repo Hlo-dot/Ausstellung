@@ -9,15 +9,16 @@
 <body>
   <div class="page">
     <main class="wrap">
-      <img class="top-logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
+      <!-- Passe den Dateinamen hier an, wenn dein Logo anders heißt -->
+      <img class="top-logo" src="logo.jpeg" alt="Flu Logo" onerror="this.style.display='none'">
       <h1 id="ort">Ausstellungsort</h1>
       <div class="sub" id="ausstellungDatum">Titel · Datum</div>
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <a class="btn" id="audio-link" href="#" target="_blank">🎧 Audio</a>
-        <button class="btn" id="pdf-link">📄 PDF anzeigen</button>
-        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank">ℹ️ Info Künstler</a>
+        <a class="btn" id="audio-link" href="#" target="_blank" rel="noopener">🎧 Audio</a>
+        <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
+        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
       </div>
 
       <div class="player-card">
@@ -36,7 +37,8 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <div class="modal" id="pdfModal">
+  <!-- PDF-Modal -->
+  <div class="modal" id="pdfModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
         <div class="dialog-ttl" id="pdfTitle">PDF: Werk</div>

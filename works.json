@@ -4,15 +4,13 @@
     "werk": "Montan",
     "serie": "Was bleibt",
     "audio": "audio/montan.mp3",
-    "pdf": "pdf/montan.pdf",
-    "exhibitionId": "bridging-cultures"
+    "pdf": "pdf/montan.pdf"
   },
   {
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
     "serie": "Grenzzeit",
-    "audio": "audio/voice-der-moment-eingefroren.mp3",
-    "pdf": "pdf/der-moment-eingefroren.pdf",
-    "exhibitionId": "raum-aus-spuren"
+    "audio": "audio/Voice-Der-Moment-eingefroren.mp3",
+    "pdf": "pdf/Der-Moment-eingefroren.pdf"
   }
 ]

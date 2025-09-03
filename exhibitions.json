@@ -1,14 +1,24 @@
 [
   {
-    "id": "bridging-cultures",
-    "titel": "Bridging Cultures",
-    "ort": "Kühlhaus Berlin",
-    "datum": "03.10.25 – 05.10.25"
+    "id": "kv-hattingen-2025",
+    "title": "Ein Raum aus Spuren",
+    "venue": "Kunstverein Hattingen – Neue Galerie",
+    "start": "2025-09-28",
+    "end": "2025-10-26",
+    "current": true,
+    "works": [
+      "der-moment-eingefroren"
+    ]
   },
   {
-    "id": "raum-aus-spuren",
-    "titel": "Ein Raum aus Spuren",
-    "ort": "Kunstverein Hattingen – Neue Galerie",
-    "datum": "28.09.25 – 26.10.25"
+    "id": "kuehlhaus-berlin-2025",
+    "title": "Bridging Cultures",
+    "venue": "Kühlhaus Berlin",
+    "start": "2025-10-03",
+    "end": "2025-10-05",
+    "current": false,
+    "works": [
+      "montan"
+    ]
   }
 ]
