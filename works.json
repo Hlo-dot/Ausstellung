@@ -52,14 +52,14 @@
     "id": "rot-in-ruhe",
     "werk": "Rot in Ruhe",
     "serie": "Grenzzeit",
-    "audio": "audio/Rot_in_Ruhe.mp3",
-    "pdf": "pdf/Rot_in_Ruhe.pdf"
+    "audio": "audio/Voice_Rot_in_Ruhe.mp3",
+    "pdf": "pdf/FLU_Rot_in_Ruhe.pdf"
   },
   {
     "id": "verdichtetrot",
     "werk": "verdichtetROT",
     "serie": "Grenzzeit",
-    "audio": "audio/verdichtetROT.mp3",
-    "pdf": "pdf/verdichtetROT.pdf"
+    "audio": "audio/Voice_verdichtetROT.mp3",
+    "pdf": "pdf/FLU_verdichtetROT.pdf"
   }
 ]
