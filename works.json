@@ -1,0 +1,18 @@
+[
+  {
+    "id": "montan",
+    "werk": "Montan",
+    "serie": "Was bleibt",
+    "audio": "audio/montan.mp3",
+    "pdf": "pdf/montan.pdf",
+    "exhibitionId": "bridging-cultures"
+  },
+  {
+    "id": "der-moment-eingefroren",
+    "werk": "Der Moment eingefroren",
+    "serie": "Grenzzeit",
+    "audio": "audio/voice-der-moment-eingefroren.mp3",
+    "pdf": "pdf/der-moment-eingefroren.pdf",
+    "exhibitionId": "raum-aus-spuren"
+  }
+]
