@@ -1,163 +1,35 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ausstellung – Werk</title>
-  <style>
-    :root { --fg:#111; --muted:#666; --rule:#e9e9e9; --danger:#b00020; --accent:#c5ad86; }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;background:#fff;color:var(--fg);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-    .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-bottom:80px}
-    .wrap{width:100%;max-width:720px;padding:8px 12px 0;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-    .top-logo{max-width:90px;height:auto;margin:12px auto 6px}
-    h1{font-weight:800;font-size:clamp(18px,5vw,26px);margin:2px 0}
-    .sub{font-size:clamp(12px,3.6vw,14px);color:#444;font-weight:500}
-    h2{margin:0;font-size:clamp(13px,4vw,15px);color:#333;font-style:italic;font-weight:600}
-    .actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:10px}
-    .btn{flex:1;min-width:120px;max-width:160px;padding:6px 10px;border:2px solid var(--fg);
-      border-radius:10px;text-decoration:none;color:var(--fg);background:#fff;font-size:13px;cursor:pointer}
-    .btn:hover{background:#f7f5f1;border-color:var(--accent)}
-    .player-card{width:100%;max-width:420px;background:#fafafa;border:1px solid var(--rule);
-      border-radius:10px;padding:3px 5px;margin-top:10px}
-    audio{width:100%}
-    .note{color:var(--danger);font-weight:700;font-size:12px;text-align:center;margin-top:8px}
-    .footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--rule);
-      text-align:center;padding:5px;color:var(--muted);line-height:1.3}
-    .brand{font-weight:700;font-size:12px}
-    .brand a{color:inherit;text-decoration:none;border-bottom:1px solid #aaa}
-    /* Modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:9999;padding:16px}
-    .modal.open{display:flex}
-    .dialog{width:100%;max-width:1000px;height:90vh;background:#fff;border-radius:12px;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);overflow:hidden;display:flex;flex-direction:column}
-    .dialog-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--rule)}
-    .dialog-ttl{font-weight:700}
-    .dialog-actions{display:flex;gap:8px}
-    .m-btn{appearance:none;border:2px solid #111;background:#fff;border-radius:10px;padding:6px 10px;font-size:14px;cursor:pointer}
-    .m-btn:hover{background:#f7f5f1;border-color:var(--accent)}
-    iframe.pdfjs-frame{width:100%;flex-grow:1;border:0}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="page">
     <main class="wrap">
-      <!-- Logo (achte auf Dateiname: logo.jpg im Repo-Root) -->
       <img class="top-logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
-
-      <h1 id="ort">Ausstellungsort</h1>
-      <div class="sub" id="ausstellungDatum">Titel · Datum</div>
-      <h2 id="werkSerie">Werk + Serie</h2>
-
+      <h1 id="ort">Kühlhaus Berlin</h1>
+      <div class="sub" id="ausstellungDatum">Bridging Cultures · 03.10.25 – 05.10.25</div>
+      <h2 id="werkSerie">Kernbruch – ein Werk aus der Werkserie „Was bleibt“</h2>
       <div class="actions">
-        <a class="btn" id="audio-link" href="#" target="_blank" rel="noopener">🎧 Audio</a>
-        <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
-        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
+        <a class="btn" id="audio-link" href="audio/kernbruch.mp3" target="_blank">🎧 Audio</a>
+        <a class="btn" id="pdf-link" href="pdf/kernbruch.pdf" target="_blank">📄 PDF anzeigen</a>
+        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank">ℹ️ Info Künstler</a>
       </div>
-
       <div class="player-card">
         <audio controls preload="metadata" id="player" aria-label="Audiobeschreibung">
-          <source id="audio-src" src="" type="audio/mpeg">
+          <source src="audio/kernbruch.mp3" type="audio/mpeg">
           Dein Browser unterstützt das Audio-Element nicht.
         </audio>
       </div>
-
       <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
     </main>
   </div>
-
   <footer class="footer">
     <div class="brand"><a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a></div>
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
-
-  <!-- PDF-Modal -->
-  <div class="modal" id="pdfModal" aria-hidden="true">
-    <div class="dialog">
-      <div class="dialog-hd">
-        <div class="dialog-ttl" id="pdfTitle">PDF: Werk</div>
-        <div class="dialog-actions">
-          <a class="m-btn" id="pdfNewTab" href="#" target="_blank" rel="noopener">In neuem Tab</a>
-          <button class="m-btn" id="closePdf" type="button">Schließen</button>
-        </div>
-      </div>
-      <iframe class="pdfjs-frame" id="pdfFrame" allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <!-- HAUPT-LOGIK: lädt werke.json, befüllt Seite, öffnet PDF -->
-  <script>
-    (async function () {
-      // 1) werke.json laden
-      let werke = [];
-      try {
-        const res = await fetch('werke.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('werke.json nicht gefunden');
-        werke = await res.json(); // erwartet: Array von Objekten
-      } catch (e) {
-        document.querySelector('.wrap').innerHTML = '<p>Fehler beim Laden der Daten.</p>';
-        console.error(e);
-        return;
-      }
-
-      // 2) id aus URL ermitteln (case-insensitive)
-      const params = new URLSearchParams(location.search);
-      const wanted = (params.get('id') || '').toLowerCase();
-
-      const werk = Array.isArray(werke)
-        ? werke.find(w => (w.id || '').toLowerCase() === wanted)
-        : null;
-
-      if (!werk) {
-        document.querySelector('.wrap').innerHTML = '<p>Kein gültiges Werk gefunden.</p>';
-        return;
-      }
-
-      // 3) Texte setzen
-      document.title = `${werk.ort} – ${werk.werk}`;
-      document.getElementById('ort').textContent = werk.ort;
-      document.getElementById('ausstellungDatum').textContent = `${werk.ausstellung} · ${werk.datum}`;
-      document.getElementById('werkSerie').textContent = `${werk.werk} – ein Werk aus der Werkserie „${werk.serie}“`;
-
-      // 4) Audio setzen
-      const audioLink = document.getElementById('audio-link');
-      const audioSrc  = document.getElementById('audio-src');
-      const player    = document.getElementById('player');
-      audioLink.href = werk.audio;     // z.B. "audio/Montan.mp3"
-      audioSrc.src   = werk.audio;
-      player.load();
-
-      // 5) PDF-Viewer konfigurieren (externer PDF.js-Viewer)
-      const pdfUrl    = location.origin + '/' + werk.pdf; // z.B. "pdf/Montan.pdf"
-      const viewerUrl = 'https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(pdfUrl);
-      document.getElementById('pdfFrame').src  = viewerUrl;
-      document.getElementById('pdfNewTab').href = '/' + werk.pdf;
-      document.getElementById('pdfTitle').textContent = 'PDF: ' + werk.werk;
-
-      // 6) Modal öffnen/schließen
-      const modal   = document.getElementById('pdfModal');
-      const openBtn = document.getElementById('pdf-link');
-      const closeBtn= document.getElementById('closePdf');
-
-      openBtn.addEventListener('click', () => {
-        modal.classList.add('open');
-        modal.setAttribute('aria-hidden','false');
-        document.body.style.overflow='hidden';
-      });
-      closeBtn.addEventListener('click', () => {
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden','true');
-        document.body.style.overflow='';
-      });
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('open');
-          modal.setAttribute('aria-hidden','true');
-          document.body.style.overflow='';
-        }
-      });
-    })();
-  </script>
 </body>
 </html>

@@ -1,22 +1,12 @@
 [
   {
-    "id": "montan",
+    "id": "kernbruch",
     "ort": "Kühlhaus Berlin",
     "ausstellung": "Bridging Cultures",
     "datum": "03.10.25 – 05.10.25",
-    "werk": "Montan",
+    "werk": "Kernbruch",
     "serie": "Was bleibt",
-    "audio": "audio/montan.mp3",
-    "pdf": "pdf/montan.pdf"
-  },
-  {
-    "id": "der-moment-eingefroren",
-    "ort": "Kunstverein Hattingen – Neue Galerie",
-    "ausstellung": "Ein Raum aus Spuren",
-    "datum": "28.09.25 – 26.10.25",
-    "werk": "Der Moment eingefroren",
-    "serie": "Grenzzeit",
-    "audio": "audio/Voice-Der-Moment-eingefroren.mp3",
-    "pdf": "pdf/Der-Moment-eingefroren.pdf"
+    "audio": "audio/kernbruch.mp3",
+    "pdf": "pdf/kernbruch.pdf"
   }
 ]

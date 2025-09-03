@@ -1,10 +1,7 @@
-// werke.js
-window.WERKE = null;
-
+// Dynamische Werksdaten (automatisch geladen)
 async function loadWerke() {
-  const res = await fetch('werke.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('werke.json nicht gefunden');
-  window.WERKE = await res.json();
-  document.dispatchEvent(new Event('werke:ready'));
+  const response = await fetch("werke.json");
+  if (!response.ok) throw new Error("Daten konnten nicht geladen werden.");
+  window.WERKE = await response.json();
 }
 loadWerke();
