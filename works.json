@@ -2,14 +2,14 @@
   {
     "id": "montan",
     "werk": "Montan",
-    "serie": "Ein Werk aus der Serie "Was bleibt"",
+    "serie": "Ein Werk aus der Serie Was bleibt",
     "audio": "audio/montan.mp3",
     "pdf": "pdf/montan.pdf"
   },
   {
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
-    "serie": "Ein Werk aus der Serie "Grenzzeit"",
+    "serie": "Ein Werk aus der Serie Grenzzeit",
     "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
     "pdf": "pdf/Der_Moment_eingefroren.pdf"
   },
