@@ -91,32 +91,32 @@
     "pdf": "pdf/FLU_Lichtraum_Gelb.pdf"
   },
   {
-    "id": "flu_nebelräume_iii_verborgene_horizonte",
+    "id": "flu_nebelraeume_iii_verborgene_horizonte",
     "werk": "NebelRäume III - Verborgene_Horizonte",
     "serie": "Einzelwerk",
-    "audio": "audio/Voice_Nebelräume_III.mp3",
-    "pdf": "pdf/FLU_NebelRäume_III_Verborgene_Horizonte.pdf"
+    "audio": "audio/Voice_Nebelraeume_III.mp3",
+    "pdf": "pdf/FLU_NebelRaeume_III_Verborgene_Horizonte.pdf"
   },
   {
-    "id": "flu_nebelräume_ii_risse_im_grau",
+    "id": "flu_nebelraeume_ii_risse_im_grau",
     "werk": "FLU_NebelRäume II - Risse_im_Grau",
     "serie": "Einzelwerk",
-    "audio": "audio/Voice_Nebelräume_II.mp3",
-    "pdf": "pdf/FLU_NebelRäume_II_Risse_im_Grau.pdf"
+    "audio": "audio/Voice_Nebelraeume_II.mp3",
+    "pdf": "pdf/FLU_NebelRaeume_II_Risse_im_Grau.pdf"
   },
   {
-    "id": "flu_nebelräume_iv_verwehter_zwischenraum",
+    "id": "flu_nebelraeume_iv_verwehter_zwischenraum",
     "werk": "NebelRäume IV - Verwehter Zwischenraum",
     "serie": "Einzelwerk",
-    "audio": "audio/Voice_Nebelräume_IV.mp3",
-    "pdf": "pdf/FLU_NebelRäume_IV_Verwehter_Zwischenraum.pdf"
+    "audio": "audio/Voice_Nebelraeume_IV.mp3",
+    "pdf": "pdf/FLU_NebelRaeume_IV_Verwehter_Zwischenraum.pdf"
   },
   {
-    "id": "flu_nebelräume_i_schichtungen_des_schweigens",
+    "id": "flu_nebelraeume_i_schichtungen_des_schweigens",
     "werk": "NebelRäume I - Schichtungen des Schweigens",
     "serie": "Einzelwerk",
-    "audio": "audio/Voice_Nebelräume_I.mp3",
-    "pdf": "pdf/FLU_NebelRäume_I_Schichtungen_des_Schweigens.pdf"
+    "audio": "audio/Voice_Nebelraeume_I.mp3",
+    "pdf": "pdf/FLU_NebelRaeume_I_Schichtungen_des_Schweigens.pdf"
   },
   {
     "id": "flu_schnittstelle_gold",
