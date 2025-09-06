@@ -132,4 +132,11 @@
     "audio": "audio/Ich_wußte_nicht_das_er_fehlt.mp3",
     "pdf": "pdf/Ich_wußte_nicht_das_er_fehlt.pdf"
   }
+    {
+    "id": "Ein_spaeter_Tag",
+    "werk": "Ein später Tag",
+    "serie": "Einzelwerk",
+    "audio": "audio/Ein_spaeter_Tag.mp3",
+    "pdf": "pdf/Ein_spaeter_Tag.pdf"
+  }
 ]
