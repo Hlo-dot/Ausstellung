@@ -52,7 +52,7 @@
   document.title = `${ort} – ${werk.werk}`;
   $('ort').textContent = ort;
   $('ausstellungDatum').textContent = `${ausstellung} · ${dat}`;
-  $('werkSerie').textContent = `${werk.werk} – ein Werk aus der Werkserie „${werk.serie}“`;
+  $('werkSerie').textContent = `${werk.werk} – „${werk.serie}“`;
 
   // Media
   $('audio-link').href = werk.audio;
