@@ -2,63 +2,63 @@
   {
     "id": "montan",
     "werk": "Montan",
-    "serie": "Was bleibt",
+    "serie": "Ein Werk aus der Serie "Was bleibt"",
     "audio": "audio/montan.mp3",
     "pdf": "pdf/montan.pdf"
   },
   {
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
-    "serie": "Grenzzeit",
+    "serie": "Ein Werk aus der Serie "Grenzzeit"",
     "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
     "pdf": "pdf/Der_Moment_eingefroren.pdf"
   },
   {
     "id": "jenseits-der-grenzen",
     "werk": "Jenseits der Grenzen",
-    "serie": "Grenzzeit",
+    "serie": "Ein Werk aus der Serie "Grenzzeit"",
     "audio": "audio/Voice_Jenseits_der_Grenzen.mp3",
     "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf"
   },
   {
     "id": "resonanzkern",
     "werk": "Resonanzkern",
-    "serie": "Grenzzeit",
+    "serie": "Ein Werk aus der Serie "Grenzzeit"",
     "audio": "audio/Voice_Resonanzkern.mp3",
     "pdf": "pdf/FLU_Resonanzkern.pdf"
   },
   {
     "id": "ZTUT",
     "werk": "Zwischen Traum und Tür",
-    "serie": "Grenzzeit",
+    "serie": "Ein Werk aus der Serie "Grenzzeit"",
     "audio": "audio/MP3_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.mp3",
     "pdf": "pdf/PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.pdf"
   },
   {
     "id": "leuchtlast",
     "werk": "Leuchtlast",
-    "serie": "Einzelwerke",
+    "serie": Einzelwerk,
     "audio": "audio/_Leuchtlast.mp3",
     "pdf": "pdf/Leuchtlast.pdf"
   },
   {
     "id": "partitur-des-lichts",
     "werk": "Partitur des Lichts",
-    "serie": "Einzelwerke",
+    "serie": Einzelwerke,
     "audio": "audio/Voice_Partitur_des_Lichts.mp3",
     "pdf": "pdf/FLU_Partitur_des_Lichts.pdf"
   },
   {
     "id": "rot-in-ruhe",
     "werk": "Rot in Ruhe",
-    "serie": "Einzelwerke",
+    "serie": Einzelwerke,
     "audio": "audio/Voice_Rot_in_Ruhe.mp3",
     "pdf": "pdf/FLU_Rot_in_Ruhe.pdf"
   },
   {
     "id": "verdichtetrot",
     "werk": "verdichtetROT",
-    "serie": "Einzelwerke",
+    "serie": Einzelwerke,
     "audio": "audio/Voice_verdichtetROT.mp3",
     "pdf": "pdf/FLU_verdichtetROT.pdf"
   }
