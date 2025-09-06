@@ -138,5 +138,60 @@
     "serie": "Einzelwerk",
     "audio": "audio/Ein_spaeter_Tag.mp3",
     "pdf": "pdf/Ein_spaeter_Tag.pdf"
+  },
+    "id": "boettcher-streifen-ensemble",
+    "werk": "Böttcher Streifen ENSEMBLE",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Boettcher_Streifen_ENSEMBLE.mp3",
+    "pdf": "pdf/Boettcher_Streifen_ENSEMBLE.pdf"
+  },
+  {
+    "id": "chlorophyllquartett",
+    "werk": "Chlorophyllquartett",
+    "serie": "Ein Werk aus der Serie Grünzeug",
+    "audio": "audio/Voice_Chlorophyllquartett.mp3",
+    "pdf": "pdf/Chlorophyllquartett.pdf"
+  },
+  {
+    "id": "geflecht-des-lebens",
+    "werk": "Geflecht des Lebens",
+    "serie": "Ein Werk aus der Serie Grünzeug",
+    "audio": "audio/Voice_Geflecht_des_Lebens.mp3",
+    "pdf": "pdf/Geflecht_des_Lebens.pdf"
+  },
+  {
+    "id": "rotkaeppchen",
+    "werk": "Rotkäppchen",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Rotkaeppchen.mp3",
+    "pdf": "pdf/Rotkaeppchen.pdf"
+  },
+  {
+    "id": "rotkaeppchens-kleine-schwester",
+    "werk": "Rotkäppchens kleine Schwester",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Rotkaeppchens_kleine_Schwester.mp3",
+    "pdf": "pdf/Rotkaeppchens_kleine_Schwester.pdf"
+  },
+  {
+    "id": "ruhezone",
+    "werk": "Ruhezone",
+    "serie": "Ein Werk aus der Serie Grünzeug",
+    "audio": "audio/Voice_Ruhezone.mp3",
+    "pdf": "pdf/Ruhezone.pdf"
+  },
+  {
+    "id": "schattengruen",
+    "werk": "Schattengrün",
+    "serie": "Ein Werk aus der Serie Grünzeug",
+    "audio": "audio/Voice_Schattengruen.mp3",
+    "pdf": "pdf/Schattengruen.pdf"
+  },
+  {
+    "id": "spur-im-gruen",
+    "werk": "Spur im Grün",
+    "serie": "Ein Werk aus der Serie Grünzeug",
+    "audio": "audio/Voice_Spur_im_Gruen.mp3",
+    "pdf": "pdf/Spur_im_Gruen.pdf"
   }
 ]
