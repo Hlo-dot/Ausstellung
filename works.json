@@ -27,6 +27,7 @@
     "audio": "audio/Voice_Resonanzkern.mp3",
     "pdf": "pdf/FLU_Resonanzkern.pdf"
   },
+
   {
     "id": "ZTUT",
     "werk": "Zwischen Traum und Tür",
@@ -61,5 +62,138 @@
     "serie": "Einzelwerk",
     "audio": "audio/Voice_verdichtetROT.mp3",
     "pdf": "pdf/FLU_verdichtetROT.pdf"
+  }
+{
+    "id": "bruch-im-rot",
+    "werk": "Bruch im Rot",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Bruch im Rot.mp3",
+    "pdf": "pdf/Bruch im Rot.pdf"
+  },
+  {
+    "id": "einschnitt",
+    "werk": "Einschnitt",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Einschnitt.mp3",
+    "pdf": "pdf/Einschnitt.pdf"
+  },
+  {
+    "id": "flu_konstellation_der_flaeche",
+    "werk": "FLU_Konstellation_der_Flaeche",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Konstellation_der_Flaeche.mp3",
+    "pdf": "pdf/FLU_Konstellation_der_Flaeche.pdf"
+  },
+  {
+    "id": "flu_lichtraum_gelb",
+    "werk": "FLU_Lichtraum_Gelb",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Lichtraum_Gelb.mp3",
+    "pdf": "pdf/FLU_Lichtraum_Gelb.pdf"
+  },
+  {
+    "id": "flu_nebelräume_iii_verborgene_horizonte",
+    "werk": "FLU_NebelRäume_III_Verborgene_Horizonte",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_NebelRäume_III_Verborgene_Horizonte.mp3",
+    "pdf": "pdf/FLU_NebelRäume_III_Verborgene_Horizonte.pdf"
+  },
+  {
+    "id": "flu_nebelräume_ii_risse_im_grau",
+    "werk": "FLU_NebelRäume_II_Risse_im_Grau",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_NebelRäume_II_Risse_im_Grau.mp3",
+    "pdf": "pdf/FLU_NebelRäume_II_Risse_im_Grau.pdf"
+  },
+  {
+    "id": "flu_nebelräume_iv_verwehter_zwischenraum",
+    "werk": "FLU_NebelRäume_IV_Verwehter_Zwischenraum",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_NebelRäume_IV_Verwehter_Zwischenraum.mp3",
+    "pdf": "pdf/FLU_NebelRäume_IV_Verwehter_Zwischenraum.pdf"
+  },
+  {
+    "id": "flu_nebelräume_i_schichtungen_des_schweigens",
+    "werk": "FLU_NebelRäume_I_Schichtungen_des_Schweigens",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_NebelRäume_I_Schichtungen_des_Schweigens.mp3",
+    "pdf": "pdf/FLU_NebelRäume_I_Schichtungen_des_Schweigens.pdf"
+  },
+  {
+    "id": "flu_schnittstelle_gold",
+    "werk": "FLU_Schnittstelle_Gold",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Schnittstelle_Gold.mp3",
+    "pdf": "pdf/FLU_Schnittstelle_Gold.pdf"
+  },
+  {
+    "id": "pdf_flu_ulf_obermann_löwenstein_einzelwerk_ich_wusste_nicht_das_er_fehlt_2025_56x107cm",
+    "werk": "PDF_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_PDF_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm.mp3",
+    "pdf": "pdf/PDF_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm.pdf"
+  },
+  {
+    "id": "flu_partitur_des_lichts",
+    "werk": "FLU_Partitur_des_Lichts",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Partitur_des_Lichts.mp3",
+    "pdf": "pdf/FLU_Partitur_des_Lichts.pdf"
+  },
+  {
+    "id": "flu_rot_in_ruhe",
+    "werk": "FLU_Rot_in_Ruhe",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Rot_in_Ruhe.mp3",
+    "pdf": "pdf/FLU_Rot_in_Ruhe.pdf"
+  },
+  {
+    "id": "flu_verdichtetrot",
+    "werk": "FLU_verdichtetROT",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_verdichtetROT.mp3",
+    "pdf": "pdf/FLU_verdichtetROT.pdf"
+  },
+  {
+    "id": "leuchtlast",
+    "werk": "Leuchtlast",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Leuchtlast.mp3",
+    "pdf": "pdf/Leuchtlast.pdf"
+  },
+  {
+    "id": "pdf_flu_ulf_obermann_loewensten_einzelwerk_ein_spaeter_tag_2025_66x40cm",
+    "werk": "PDF_Flu_Ulf_Obermann_Loewensten_Einzelwerk_Ein_spaeter_Tag_2025_66x40cm",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_PDF_Flu_Ulf_Obermann_Loewensten_Einzelwerk_Ein_spaeter_Tag_2025_66x40cm.mp3",
+    "pdf": "pdf/PDF_Flu_Ulf_Obermann_Loewensten_Einzelwerk_Ein_spaeter_Tag_2025_66x40cm.pdf"
+  },
+  {
+    "id": "der_moment_eingefroren",
+    "werk": "Der_Moment_eingefroren",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
+    "pdf": "pdf/Der_Moment_eingefroren.pdf"
+  },
+  {
+    "id": "flu_jenseits_der_grenzen_grenzzeit",
+    "werk": "FLU_Jenseits_der_Grenzen_Grenzzeit",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Jenseits_der_Grenzen_Grenzzeit.mp3",
+    "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf"
+  },
+  {
+    "id": "flu_resonanzkern",
+    "werk": "FLU_Resonanzkern",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_FLU_Resonanzkern.mp3",
+    "pdf": "pdf/FLU_Resonanzkern.pdf"
+  },
+  {
+    "id": "pdf_flu_ulf_obermann_loewenstein_grenzzeit_zwischen_traum_und_tuer_2025_3x_20x50cm",
+    "werk": "PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.mp3",
+    "pdf": "pdf/PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x50cm.pdf"
   }
 ]
