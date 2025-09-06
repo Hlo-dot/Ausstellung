@@ -78,21 +78,21 @@
   },
   {
     "id": "flu_konstellation_der_flaeche",
-    "werk": "FLU_Konstellation_der_Flaeche",
+    "werk": "Konstellation_der_Flaeche",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Konstellation_der_Fläche.mp3",
     "pdf": "pdf/FLU_Konstellation_der_Flaeche.pdf"
   },
   {
     "id": "flu_lichtraum_gelb",
-    "werk": "FLU_Lichtraum_Gelb",
+    "werk": "Lichtraum_Gelb",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Lichtraum_Gelb.mp3",
     "pdf": "pdf/FLU_Lichtraum_Gelb.pdf"
   },
   {
     "id": "flu_nebelräume_iii_verborgene_horizonte",
-    "werk": "FLU_NebelRäume_III_Verborgene_Horizonte",
+    "werk": "NebelRäume_III_Verborgene_Horizonte",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Nebelräume_III.mp3",
     "pdf": "pdf/FLU_NebelRäume_III_Verborgene_Horizonte.pdf"
@@ -106,28 +106,28 @@
   },
   {
     "id": "flu_nebelräume_iv_verwehter_zwischenraum",
-    "werk": "FLU_NebelRäume_IV_Verwehter_Zwischenraum",
+    "werk": "NebelRäume_IV_Verwehter_Zwischenraum",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Nebelräume_IV.mp3",
     "pdf": "pdf/FLU_NebelRäume_IV_Verwehter_Zwischenraum.pdf"
   },
   {
     "id": "flu_nebelräume_i_schichtungen_des_schweigens",
-    "werk": "FLU_NebelRäume_I_Schichtungen_des_Schweigens",
+    "werk": "NebelRäume_I_Schichtungen_des_Schweigens",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Nebelräume_I.mp3",
     "pdf": "pdf/FLU_NebelRäume_I_Schichtungen_des_Schweigens.pdf"
   },
   {
     "id": "flu_schnittstelle_gold",
-    "werk": "FLU_Schnittstelle_Gold",
+    "werk": "Schnittstelle_Gold",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Schnittstelle_Gold.mp3",
     "pdf": "pdf/FLU_Schnittstelle_Gold.pdf"
   },
   {
     "id": "ich_wusste_nicht_das_er_fehlt",
-    "werk": "PDF_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm",
+    "werk": "Ich wußte nicht das er fehlt",
     "serie": "Einzelwerk",
     "audio": "audio/mp3_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm.mp3",
     "pdf": "pdf/PDF_Flu_Ulf_Obermann_Löwenstein_Einzelwerk_Ich_wußte_nicht_das_er_fehlt_2025_56x107cm.pdf"
