@@ -139,7 +139,8 @@
     "audio": "audio/Ein_spaeter_Tag.mp3",
     "pdf": "pdf/Ein_spaeter_Tag.pdf"
   },
-    "id": "boettcher-streifen-ensemble",
+  {  
+  "id": "boettcher-streifen-ensemble",
     "werk": "Böttcher Streifen ENSEMBLE",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Boettcher_Streifen_ENSEMBLE.mp3",
