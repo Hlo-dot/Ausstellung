@@ -72,49 +72,49 @@
   {
     "id": "einschnitt",
     "werk": "Einschnitt",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werks aus der Serie Geometrien der Stille",
     "audio": "audio/Voice_Einschnitt.mp3",
     "pdf": "pdf/Einschnitt.pdf"
   },
   {
     "id": "flu_konstellation_der_flaeche",
     "werk": "Konstellation der Fläche",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werks aus der Serie Geometrien der Stille",
     "audio": "audio/Voice_Konstellation_der_Flaeche.mp3",
     "pdf": "pdf/FLU_Konstellation_der_Flaeche.pdf"
   },
   {
     "id": "flu_lichtraum_gelb",
     "werk": "Lichtraum Gelb",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werks aus der Serie Geometrien der Stille",
     "audio": "audio/Voice_Lichtraum_Gelb.mp3",
     "pdf": "pdf/FLU_Lichtraum_Gelb.pdf"
   },
   {
     "id": "flu_nebelraeume_iii_verborgene_horizonte",
     "werk": "NebelRäume III - Verborgene_Horizonte",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werk aus der Serie Nebelräume",
     "audio": "audio/Voice_Nebelraeume_III.mp3",
     "pdf": "pdf/FLU_NebelRaeume_III_Verborgene_Horizonte.pdf"
   },
   {
     "id": "flu_nebelraeume_ii_risse_im_grau",
     "werk": "NebelRäume II - Risse_im_Grau",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werk aus der Serie Nebelräume",
     "audio": "audio/Voice_Nebelraeume_II.mp3",
     "pdf": "pdf/FLU_NebelRaeume_II_Risse_im_Grau.pdf"
   },
   {
     "id": "flu_nebelraeume_iv_verwehter_zwischenraum",
     "werk": "NebelRäume IV - Verwehter Zwischenraum",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werk aus der Serie Nebelräume",
     "audio": "audio/Voice_Nebelraeume_IV.mp3",
     "pdf": "pdf/FLU_NebelRaeume_IV_Verwehter_Zwischenraum.pdf"
   },
   {
     "id": "flu_nebelraeume_i_schichtungen_des_schweigens",
     "werk": "NebelRäume I - Schichtungen des Schweigens",
-    "serie": "Einzelwerk",
+    "serie": "Ein Werk aus der Serie Nebelräume",
     "audio": "audio/Voice_Nebelraeume_I.mp3",
     "pdf": "pdf/FLU_NebelRaeume_I_Schichtungen_des_Schweigens.pdf"
   },
