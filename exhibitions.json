@@ -7,45 +7,7 @@
     "end": "2025-10-26",
     "current": true,
     "works": [
-      "der-moment-eingefroren",
-      "jenseits-der-grenzen",
-      "resonanzkern",
-      "ZTUT",
-      "leuchtlast",
-      "partitur-des-lichts",
-      "rot-in-ruhe",
-      "verdichtetrot",
-      "bruch-im-rot",
-      "einschnitt",
-      "flu_konstellation_der_flaeche",
-      "flu_lichtraum_gelb",
-      "flu_nebelraeume_iii_verborgene_horizonte",
-      "flu_nebelraeume_ii_risse_im_grau",
-      "flu_nebelraeume_iv_verwehter_zwischenraum",
-      "flu_nebelraeume_i_schichtungen_des_schweigens",
-      "flu_schnittstelle_gold",
-      "Ich_wusste_nicht_das_er_fehlt",
-      "Ein-spaeter-Tag",
-      "boettcher-streifen-ensemble",
-      "chlorophyllquartett",
-      "geflecht-des-lebens",
-      "rotkaeppchen",
-      "rotkaeppchens-kleine-schwester",
-      "ruhezone",
-      "schattengruen",
-      "spur-im-gruen"
-
-    ]
-  },
-  {
-    "id": "kuehlhaus-berlin-2025",
-    "title": "Bridging Cultures",
-    "venue": "Kühlhaus Berlin",
-    "start": "2025-10-03",
-    "end": "2025-10-05",
-    "current": false,
-    "works": [
-      "montan"
+      "der-moment-eingefroren"
     ]
   }
 ]
