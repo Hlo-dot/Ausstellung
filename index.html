@@ -15,19 +15,14 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <a class="btn" id="audio-link" href="#" target="_blank" rel="noopener">🎧 Audio</a>
+        <!-- Audio-Button: öffnet Audio im Modal (kein neuer Tab) -->
+        <button class="btn" id="audio-open" type="button">🎧 Audio abspielen</button>
         <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
         <button class="btn" id="video-link" type="button">▶︎ Meine Arbeitsweise</button>
         <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
       </div>
 
-      <div class="player-card">
-        <audio controls preload="metadata" id="player" aria-label="Audiobeschreibung">
-          <source id="audio-src" src="" type="audio/mpeg">
-          Dein Browser unterstützt das Audio-Element nicht.
-        </audio>
-      </div>
-
+      <!-- Hinweis -->
       <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
     </main>
   </div>
@@ -37,6 +32,7 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
+  <!-- PDF-Modal -->
   <div class="modal" id="pdfModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
@@ -54,25 +50,55 @@
   <div class="modal" id="videoModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
-        <div class="dialog-ttl">Video</div>
+        <div class="dialog-ttl">Meine Arbeitsweise</div>
         <div class="dialog-actions">
           <button class="m-btn" id="closeVideo" type="button">Schließen</button>
         </div>
       </div>
-      <iframe id="videoFrame" style="width:100%;height:100%;flex:1;border:0"
+      <iframe id="videoFrame"
               src="" title="YouTube Video Player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen></iframe>
     </div>
   </div>
 
+  <!-- Audio-Modal -->
+  <div class="modal" id="audioModal" aria-hidden="true">
+    <div class="dialog">
+      <div class="dialog-hd">
+        <div class="dialog-ttl">Audiobeschreibung</div>
+        <div class="dialog-actions">
+          <button class="m-btn" id="closeAudio" type="button">Schließen</button>
+        </div>
+      </div>
+      <div style="padding:10px;">
+        <audio id="audioPlayer" controls preload="metadata">
+          <source id="audioSource" src="" type="audio/mpeg">
+          Dein Browser unterstützt das Audio-Element nicht.
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deine bestehende Logik (Werkdaten etc.) -->
   <script src="werke.js"></script>
+
+  <!-- Steuerung für PDF/Video/Audio Modals -->
   <script>
+    // Global einstellbar
     const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
+
     function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
     function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // PDF: existiert bereits in deiner bisherigen Logik – hier nur die Close/Backdrop-Steuerung
+      const pdfModal = document.getElementById('pdfModal');
+      const closePdf  = document.getElementById('closePdf');
+      pdfModal?.addEventListener('click', (e)=>{ if(e.target===pdfModal) closeModal(pdfModal); });
+      closePdf?.addEventListener('click', ()=> closeModal(pdfModal));
+
+      // VIDEO
       const videoBtn   = document.getElementById('video-link');
       const videoModal = document.getElementById('videoModal');
       const videoFrame = document.getElementById('videoFrame');
@@ -84,12 +110,40 @@
       });
       closeVideo?.addEventListener('click', () => {
         closeModal(videoModal);
-        videoFrame.src = "";
+        videoFrame.src = ""; // stop
       });
       videoModal?.addEventListener('click', (e) => {
-        if (e.target === videoModal) {
-          closeModal(videoModal);
-          videoFrame.src = "";
+        if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; }
+      });
+
+      // AUDIO (holt die URL aus dem vorhandenen Link, den werke.js bisher gesetzt hat)
+      const audioOpen  = document.getElementById('audio-open');
+      const audioModal = document.getElementById('audioModal');
+      const audioPlayer= document.getElementById('audioPlayer');
+      const audioSource= document.getElementById('audioSource');
+      const closeAudio = document.getElementById('closeAudio');
+
+      audioOpen?.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Falls werke.js einen Link #audio-link gesetzt hat, holen wir dessen href
+        const existingLink = document.getElementById('audio-link');
+        const url = existingLink && existingLink.href ? existingLink.href : "";
+        if (url) {
+          audioSource.src = url;
+          audioPlayer.load();
+        }
+        openModal(audioModal);
+      });
+      closeAudio?.addEventListener('click', () => {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        closeModal(audioModal);
+      });
+      audioModal?.addEventListener('click', (e) => {
+        if (e.target === audioModal) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = 0;
+          closeModal(audioModal);
         }
       });
     });

@@ -1,1 +1,1 @@
-// (optional) additional scripts – not required for the video modal.
+// Optional: zusätzliche Skripte. Die Modal-Logik ist in index.html enthalten.
