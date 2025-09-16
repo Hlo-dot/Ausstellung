@@ -15,14 +15,16 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <!-- Audio-Button: öffnet Audio im Modal (kein neuer Tab) -->
+        <!-- Sichtbarer Button für Audio im Modal -->
         <button class="btn" id="audio-open" type="button">🎧 Audio abspielen</button>
         <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
         <button class="btn" id="video-link" type="button">▶︎ Meine Arbeitsweise</button>
         <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
+
+        <!-- WICHTIG: versteckter Link, den werke.js weiterhin mit der Audio-URL befüllt -->
+        <a id="audio-link" href="#" style="display:none" aria-hidden="true" tabindex="-1">hidden</a>
       </div>
 
-      <!-- Hinweis -->
       <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
     </main>
   </div>
@@ -80,19 +82,15 @@
     </div>
   </div>
 
-  <!-- Deine bestehende Logik (Werkdaten etc.) -->
   <script src="werke.js"></script>
 
-  <!-- Steuerung für PDF/Video/Audio Modals -->
   <script>
-    // Global einstellbar
     const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
-
     function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
     function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // PDF: existiert bereits in deiner bisherigen Logik – hier nur die Close/Backdrop-Steuerung
+      // PDF close/backdrop
       const pdfModal = document.getElementById('pdfModal');
       const closePdf  = document.getElementById('closePdf');
       pdfModal?.addEventListener('click', (e)=>{ if(e.target===pdfModal) closeModal(pdfModal); });
@@ -110,40 +108,47 @@
       });
       closeVideo?.addEventListener('click', () => {
         closeModal(videoModal);
-        videoFrame.src = ""; // stop
+        videoFrame.src = "";
       });
       videoModal?.addEventListener('click', (e) => {
         if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; }
       });
 
-      // AUDIO (holt die URL aus dem vorhandenen Link, den werke.js bisher gesetzt hat)
+      // AUDIO
       const audioOpen  = document.getElementById('audio-open');
       const audioModal = document.getElementById('audioModal');
       const audioPlayer= document.getElementById('audioPlayer');
       const audioSource= document.getElementById('audioSource');
       const closeAudio = document.getElementById('closeAudio');
 
-      audioOpen?.addEventListener('click', (e) => {
+      audioOpen?.addEventListener('click', async (e) => {
         e.preventDefault();
-        // Falls werke.js einen Link #audio-link gesetzt hat, holen wir dessen href
         const existingLink = document.getElementById('audio-link');
         const url = existingLink && existingLink.href ? existingLink.href : "";
         if (url) {
           audioSource.src = url;
           audioPlayer.load();
+          try { await audioPlayer.play(); } catch {}
         }
         openModal(audioModal);
       });
       closeAudio?.addEventListener('click', () => {
-        audioPlayer.pause();
-        audioPlayer.currentTime = 0;
-        closeModal(audioModal);
+        audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal);
       });
       audioModal?.addEventListener('click', (e) => {
-        if (e.target === audioModal) {
-          audioPlayer.pause();
-          audioPlayer.currentTime = 0;
-          closeModal(audioModal);
+        if (e.target === audioModal) { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); }
+      });
+
+      // ESC schließt alle Modals
+      document.addEventListener('keydown', (ev)=>{
+        if (ev.key === 'Escape') {
+          [pdfModal, videoModal, audioModal].forEach(m => {
+            if (m && m.classList.contains('open')) {
+              if (m===videoModal) { videoFrame.src=""; }
+              if (m===audioModal) { audioPlayer.pause(); audioPlayer.currentTime=0; }
+              closeModal(m);
+            }
+          });
         }
       });
     });
