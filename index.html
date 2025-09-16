@@ -9,7 +9,6 @@
 <body>
   <div class="page">
     <main class="wrap">
-      <!-- Passe den Dateinamen hier an, wenn dein Logo anders heißt -->
       <img class="top-logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
       <h1 id="ort">Ausstellungsort</h1>
       <div class="sub" id="ausstellungDatum">Titel · Datum</div>
@@ -18,7 +17,7 @@
       <div class="actions">
         <a class="btn" id="audio-link" href="#" target="_blank" rel="noopener">🎧 Audio</a>
         <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
-        <a class="btn" id="video-global" href="https://youtu.be/_Yg0ta6Lk9w" target="_blank" rel="noopener">▶︎ Arbeitsweise</a>
+        <button class="btn" id="video-link" type="button">▶︎ Video anzeigen</button>
         <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
       </div>
 
@@ -38,7 +37,6 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <!-- PDF-Modal -->
   <div class="modal" id="pdfModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
@@ -52,6 +50,49 @@
     </div>
   </div>
 
+  <!-- Video-Modal -->
+  <div class="modal" id="videoModal" aria-hidden="true">
+    <div class="dialog">
+      <div class="dialog-hd">
+        <div class="dialog-ttl">Video</div>
+        <div class="dialog-actions">
+          <button class="m-btn" id="closeVideo" type="button">Schließen</button>
+        </div>
+      </div>
+      <iframe id="videoFrame" style="width:100%;height:100%;flex:1;border:0"
+              src="" title="YouTube Video Player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+    </div>
+  </div>
+
   <script src="werke.js"></script>
+  <script>
+    const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
+    function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoBtn   = document.getElementById('video-link');
+      const videoModal = document.getElementById('videoModal');
+      const videoFrame = document.getElementById('videoFrame');
+      const closeVideo = document.getElementById('closeVideo');
+
+      videoBtn?.addEventListener('click', () => {
+        videoFrame.src = GLOBAL_VIDEO_EMBED;
+        openModal(videoModal);
+      });
+      closeVideo?.addEventListener('click', () => {
+        closeModal(videoModal);
+        videoFrame.src = "";
+      });
+      videoModal?.addEventListener('click', (e) => {
+        if (e.target === videoModal) {
+          closeModal(videoModal);
+          videoFrame.src = "";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
