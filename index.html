@@ -15,13 +15,10 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <!-- Sichtbarer Button für Audio im Modal -->
         <button class="btn" id="audio-open" type="button">🎧 Audio abspielen</button>
         <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
         <button class="btn" id="video-link" type="button">▶︎ Meine Arbeitsweise</button>
         <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
-
-        <!-- WICHTIG: versteckter Link, den werke.js weiterhin mit der Audio-URL befüllt -->
         <a id="audio-link" href="#" style="display:none" aria-hidden="true" tabindex="-1">hidden</a>
       </div>
 
@@ -34,7 +31,6 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <!-- PDF-Modal -->
   <div class="modal" id="pdfModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
@@ -48,7 +44,6 @@
     </div>
   </div>
 
-  <!-- Video-Modal -->
   <div class="modal" id="videoModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
@@ -64,7 +59,6 @@
     </div>
   </div>
 
-  <!-- Audio-Modal -->
   <div class="modal" id="audioModal" aria-hidden="true">
     <div class="dialog">
       <div class="dialog-hd">
@@ -83,38 +77,53 @@
   </div>
 
   <script src="werke.js"></script>
-
   <script>
     const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
     function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
     function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-
+    async function getCurrentWerk(){
+      const id = new URLSearchParams(location.search).get("id");
+      const fromWindow = (window.WERKE||[]).find(w => String(w.id) === String(id));
+      if (fromWindow) return fromWindow;
+      try {
+        const res = await fetch('works.json', {cache:'no-store'});
+        const list = await res.json();
+        return (list||[]).find(w => String(w.id) === String(id)) || null;
+      } catch(e){ return null; }
+    }
     document.addEventListener('DOMContentLoaded', () => {
-      // PDF close/backdrop
+      // PDF
       const pdfModal = document.getElementById('pdfModal');
-      const closePdf  = document.getElementById('closePdf');
-      pdfModal?.addEventListener('click', (e)=>{ if(e.target===pdfModal) closeModal(pdfModal); });
-      closePdf?.addEventListener('click', ()=> closeModal(pdfModal));
+      const pdfBtn   = document.getElementById('pdf-link');
+      const pdfFrame = document.getElementById('pdfFrame');
+      const pdfNewTab= document.getElementById('pdfNewTab');
+      const pdfTitle = document.getElementById('pdfTitle');
+      const closePdf = document.getElementById('closePdf');
 
-      // VIDEO
+      pdfBtn?.addEventListener('click', async () => {
+        const werk = await getCurrentWerk();
+        if (!werk || !werk.pdf) return;
+        const pdfUrl = (location.origin + '/' + werk.pdf).replace(/\/+/, '/');
+        const viewerUrl = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" + encodeURIComponent(pdfUrl);
+        pdfFrame.src = viewerUrl;
+        pdfNewTab.href = '/' + werk.pdf;
+        pdfTitle.textContent = "PDF: " + (werk.werk || 'Werk');
+        openModal(pdfModal);
+      });
+      closePdf?.addEventListener('click', () => { closeModal(pdfModal); pdfFrame.src = ""; });
+      pdfModal?.addEventListener('click', (e)=>{ if(e.target===pdfModal){ closeModal(pdfModal); pdfFrame.src=""; } });
+
+      // Video
       const videoBtn   = document.getElementById('video-link');
       const videoModal = document.getElementById('videoModal');
       const videoFrame = document.getElementById('videoFrame');
       const closeVideo = document.getElementById('closeVideo');
 
-      videoBtn?.addEventListener('click', () => {
-        videoFrame.src = GLOBAL_VIDEO_EMBED;
-        openModal(videoModal);
-      });
-      closeVideo?.addEventListener('click', () => {
-        closeModal(videoModal);
-        videoFrame.src = "";
-      });
-      videoModal?.addEventListener('click', (e) => {
-        if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; }
-      });
+      videoBtn?.addEventListener('click', () => { videoFrame.src = GLOBAL_VIDEO_EMBED; openModal(videoModal); });
+      closeVideo?.addEventListener('click', () => { closeModal(videoModal); videoFrame.src = ""; });
+      videoModal?.addEventListener('click', (e) => { if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; } });
 
-      // AUDIO
+      // Audio
       const audioOpen  = document.getElementById('audio-open');
       const audioModal = document.getElementById('audioModal');
       const audioPlayer= document.getElementById('audioPlayer');
@@ -124,7 +133,11 @@
       audioOpen?.addEventListener('click', async (e) => {
         e.preventDefault();
         const existingLink = document.getElementById('audio-link');
-        const url = existingLink && existingLink.href ? existingLink.href : "";
+        let url = existingLink && existingLink.href ? existingLink.href : "";
+        if (!url){
+          const werk = await getCurrentWerk();
+          if (werk && werk.audio) url = '/' + werk.audio;
+        }
         if (url) {
           audioSource.src = url;
           audioPlayer.load();
@@ -132,20 +145,17 @@
         }
         openModal(audioModal);
       });
-      closeAudio?.addEventListener('click', () => {
-        audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal);
-      });
-      audioModal?.addEventListener('click', (e) => {
-        if (e.target === audioModal) { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); }
-      });
+      closeAudio?.addEventListener('click', () => { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); });
+      audioModal?.addEventListener('click', (e) => { if (e.target === audioModal) { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); } });
 
-      // ESC schließt alle Modals
+      // ESC
       document.addEventListener('keydown', (ev)=>{
         if (ev.key === 'Escape') {
           [pdfModal, videoModal, audioModal].forEach(m => {
             if (m && m.classList.contains('open')) {
               if (m===videoModal) { videoFrame.src=""; }
               if (m===audioModal) { audioPlayer.pause(); audioPlayer.currentTime=0; }
+              if (m===pdfModal)   { pdfFrame.src=""; }
               closeModal(m);
             }
           });
