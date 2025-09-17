@@ -1,104 +1,69 @@
+// Globale Ausstellung (optional)
+const CURRENT_EXHIBITION = {
+  ort: "Kunstverein Hattingen – Neue Galerie",
+  ausstellung: "Ein Raum aus Spuren",
+  datum: "28.09.25 — 26.10.25"
+};
+// Wenn nix gezeigt werden soll: const CURRENT_EXHIBITION = null;
 
-(function(){
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modalBody');
-  const modalTitle = document.getElementById('modalTitle');
-  const openInNew = document.getElementById('openInNew');
-  const closeBtn = document.getElementById('closeModal');
+fetch("works.json")
+  .then(res => res.json())
+  .then(data => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const werk = data.find(w => w.id === id);
 
-  function openModal(title, bodyEl, externalHref){
-    // Clean up existing
-    while (modalBody.firstChild) modalBody.removeChild(modalBody.firstChild);
-    modalTitle.textContent = title || '';
-    if (externalHref){ openInNew.href = externalHref; openInNew.hidden = false; }
-    else { openInNew.hidden = true; }
+    if (!werk) {
+      document.querySelector(".wrap").innerHTML = "<p>Kein gültiges Werk gefunden.</p>";
+      return;
+    }
 
-    modalBody.appendChild(bodyEl);
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden','false');
-    document.body.style.overflow='hidden';
-  }
-  function closeModal(){
-    // stop media
-    const v = modalBody.querySelector('video');
-    if (v){ v.pause(); v.src=''; }
-    const a = modalBody.querySelector('audio');
-    if (a){ a.pause(); a.src=''; }
-    const y = modalBody.querySelector('iframe');
-    if (y){ y.src='about:blank'; }
+    // Texte
+    document.title = `${werk.werk} – Ausstellung`;
+    document.getElementById("werkSerie").textContent = werk.serie ? `${werk.werk} – ${werk.serie}` : werk.werk;
 
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden','true');
-    document.body.style.overflow='';
-    // cleanup
-    while (modalBody.firstChild) modalBody.removeChild(modalBody.firstChild);
-  }
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e)=>{ if (e.target === modal) closeModal(); });
+    const ortEl = document.getElementById("ort");
+    const subEl = document.getElementById("ausstellungDatum");
 
-  // AUDIO
-  document.getElementById('btn-audio').addEventListener('click', function(){
-    const src = this.dataset.audio || window.CURRENT_AUDIO;
-    const wrap = document.createElement('div');
-    wrap.className = 'media-wrap';
-    const audio = document.createElement('audio');
-    audio.setAttribute('controls','');
-    audio.setAttribute('preload','auto');
-    audio.src = src || '';
-    wrap.appendChild(audio);
-    openModal('Audiobeschreibung', wrap, src || undefined);
-    // iOS: play nach Gesten-Click
-    try { audio.load(); audio.play().catch(()=>{}); } catch(e){}
+    if (CURRENT_EXHIBITION) {
+      ortEl.textContent = CURRENT_EXHIBITION.ort;
+      const parts = [];
+      if (CURRENT_EXHIBITION.ausstellung) parts.push(CURRENT_EXHIBITION.ausstellung);
+      if (CURRENT_EXHIBITION.datum) parts.push(CURRENT_EXHIBITION.datum);
+      subEl.textContent = parts.join(" · ");
+    } else {
+      ortEl.style.display = "none";
+      subEl.style.display = "none";
+    }
+
+    // Buttons
+    document.getElementById("btn-audio").onclick = () => openModal("Audio", `<audio controls autoplay src="${werk.audio}"></audio>`);
+    document.getElementById("btn-pdf").onclick = () => {
+      const url = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(werk.pdf)}`;
+      openModal("PDF", `<iframe src="${url}"></iframe>`);
+    };
+    document.getElementById("btn-video").onclick = () => {
+      const yt = werk.youtube || "_Yg0ta6Lk9w"; // Fallback-ID
+      openModal("Meine Arbeitsweise", `<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`);
+    };
+    document.getElementById("btn-info").onclick = () => {
+      openModal("Info Künstler", `<div style="padding:15px"><p>Ulf Obermann-Löwenstein arbeitet unter dem Namen Flu. Sein Ansatz: intuitive Prozessmalerei, Schichtung, Struktur und Stille.</p></div>`);
+    };
   });
 
-  // PDF
-  document.getElementById('btn-pdf').addEventListener('click', function(){
-    const pdf = this.dataset.pdf || window.CURRENT_PDF;
-    const wrap = document.createElement('div');
-    wrap.style.height = '100%';
-    const iframe = document.createElement('iframe');
-    // Versuch 1: Direkt in iframe anzeigen
-    iframe.src = pdf + '#toolbar=0&navpanes=0&view=FitH';
-    iframe.className = 'pdf-frame';
-    wrap.appendChild(iframe);
+// Modal
+const modal = document.getElementById("mediaModal");
+const modalBody = document.getElementById("modalBody");
+const modalTitle = document.getElementById("modalTitle");
+document.getElementById("closeModal").onclick = closeModal;
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
 
-    // Fallback-Link unten
-    const fb = document.createElement('div');
-    fb.className = 'pdf-fallback';
-    fb.innerHTML = '<p>Wenn das PDF hier nicht erscheint, öffne es <a href="'+pdf+'" target="_blank" rel="noopener">in einem neuen Tab</a>.</p>';
-    wrap.appendChild(fb);
-
-    openModal('PDF', wrap, pdf || undefined);
-  });
-
-  // VIDEO (YouTube)
-  document.getElementById('btn-video').addEventListener('click', function(){
-    const vid = this.dataset.videoId || window.CURRENT_VIDEO;
-    const wrap = document.createElement('div');
-    wrap.className = 'media-wrap';
-    const iframe = document.createElement('iframe');
-    const src = 'https://www.youtube.com/embed/' + vid + '?autoplay=1&playsinline=1&rel=0&modestbranding=1';
-    iframe.src = src;
-    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    wrap.appendChild(iframe);
-    openModal('Meine Arbeitsweise', wrap, 'https://youtu.be/'+vid);
-  });
-
-  // KÜNSTLER INFO
-  document.getElementById('btn-artist').addEventListener('click', function(){
-    const box = document.createElement('div');
-    box.style.padding = '16px';
-    box.innerHTML = '<h3>Über den Künstler</h3><p><strong>Ulf Obermann‑Löwenstein (Flu)</strong> arbeitet in Serien zwischen Struktur und Stille. Seine Arbeiten erforschen Material, Spur und Resonanzräume. Mehr auf <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.</p>';
-    openModal('Über den Künstler', box);
-  });
-
-  // Kleine Helfer: Demo-Werte akzeptieren
-  // Damit es sofort testbar ist, setzen wir ggf. Standardquellen
-  const btnAudio = document.getElementById('btn-audio');
-  const btnPdf   = document.getElementById('btn-pdf');
-  const btnVideo = document.getElementById('btn-video');
-  if (!btnAudio.dataset.audio && window.CURRENT_AUDIO) btnAudio.dataset.audio = window.CURRENT_AUDIO;
-  if (!btnPdf.dataset.pdf && window.CURRENT_PDF) btnPdf.dataset.pdf = window.CURRENT_PDF;
-  if (!btnVideo.dataset.videoId && window.CURRENT_VIDEO) btnVideo.dataset.videoId = window.CURRENT_VIDEO;
-})();
+function openModal(title, content) {
+  modalTitle.textContent = title;
+  modalBody.innerHTML = content;
+  modal.classList.add("open");
+}
+function closeModal() {
+  modal.classList.remove("open");
+  modalBody.innerHTML = "";
+}
