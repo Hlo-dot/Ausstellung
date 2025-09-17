@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
@@ -16,47 +15,32 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <button class="btn" id="btn-audio" data-audio="">🎧 Audio</button>
-        <button class="btn" id="btn-pdf" data-pdf="">📄 PDF anzeigen</button>
-        <button class="btn" id="btn-video" data-video-id="">🎥 Meine Arbeitsweise</button>
-        <button class="btn" id="btn-artist">ℹ️ Info Künstler</button>
+        <button class="btn" id="btn-audio">🎧 Audio</button>
+        <button class="btn" id="btn-pdf">📄 PDF anzeigen</button>
+        <button class="btn" id="btn-video">🎥 Meine Arbeitsweise</button>
+        <button class="btn" id="btn-info">ℹ️ Info Künstler</button>
       </div>
-
-      <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
     </main>
   </div>
 
   <footer class="footer">
-    <div class="brand"><a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a></div>
+    <div class="brand"><a href="https://www.flu.ruhr" target="_blank">www.flu.ruhr</a></div>
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <!-- Modal (wird für Audio, PDF, Video & Info wiederverwendet) -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <!-- Modal -->
+  <div class="modal" id="mediaModal">
+    <div class="dialog">
       <div class="dialog-hd">
         <div class="dialog-ttl" id="modalTitle">Titel</div>
         <div class="dialog-actions">
-          <a class="m-btn" id="openInNew" href="#" target="_blank" rel="noopener" hidden>In neuem Tab</a>
-          <button class="m-btn" id="closeModal" type="button">Schließen</button>
+          <button class="m-btn" id="closeModal">Schließen</button>
         </div>
       </div>
       <div class="dialog-body" id="modalBody"></div>
     </div>
   </div>
 
-  <script>
-    // Optional Standardwerte, wenn keine data-* Attribute gesetzt sind
-    window.CURRENT_AUDIO = window.CURRENT_AUDIO || "";
-    window.CURRENT_PDF   = window.CURRENT_PDF   || "";
-    window.CURRENT_VIDEO = window.CURRENT_VIDEO || ""; // YouTube-ID
-
-    // Beispiel: Werte per Query übergeben (audio, pdf, video)
-    const q = new URLSearchParams(location.search);
-    if (!window.CURRENT_AUDIO) window.CURRENT_AUDIO = q.get("audio") || "";
-    if (!window.CURRENT_PDF)   window.CURRENT_PDF   = q.get("pdf")   || "";
-    if (!window.CURRENT_VIDEO) window.CURRENT_VIDEO = q.get("video") || "";
-  </script>
   <script src="main.js"></script>
 </body>
 </html>
