@@ -1,47 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ausstellung – Werk</title>
-  <link rel="icon" href="logo.jpg">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="page">
-    <main class="wrap">
-      <img class="top-logo" id="logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
-      <h1 id="ort">Ausstellungsort</h1>
-      <div class="sub" id="ausstellungDatum">Titel · Datum</div>
-      <h2 id="werkSerie">Werk + Serie</h2>
+    <div class="wrap">
+      <!-- Logo -->
+      <img src="logo.jpg" alt="Logo" class="top-logo" />
 
+      <!-- Headline-Bereich -->
+      <h1 id="venue">Ausstellungsort</h1>
+      <div class="sub" id="subtitle">Titel · Datum</div>
+      <h2 id="caption">Werk + Serie</h2>
+
+      <!-- Buttons -->
       <div class="actions">
-        <button class="btn" id="btn-audio">🎧 Audio</button>
-        <button class="btn" id="btn-pdf">📄 PDF anzeigen</button>
-        <button class="btn" id="btn-approach">🎬 Meine Arbeitsweise</button>
-        <button class="btn" id="btn-artist">ℹ️ Info Künstler</button>
+        <button class="btn" id="btn-audio">🎧&nbsp;Audio</button>
+        <button class="btn" id="btn-pdf">📄&nbsp;PDF anzeigen</button>
+        <button class="btn" id="btn-video">🎬&nbsp;Meine Arbeitsweise</button>
+        <button class="btn" id="btn-artist">ℹ️&nbsp;Info Künstler</button>
       </div>
 
-      <p class="note">
-        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br>
+      <p class="hint">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br/>
         dass andere Besucher nicht gestört werden.
       </p>
-    </main>
+    </div>
+
+    <footer class="footer">
+      <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br/>
+      © 2025 Flu – New Fine Art
+    </footer>
   </div>
 
-  <footer class="footer">
-    <div><a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a></div>
-    <div>© 2025 Flu – New Fine Art</div>
-  </footer>
-
-  <!-- Universal Modal -->
-  <div class="modal" id="modal">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <!-- Modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
       <div class="dialog-hd">
-        <div class="dialog-ttl" id="modalTitle"></div>
-        <button class="m-btn" id="modalClose">Schließen</button>
+        <div id="dlg-title" class="dialog-ttl"></div>
+        <button class="m-btn" id="dlg-close">Schließen</button>
       </div>
-      <div class="dialog-body" id="modalBody"></div>
+      <div class="dialog-body" id="dlg-body"></div>
     </div>
   </div>
 
