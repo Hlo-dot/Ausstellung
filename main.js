@@ -1,5 +1,5 @@
 // ---- Einstellungen -------------------------------------------------
-const ARTIST_WEBSITE = "https://www.flu.ruhr/uber.html";     // im Modal öffnen
+const ARTIST_WEBSITE = "https://www.flu.ruhr.html";     // im Modal öffnen
 const YT_VIDEO_ID    = "_Yg0ta6Lk9w";              // "Meine Arbeitsweise" (optional)
 
 // ---- Hilfen --------------------------------------------------------
