@@ -29,4 +29,35 @@ h2 { font-size: 1rem; font-style: italic; margin-bottom: 20px; }
   display: flex; flex-direction: column; overflow: hidden; }
 .dialog-hd { padding: 8px 12px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; }
 .dialog-body { flex-grow: 1; overflow: auto; }
-.dialog-body iframe, .dialog-body audio { width: 100%; height: 100%; border: 0; }
+body {
+  font-family: sans-serif;
+  margin: 0;
+  text-align: center;
+}
+.logo { max-width: 140px; margin: 20px auto; display: block; }
+.container { padding: 20px; }
+.btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+.m-btn {
+  padding: 10px 16px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+.m-btn:hover { background: #eee; }
+.hint { color: darkred; font-weight: bold; margin-top: 20px; }
+
+footer { margin: 40px 0; font-size: 14px; color: #555; }
+
+/* Modal Basics */
+.modal { 
+  display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999;
+}
+.modal.open { display: flex; }
+.dialog { background:#fff; border-radius:10px; width:90%; max-width:800px; max-height:90%; display:flex; flex-direction:column; }
+.dialog-hd { padding:10px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ccc; }
+.dialog-ttl { font-weight:bold; }
+.dialog-body { padding:10px; overflow:auto; flex:1; }
+.pdfjs-frame, .video-frame { width:100%; height:80vh; border:none; }
