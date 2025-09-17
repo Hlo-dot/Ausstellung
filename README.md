@@ -1,13 +1,25 @@
-# Ausstellung – Minimal Setup
+# NFC Ausstellung – Modal Update
 
-Dieses Paket trennt Werke und Ausstellungen:
+Dieses Paket enthält:
+- **index.html** – Buttons für Audio, PDF (im pdf.js Viewer), Video (YouTube, Autoplay mit Ton), Info Künstler – alle im **Modal**.
+- **main.js** – Modal-Logik inkl. Stoppen der Medien beim Schließen.
+- **style.css** – Layout & Modal-Styling.
 
-- `works.json` – nur Werksdaten (Titel, Serie, Medienpfade).
-- `exhibitions.json` – Ausstellungen inkl. Liste `works` mit den Werk-IDs.
-- `werke.js` – lädt beide JSONs, sucht automatisch die passende (current) Ausstellung.
-- `index.html` / `style.css` – UI.
+## Konfiguration (optional)
+- Setze zur Laufzeit (z. B. pro Werk) folgende Variablen **vor** `main.js`:
+```html
+<script>
+  window.CURRENT_AUDIO = "audio/Voice_Der_Moment_eingefroren.mp3";
+  window.CURRENT_PDF   = "pdf/Der_Moment_eingefroren.pdf";
+  window.CURRENT_VIDEO = "_Yg0ta6Lk9w"; // YouTube-ID
+</script>
+```
+- Oder setze am Button Attribute:
+```html
+<button id="btn-audio" data-audio="audio/xxx.mp3">🎧 Audio</button>
+<button id="btn-pdf"   data-pdf="pdf/xxx.pdf">📄 PDF anzeigen</button>
+<button id="btn-video" data-video-id="XXXXXXXXXXX">🎥 Meine Arbeitsweise</button>
+```
 
-## Deployment
-- Lege deine Medien nach `/audio` und `/pdf` (Pfade in `works.json` anpassen).
-- Logo-Dateiname in `index.html` bei Bedarf anpassen (`logo.jpeg`).
-- Optional `vercel.json` für CORS auf Vercel nutzen.
+## Einspielen
+Ersetze in deinem Repo die Dateien `index.html`, `main.js`, `style.css`.

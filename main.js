@@ -1,129 +1,80 @@
-// --- Konfiguration ---
-const GLOBAL_VIDEO_ID = "_Yg0ta6Lk9w"; // YouTube-ID zentral
-// Autoplay mit SOUND (kein mute=1). Browser können Autoplay mit Ton blockieren -> dann erscheint Play-Button im Player.
-const GLOBAL_VIDEO_EMBED = (id=GLOBAL_VIDEO_ID) => 
-  `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+// Helpers
+const $ = (sel, el=document)=>el.querySelector(sel);
+const modal = $('#modal');
+const modalTitle = $('#modalTitle');
+const modalBody = $('#modalBody');
+const closeBtn = $('#modalClose');
 
-// Utility: open/close modal
-function openModal(id){ const m=document.getElementById(id); if(!m) return; m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-function closeModal(id){ const m=document.getElementById(id); if(!m) return; m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-
-// Elements
-const pdfModal = document.getElementById('pdfModal');
-const pdfFrame = document.getElementById('pdfFrame');
-const pdfLoader = document.getElementById('pdfLoader');
-const pdfNewTab = document.getElementById('pdfNewTab');
-const pdfLinkBtn = document.getElementById('pdf-link');
-const closePdfBtn = document.getElementById('closePdf');
-
-const audioModal = document.getElementById('audioModal');
-const audioPlayer = document.getElementById('audioPlayer');
-const audioSource = document.getElementById('audioSource');
-const audioLink = document.getElementById('audio-link');
-const closeAudioBtn = document.getElementById('closeAudio');
-
-const videoModal = document.getElementById('videoModal');
-const videoFrame = document.getElementById('videoFrame');
-const videoBtn = document.getElementById('video-link');
-const closeVideoBtn = document.getElementById('closeVideo');
-
-const artistModal = document.getElementById('artistModal');
-const artistBtn = document.getElementById('artist-link');
-const closeArtistBtn = document.getElementById('closeArtist');
-
-// Helper: werk aus window.WERKE oder works.json
-async function getCurrentWerk(){
-  const id = new URLSearchParams(location.search).get('id');
-  const fromWindow = (window.WERKE||[]).find(w => String(w.id) === String(id));
-  if (fromWindow) return fromWindow;
-  try {
-    const res = await fetch('works.json', {cache:'no-store'});
-    const list = await res.json();
-    return (list||[]).find(w => String(w.id) === String(id)) || null;
-  } catch(e){ return null; }
+function openModal(title, contentNode){
+  modalTitle.textContent = title;
+  modalBody.innerHTML = '';
+  modalBody.appendChild(contentNode);
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
 }
-
-// PDF open
-function openPdf(url, title){
-  document.getElementById('pdfTitle').textContent = title ? `PDF: ${title}` : 'PDF';
-  pdfLoader.classList.remove('hidden');
-  const full = location.origin + '/' + url.replace(/^\//,'');
-  const viewer = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(full)}`;
-  pdfFrame.src = viewer;
-  pdfNewTab.href = url.startsWith('/') ? url : `/${url}`;
-  openModal('pdfModal');
-}
-pdfFrame.addEventListener('load', ()=> pdfLoader.classList.add('hidden'));
-closePdfBtn.addEventListener('click', ()=>{ pdfFrame.src='about:blank'; closeModal('pdfModal'); });
-pdfModal.addEventListener('click', (e)=>{ if(e.target===pdfModal){ pdfFrame.src='about:blank'; closeModal('pdfModal'); }});
-
-// AUDIO open
-function openAudio(url){
-  audioSource.src = url.startsWith('/') ? url : `/${url}`;
-  audioPlayer.load();
-  audioPlayer.play().catch(()=>{});
-  openModal('audioModal');
-}
-closeAudioBtn.addEventListener('click', ()=>{ audioPlayer.pause(); audioPlayer.currentTime=0; audioSource.src=''; closeModal('audioModal'); });
-audioModal.addEventListener('click', (e)=>{ if(e.target===audioModal){ audioPlayer.pause(); audioPlayer.currentTime=0; audioSource.src=''; closeModal('audioModal'); }});
-
-// VIDEO open (autoplay with sound)
-function openVideo(id=GLOBAL_VIDEO_ID){
-  videoFrame.src = GLOBAL_VIDEO_EMBED(id);
-  openModal('videoModal');
-}
-closeVideoBtn.addEventListener('click', ()=>{ videoFrame.src='about:blank'; closeModal('videoModal'); });
-videoModal.addEventListener('click', (e)=>{ if(e.target===videoModal){ videoFrame.src='about:blank'; closeModal('videoModal'); }});
-
-// ARTIST modal (statischer Text)
-function openArtist(){ openModal('artistModal'); }
-closeArtistBtn.addEventListener('click', ()=> closeModal('artistModal'));
-artistModal.addEventListener('click', (e)=>{ if(e.target===artistModal) closeModal('artistModal'); });
-
-// Wire buttons + populate from werk
-(async function init(){
-  const w = await getCurrentWerk();
-  if (w){
-    document.title = `${w.ort || ''} – ${w.werk || ''}`.trim();
-    const ortEl = document.getElementById('ort');
-    const datEl = document.getElementById('ausstellungDatum');
-    const wsEl = document.getElementById('werkSerie');
-    if (ortEl) ortEl.textContent = w.ort || '';
-    if (datEl) datEl.textContent = `${w.ausstellung || ''} · ${w.datum || ''}`.replace(/^ · /,'').trim();
-    if (wsEl) wsEl.textContent = `${w.werk || ''} – ein Werk aus der Werkserie „${w.serie || ''}“`;
-
-    // Audio Button -> Modal
-    if (w.audio){
-      document.getElementById('audio-link').addEventListener('click', (e)=>{
-        e.preventDefault();
-        openAudio(w.audio);
-      });
-    } else {
-      document.getElementById('audio-link').style.display='none';
-    }
-    // PDF Button
-    if (w.pdf){
-      pdfLinkBtn.addEventListener('click', ()=> openPdf(w.pdf, w.werk || 'PDF'));
-    } else {
-      pdfLinkBtn.style.display='none';
-    }
-  }
-  // Global
-  videoBtn?.addEventListener('click', ()=> openVideo());
-  artistBtn?.addEventListener('click', ()=> openArtist());
-
-  // ESC schließt aktives Modal
-  document.addEventListener('keydown', (e)=>{
-    if(e.key==='Escape'){
-      ['pdfModal','audioModal','videoModal','artistModal'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el && el.classList.contains('open')){
-          if(id==='pdfModal') pdfFrame.src='about:blank';
-          if(id==='audioModal'){ audioPlayer.pause(); audioPlayer.currentTime=0; audioSource.src=''; }
-          if(id==='videoModal') videoFrame.src='about:blank';
-          closeModal(id);
-        }
-      });
-    }
+function closeModal(){
+  // stop media
+  modal.querySelectorAll('audio,iframe').forEach(el=>{
+    if(el.tagName==='AUDIO'){ el.pause(); el.src=''; }
+    if(el.tagName==='IFRAME'){ el.src='about:blank'; }
   });
-})();
+  modal.classList.remove('open');
+  document.body.style.overflow='';
+}
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+// AUDIO
+$('#btn-audio').addEventListener('click', () => {
+  const src = $('#btn-audio').dataset.audio || window.CURRENT_AUDIO || ($('#audio-src')?.getAttribute('src') || '');
+  const box = document.createElement('div');
+  box.className='body-pad';
+  const h = document.createElement('h3'); h.textContent='Audiobeschreibung';
+  const p = document.createElement('p'); p.style.marginBottom='10px';
+  const audio = document.createElement('audio');
+  audio.controls = true;
+  audio.autoplay = true;
+  audio.preload = 'auto';
+  if(src) audio.src = src;
+  box.append(h);
+  box.append(audio);
+  openModal('Audiobeschreibung', box);
+});
+
+// PDF via pdf.js viewer
+$('#btn-pdf').addEventListener('click', () => {
+  const pdfUrl = $('#btn-pdf').dataset.pdf || window.CURRENT_PDF || 'pdf/montan.pdf';
+  const viewerUrl = 'https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(pdfUrl);
+  const frame = document.createElement('iframe');
+  frame.className='viewer';
+  frame.allowFullscreen = true;
+  frame.src = viewerUrl;
+  openModal('PDF', frame);
+});
+
+// VIDEO (YouTube)
+$('#btn-video').addEventListener('click', () => {
+  const ytId = $('#btn-video').dataset.videoId || window.CURRENT_VIDEO || '_Yg0ta6Lk9w';
+  const wrapper = document.createElement('div');
+  wrapper.className='video-box';
+  const qs = 'autoplay=1&mute=0&playsinline=1&modestbranding=1&rel=0&controls=1';
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.youtube-nocookie.com/embed/' + ytId + '?' + qs;
+  iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+  wrapper.appendChild(iframe);
+  openModal('Meine Arbeitsweise', wrapper);
+});
+
+// ARTIST INFO
+$('#btn-artist').addEventListener('click', () => {
+  const box = document.createElement('div');
+  box.className='body-pad';
+  box.innerHTML = `<h3>Über den Künstler</h3>
+  <p><strong>Ulf Obermann‑Löwenstein (Flu)</strong> arbeitet in Serien zwischen Struktur und Stille.
+  Seine Arbeiten erforschen Material, Spur und Resonanzräume. Weitere Infos unter
+  <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.</p>`;
+  openModal('Über den Künstler', box);
+});
+
+// ESC zum Schließen
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });

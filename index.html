@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -15,11 +15,16 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <a class="btn" id="audio-link" href="#" rel="noopener">🎧 Audio</a>
-        <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
-        <button class="btn" id="video-link" type="button">▶️ Meine Arbeitsweise</button>
-        <button class="btn" id="artist-link" type="button">👤 Über den Künstler</button>
+        <button class="btn" id="btn-audio">🎧 Audio</button>
+        <button class="btn" id="btn-pdf">📄 PDF anzeigen</button>
+        <button class="btn" id="btn-video">🎥 Meine Arbeitsweise</button>
+        <button class="btn" id="btn-artist">ℹ️ Info Künstler</button>
       </div>
+
+      <!-- Hidden legacy audio source hook -->
+      <audio id="legacy-audio" preload="none" style="display:none">
+        <source id="audio-src" src="" type="audio/mpeg">
+      </audio>
 
       <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
     </main>
@@ -30,84 +35,23 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <!-- PDF Modal -->
-  <div class="modal" id="pdfModal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="dialog">
       <div class="dialog-hd">
-        <div class="dialog-ttl" id="pdfTitle">PDF</div>
-        <div class="dialog-actions">
-          <a class="m-btn" id="pdfNewTab" href="#" target="_blank" rel="noopener">In neuem Tab</a>
-          <button class="m-btn" id="closePdf" type="button">Schließen</button>
-        </div>
+        <div class="dialog-ttl" id="modalTitle">Titel</div>
+        <button class="m-btn" id="modalClose" type="button">Schließen</button>
       </div>
-      <div class="dialog-body">
-        <div id="pdfLoader" class="loader" role="status" aria-live="polite">
-          <div>
-            <div class="spinner" aria-hidden="true"></div>
-            <div class="loader-text">PDF wird geladen …</div>
-          </div>
-        </div>
-        <iframe class="pdfjs-frame" id="pdfFrame" allowfullscreen></iframe>
-      </div>
+      <div class="dialog-body" id="modalBody"></div>
     </div>
   </div>
 
-  <!-- Video Modal -->
-  <div class="modal" id="videoModal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
-      <div class="dialog-hd">
-        <div class="dialog-ttl" id="videoTitle">Meine Arbeitsweise</div>
-        <div class="dialog-actions">
-          <button class="m-btn" id="closeVideo" type="button">Schließen</button>
-        </div>
-      </div>
-      <div class="dialog-body">
-        <iframe id="videoFrame"
-                title="YouTube Video Player"
-                allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <!-- Audio Modal -->
-  <div class="modal" id="audioModal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="audioTitle">
-      <div class="dialog-hd">
-        <div class="dialog-ttl" id="audioTitle">Audiobeschreibung</div>
-        <div class="dialog-actions">
-          <button class="m-btn" id="closeAudio" type="button">Schließen</button>
-        </div>
-      </div>
-      <div class="dialog-body">
-        <audio id="audioPlayer" controls preload="metadata">
-          <source id="audioSource" src="" type="audio/mpeg">
-          Dein Browser unterstützt das Audio-Element nicht.
-        </audio>
-      </div>
-    </div>
-  </div>
-
-  <!-- Artist Modal -->
-  <div class="modal" id="artistModal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="artistTitle">
-      <div class="dialog-hd">
-        <div class="dialog-ttl" id="artistTitle">Über den Künstler</div>
-        <div class="dialog-actions">
-          <button class="m-btn" id="closeArtist" type="button">Schließen</button>
-        </div>
-      </div>
-      <div class="dialog-body">
-        <div class="pad artist-content" id="artistContent">
-          <p><strong>Ulf Obermann‑Löwenstein (Flu)</strong> arbeitet in Serien zwischen Struktur und Stille.
-          Seine Arbeiten erforschen Material, Spur und Resonanzräume. Weitere Infos unter
-          <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="werke.js"></script>
+  <script>
+    /* Optional: per Werk können diese Variablen von außen gesetzt werden */
+    window.CURRENT_AUDIO = window.CURRENT_AUDIO || "";
+    window.CURRENT_PDF   = window.CURRENT_PDF   || "";
+    window.CURRENT_VIDEO = window.CURRENT_VIDEO || "_Yg0ta6Lk9w"; // YouTube-ID als Default
+  </script>
   <script src="main.js"></script>
 </body>
 </html>
