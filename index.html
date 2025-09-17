@@ -1,87 +1,47 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ausstellung – Werk</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="logo.jpg">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <img src="logo.jpeg" alt="Logo Flu" class="logo" />
+  <div class="page">
+    <main class="wrap">
+      <img class="top-logo" id="logo" src="logo.jpg" alt="Flu Logo" onerror="this.style.display='none'">
+      <h1 id="ort">Ausstellungsort</h1>
+      <div class="sub" id="ausstellungDatum">Titel · Datum</div>
+      <h2 id="werkSerie">Werk + Serie</h2>
 
-    <h2 id="venue">Ausstellungsort</h2>
-    <div id="exhibition-info"></div>
-    <h3 id="work-title"></h3>
+      <div class="actions">
+        <button class="btn" id="btn-audio">🎧 Audio</button>
+        <button class="btn" id="btn-pdf">📄 PDF anzeigen</button>
+        <button class="btn" id="btn-approach">🎬 Meine Arbeitsweise</button>
+        <button class="btn" id="btn-artist">ℹ️ Info Künstler</button>
+      </div>
 
-    <div class="btn-grid">
-      <button id="btn-audio" class="m-btn">🎧 Audio</button>
-      <button id="btn-pdf" class="m-btn">📄 PDF anzeigen</button>
-      <button id="btn-video" class="m-btn">🎥 Meine Arbeitsweise</button>
-      <button id="btn-info" class="m-btn">ℹ️ Info Künstler</button>
-    </div>
-
-    <p class="hint">
-      Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br />
-      dass andere Besucher nicht gestört werden.
-    </p>
+      <p class="note">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br>
+        dass andere Besucher nicht gestört werden.
+      </p>
+    </main>
   </div>
 
-  <footer>
-    <a href="https://www.flu.ruhr" target="_blank">www.flu.ruhr</a><br />
-    © 2025 Flu – New Fine Art
+  <footer class="footer">
+    <div><a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a></div>
+    <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
-  <!-- Audio Modal -->
-  <div class="modal" id="audioModal" aria-hidden="true">
-    <div class="dialog">
+  <!-- Universal Modal -->
+  <div class="modal" id="modal">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="dialog-hd">
-        <div class="dialog-ttl" id="audioTitle">Audiobeschreibung</div>
-        <button class="m-btn" id="closeAudio">Schließen</button>
+        <div class="dialog-ttl" id="modalTitle"></div>
+        <button class="m-btn" id="modalClose">Schließen</button>
       </div>
-      <div class="dialog-body">
-        <audio controls id="audioPlayer" style="width:100%"></audio>
-      </div>
-    </div>
-  </div>
-
-  <!-- PDF Modal -->
-  <div class="modal" id="pdfModal" aria-hidden="true">
-    <div class="dialog">
-      <div class="dialog-hd">
-        <div class="dialog-ttl" id="pdfTitle">PDF</div>
-        <a class="m-btn" id="pdfNewTab" target="_blank">In neuem Tab</a>
-        <button class="m-btn" id="closePdf">Schließen</button>
-      </div>
-      <iframe class="pdfjs-frame" id="pdfFrame" allow="fullscreen"></iframe>
-    </div>
-  </div>
-
-  <!-- Video Modal -->
-  <div class="modal" id="videoModal" aria-hidden="true">
-    <div class="dialog">
-      <div class="dialog-hd">
-        <div class="dialog-ttl">Meine Arbeitsweise</div>
-        <button class="m-btn" id="closeVideo">Schließen</button>
-      </div>
-      <div class="dialog-body">
-        <iframe id="videoFrame" class="video-frame"
-          src=""
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <!-- Info Modal -->
-  <div class="modal" id="infoModal" aria-hidden="true">
-    <div class="dialog">
-      <div class="dialog-hd">
-        <div class="dialog-ttl">Über den Künstler</div>
-        <button class="m-btn" id="closeInfo">Schließen</button>
-      </div>
-      <div class="dialog-body" id="infoBody"></div>
+      <div class="dialog-body" id="modalBody"></div>
     </div>
   </div>
 
