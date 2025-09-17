@@ -1,63 +1,79 @@
 :root {
-  --fg: #111; --muted: #666; --rule: #e9e9e9; --accent: #c5ad86;
+  --fg: #111;
+  --muted: #666;
+  --rule: #e9e9e9;
+  --accent: #c5ad86;
 }
+
+/* Base */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--fg);
   background: #fff;
+  text-align: center;
 }
+
+/* Layout */
 .page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 .wrap { max-width: 720px; padding: 20px; text-align: center; }
-.top-logo { max-width: 100px; margin-bottom: 10px; }
+.top-logo, .logo { max-width: 100px; margin: 20px auto 10px; display: block; }
 h1 { font-size: 1.4rem; margin: 5px 0; }
 .sub { color: var(--muted); margin-bottom: 10px; }
 h2 { font-size: 1rem; font-style: italic; margin-bottom: 20px; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.btn, .m-btn {
-  border: 2px solid var(--fg); background: #fff; padding: 6px 12px;
-  border-radius: 8px; cursor: pointer; font-size: 14px;
+
+.actions, .btn-grid {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
 }
+
+/* Buttons */
+.btn, .m-btn {
+  border: 2px solid var(--fg);
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.m-btn { font-size: 16px; }
 .btn:hover, .m-btn:hover { background: #f7f5f1; border-color: var(--accent); }
-.footer { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 10px; }
+
+/* Footer */
+.footer, footer { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 10px; }
+footer { margin: 40px 0; font-size: 14px; }
 
 /* Modal */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-  display: none; align-items: center; justify-content: center; z-index: 9999; }
-.modal.open { display: flex; }
-.dialog { background: #fff; width: 90%; max-width: 900px; height: 80%; border-radius: 10px;
-  display: flex; flex-direction: column; overflow: hidden; }
-.dialog-hd { padding: 8px 12px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; }
-.dialog-body { flex-grow: 1; overflow: auto; }
-body {
-  font-family: sans-serif;
-  margin: 0;
-  text-align: center;
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 9999;
 }
-.logo { max-width: 140px; margin: 20px auto; display: block; }
-.container { padding: 20px; }
-.btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
-.m-btn {
-  padding: 10px 16px;
-  border: 2px solid #000;
-  border-radius: 8px;
+.modal.open { display: flex; }
+
+.dialog {
   background: #fff;
-  cursor: pointer;
-  font-size: 16px;
+  width: 90%; max-width: 900px; height: 80%;
+  border-radius: 10px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
 }
-.m-btn:hover { background: #eee; }
-.hint { color: darkred; font-weight: bold; margin-top: 20px; }
-
-footer { margin: 40px 0; font-size: 14px; color: #555; }
-
-/* Modal Basics */
-.modal { 
-  display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999;
+.dialog-hd {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center;
 }
-.modal.open { display: flex; }
-.dialog { background:#fff; border-radius:10px; width:90%; max-width:800px; max-height:90%; display:flex; flex-direction:column; }
-.dialog-hd { padding:10px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ccc; }
-.dialog-ttl { font-weight:bold; }
-.dialog-body { padding:10px; overflow:auto; flex:1; }
-.pdfjs-frame, .video-frame { width:100%; height:80vh; border:none; }
+.dialog-ttl { font-weight: bold; font-size: 1rem; }
+.dialog-body { flex: 1; overflow: auto; padding: 10px; }
+
+/* Embedded content in modal */
+.pdfjs-frame, .video-frame { width: 100%; height: 80vh; border: 0; }
+.dialog-body audio { width: 100%; height: 60px; border: 0; }
+
+/* Small tweaks on very small screens */
+@media (max-width: 380px) {
+  .btn, .m-btn { padding: 7px 10px; font-size: 13px; }
+  .dialog { height: 85%; }
+  .pdfjs-frame, .video-frame { height: 70vh; }
+}
