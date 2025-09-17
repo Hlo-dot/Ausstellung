@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -31,8 +32,9 @@
     <div>© 2025 Flu – New Fine Art</div>
   </footer>
 
+  <!-- PDF Modal -->
   <div class="modal" id="pdfModal" aria-hidden="true">
-    <div class="dialog">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
       <div class="dialog-hd">
         <div class="dialog-ttl" id="pdfTitle">PDF: Werk</div>
         <div class="dialog-actions">
@@ -40,34 +42,46 @@
           <button class="m-btn" id="closePdf" type="button">Schließen</button>
         </div>
       </div>
-      <iframe class="pdfjs-frame" id="pdfFrame" allowfullscreen></iframe>
+      <div class="dialog-body">
+        <div id="pdfLoader" class="loader" role="status" aria-live="polite">
+          <div>
+            <div class="spinner" aria-hidden="true"></div>
+            <div class="loader-text">PDF wird geladen …</div>
+          </div>
+        </div>
+        <iframe class="pdfjs-frame" id="pdfFrame" allowfullscreen></iframe>
+      </div>
     </div>
   </div>
 
+  <!-- Video Modal -->
   <div class="modal" id="videoModal" aria-hidden="true">
-    <div class="dialog">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
       <div class="dialog-hd">
-        <div class="dialog-ttl">Meine Arbeitsweise</div>
+        <div class="dialog-ttl" id="videoTitle">Meine Arbeitsweise</div>
         <div class="dialog-actions">
           <button class="m-btn" id="closeVideo" type="button">Schließen</button>
         </div>
       </div>
-      <iframe id="videoFrame"
-              src="" title="YouTube Video Player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen></iframe>
+      <div class="dialog-body">
+        <iframe id="videoFrame"
+                src="" title="YouTube Video Player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+      </div>
     </div>
   </div>
 
+  <!-- Audio Modal -->
   <div class="modal" id="audioModal" aria-hidden="true">
-    <div class="dialog">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="audioTitle">
       <div class="dialog-hd">
-        <div class="dialog-ttl">Audiobeschreibung</div>
+        <div class="dialog-ttl" id="audioTitle">Audiobeschreibung</div>
         <div class="dialog-actions">
           <button class="m-btn" id="closeAudio" type="button">Schließen</button>
         </div>
       </div>
-      <div style="padding:10px;">
+      <div class="dialog-body">
         <audio id="audioPlayer" controls preload="metadata">
           <source id="audioSource" src="" type="audio/mpeg">
           Dein Browser unterstützt das Audio-Element nicht.
@@ -79,8 +93,11 @@
   <script src="werke.js"></script>
   <script>
     const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
+    const qs = s => document.querySelector(s);
+
     function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
     function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+
     async function getCurrentWerk(){
       const id = new URLSearchParams(location.search).get("id");
       const fromWindow = (window.WERKE||[]).find(w => String(w.id) === String(id));
@@ -91,18 +108,22 @@
         return (list||[]).find(w => String(w.id) === String(id)) || null;
       } catch(e){ return null; }
     }
+
     document.addEventListener('DOMContentLoaded', () => {
       // PDF
-      const pdfModal = document.getElementById('pdfModal');
-      const pdfBtn   = document.getElementById('pdf-link');
-      const pdfFrame = document.getElementById('pdfFrame');
-      const pdfNewTab= document.getElementById('pdfNewTab');
-      const pdfTitle = document.getElementById('pdfTitle');
-      const closePdf = document.getElementById('closePdf');
+      const pdfModal = qs('#pdfModal'), pdfBtn=qs('#pdf-link'), pdfFrame=qs('#pdfFrame'),
+            pdfNewTab=qs('#pdfNewTab'), pdfTitle=qs('#pdfTitle'), closePdf=qs('#closePdf'),
+            pdfLoader=qs('#pdfLoader');
+
+      const hidePdfLoader = () => { pdfLoader.classList.add('hidden'); };
 
       pdfBtn?.addEventListener('click', async () => {
         const werk = await getCurrentWerk();
         if (!werk || !werk.pdf) return;
+        // Reset loader + frame
+        pdfLoader.classList.remove('hidden');
+        pdfFrame.removeAttribute('src');
+
         const pdfUrl = (location.origin + '/' + werk.pdf).replace(/\/+/, '/');
         const viewerUrl = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" + encodeURIComponent(pdfUrl);
         pdfFrame.src = viewerUrl;
@@ -110,25 +131,38 @@
         pdfTitle.textContent = "PDF: " + (werk.werk || 'Werk');
         openModal(pdfModal);
       });
-      closePdf?.addEventListener('click', () => { closeModal(pdfModal); pdfFrame.src = ""; });
-      pdfModal?.addEventListener('click', (e)=>{ if(e.target===pdfModal){ closeModal(pdfModal); pdfFrame.src=""; } });
+
+      // hide loader once iframe is ready (use both load & a timeout fallback)
+      pdfFrame?.addEventListener('load', hidePdfLoader);
+      setInterval(() => {
+        // if the viewer puts contentDocument, hide loader (coarse check to avoid leaving spinner)
+        try {
+          if (pdfFrame.contentWindow && pdfFrame.contentDocument && pdfFrame.contentDocument.readyState !== 'loading') {
+            hidePdfLoader();
+          }
+        } catch(e){}
+      }, 800);
+
+      closePdf?.addEventListener('click', () => {
+        closeModal(pdfModal);
+        pdfFrame.src = "";
+      });
+      pdfModal?.addEventListener('click', (e)=>{
+        if(e.target===pdfModal){
+          closeModal(pdfModal);
+          pdfFrame.src="";
+        }
+      });
 
       // Video
-      const videoBtn   = document.getElementById('video-link');
-      const videoModal = document.getElementById('videoModal');
-      const videoFrame = document.getElementById('videoFrame');
-      const closeVideo = document.getElementById('closeVideo');
-
+      const videoBtn=qs('#video-link'), videoModal=qs('#videoModal'), videoFrame=qs('#videoFrame'), closeVideo=qs('#closeVideo');
       videoBtn?.addEventListener('click', () => { videoFrame.src = GLOBAL_VIDEO_EMBED; openModal(videoModal); });
       closeVideo?.addEventListener('click', () => { closeModal(videoModal); videoFrame.src = ""; });
       videoModal?.addEventListener('click', (e) => { if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; } });
 
       // Audio
-      const audioOpen  = document.getElementById('audio-open');
-      const audioModal = document.getElementById('audioModal');
-      const audioPlayer= document.getElementById('audioPlayer');
-      const audioSource= document.getElementById('audioSource');
-      const closeAudio = document.getElementById('closeAudio');
+      const audioOpen=qs('#audio-open'), audioModal=qs('#audioModal'), audioPlayer=qs('#audioPlayer'),
+            audioSource=qs('#audioSource'), closeAudio=qs('#closeAudio');
 
       audioOpen?.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -148,7 +182,7 @@
       closeAudio?.addEventListener('click', () => { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); });
       audioModal?.addEventListener('click', (e) => { if (e.target === audioModal) { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); } });
 
-      // ESC
+      // ESC schließt
       document.addEventListener('keydown', (ev)=>{
         if (ev.key === 'Escape') {
           [pdfModal, videoModal, audioModal].forEach(m => {
