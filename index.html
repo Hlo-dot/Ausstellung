@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
@@ -16,11 +15,10 @@
       <h2 id="werkSerie">Werk + Serie</h2>
 
       <div class="actions">
-        <button class="btn" id="audio-open" type="button">🎧 Audio abspielen</button>
+        <a class="btn" id="audio-link" href="#" rel="noopener">🎧 Audio</a>
         <button class="btn" id="pdf-link" type="button">📄 PDF anzeigen</button>
-        <button class="btn" id="video-link" type="button">▶︎ Meine Arbeitsweise</button>
-        <a class="btn" href="https://www.flu.ruhr/uber" target="_blank" rel="noopener">ℹ️ Info Künstler</a>
-        <a id="audio-link" href="#" style="display:none" aria-hidden="true" tabindex="-1">hidden</a>
+        <button class="btn" id="video-link" type="button">▶️ Meine Arbeitsweise</button>
+        <button class="btn" id="artist-link" type="button">👤 Über den Künstler</button>
       </div>
 
       <p class="note">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> dass andere Besucher nicht gestört werden.</p>
@@ -36,7 +34,7 @@
   <div class="modal" id="pdfModal" aria-hidden="true">
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
       <div class="dialog-hd">
-        <div class="dialog-ttl" id="pdfTitle">PDF: Werk</div>
+        <div class="dialog-ttl" id="pdfTitle">PDF</div>
         <div class="dialog-actions">
           <a class="m-btn" id="pdfNewTab" href="#" target="_blank" rel="noopener">In neuem Tab</a>
           <button class="m-btn" id="closePdf" type="button">Schließen</button>
@@ -65,8 +63,8 @@
       </div>
       <div class="dialog-body">
         <iframe id="videoFrame"
-                src="" title="YouTube Video Player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                title="YouTube Video Player"
+                allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
       </div>
     </div>
@@ -90,112 +88,26 @@
     </div>
   </div>
 
+  <!-- Artist Modal -->
+  <div class="modal" id="artistModal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="artistTitle">
+      <div class="dialog-hd">
+        <div class="dialog-ttl" id="artistTitle">Über den Künstler</div>
+        <div class="dialog-actions">
+          <button class="m-btn" id="closeArtist" type="button">Schließen</button>
+        </div>
+      </div>
+      <div class="dialog-body">
+        <div class="pad artist-content" id="artistContent">
+          <p><strong>Ulf Obermann‑Löwenstein (Flu)</strong> arbeitet in Serien zwischen Struktur und Stille.
+          Seine Arbeiten erforschen Material, Spur und Resonanzräume. Weitere Infos unter
+          <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="werke.js"></script>
-  <script>
-    const GLOBAL_VIDEO_EMBED = "https://www.youtube.com/embed/_Yg0ta6Lk9w?rel=0";
-    const qs = s => document.querySelector(s);
-
-    function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-    function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-
-    async function getCurrentWerk(){
-      const id = new URLSearchParams(location.search).get("id");
-      const fromWindow = (window.WERKE||[]).find(w => String(w.id) === String(id));
-      if (fromWindow) return fromWindow;
-      try {
-        const res = await fetch('works.json', {cache:'no-store'});
-        const list = await res.json();
-        return (list||[]).find(w => String(w.id) === String(id)) || null;
-      } catch(e){ return null; }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // PDF
-      const pdfModal = qs('#pdfModal'), pdfBtn=qs('#pdf-link'), pdfFrame=qs('#pdfFrame'),
-            pdfNewTab=qs('#pdfNewTab'), pdfTitle=qs('#pdfTitle'), closePdf=qs('#closePdf'),
-            pdfLoader=qs('#pdfLoader');
-
-      const hidePdfLoader = () => { pdfLoader.classList.add('hidden'); };
-
-      pdfBtn?.addEventListener('click', async () => {
-        const werk = await getCurrentWerk();
-        if (!werk || !werk.pdf) return;
-        // Reset loader + frame
-        pdfLoader.classList.remove('hidden');
-        pdfFrame.removeAttribute('src');
-
-        const pdfUrl = (location.origin + '/' + werk.pdf).replace(/\/+/, '/');
-        const viewerUrl = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" + encodeURIComponent(pdfUrl);
-        pdfFrame.src = viewerUrl;
-        pdfNewTab.href = '/' + werk.pdf;
-        pdfTitle.textContent = "PDF: " + (werk.werk || 'Werk');
-        openModal(pdfModal);
-      });
-
-      // hide loader once iframe is ready (use both load & a timeout fallback)
-      pdfFrame?.addEventListener('load', hidePdfLoader);
-      setInterval(() => {
-        // if the viewer puts contentDocument, hide loader (coarse check to avoid leaving spinner)
-        try {
-          if (pdfFrame.contentWindow && pdfFrame.contentDocument && pdfFrame.contentDocument.readyState !== 'loading') {
-            hidePdfLoader();
-          }
-        } catch(e){}
-      }, 800);
-
-      closePdf?.addEventListener('click', () => {
-        closeModal(pdfModal);
-        pdfFrame.src = "";
-      });
-      pdfModal?.addEventListener('click', (e)=>{
-        if(e.target===pdfModal){
-          closeModal(pdfModal);
-          pdfFrame.src="";
-        }
-      });
-
-      // Video
-      const videoBtn=qs('#video-link'), videoModal=qs('#videoModal'), videoFrame=qs('#videoFrame'), closeVideo=qs('#closeVideo');
-      videoBtn?.addEventListener('click', () => { videoFrame.src = GLOBAL_VIDEO_EMBED; openModal(videoModal); });
-      closeVideo?.addEventListener('click', () => { closeModal(videoModal); videoFrame.src = ""; });
-      videoModal?.addEventListener('click', (e) => { if (e.target === videoModal) { closeModal(videoModal); videoFrame.src = ""; } });
-
-      // Audio
-      const audioOpen=qs('#audio-open'), audioModal=qs('#audioModal'), audioPlayer=qs('#audioPlayer'),
-            audioSource=qs('#audioSource'), closeAudio=qs('#closeAudio');
-
-      audioOpen?.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const existingLink = document.getElementById('audio-link');
-        let url = existingLink && existingLink.href ? existingLink.href : "";
-        if (!url){
-          const werk = await getCurrentWerk();
-          if (werk && werk.audio) url = '/' + werk.audio;
-        }
-        if (url) {
-          audioSource.src = url;
-          audioPlayer.load();
-          try { await audioPlayer.play(); } catch {}
-        }
-        openModal(audioModal);
-      });
-      closeAudio?.addEventListener('click', () => { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); });
-      audioModal?.addEventListener('click', (e) => { if (e.target === audioModal) { audioPlayer.pause(); audioPlayer.currentTime = 0; closeModal(audioModal); } });
-
-      // ESC schließt
-      document.addEventListener('keydown', (ev)=>{
-        if (ev.key === 'Escape') {
-          [pdfModal, videoModal, audioModal].forEach(m => {
-            if (m && m.classList.contains('open')) {
-              if (m===videoModal) { videoFrame.src=""; }
-              if (m===audioModal) { audioPlayer.pause(); audioPlayer.currentTime=0; }
-              if (m===pdfModal)   { pdfFrame.src=""; }
-              closeModal(m);
-            }
-          });
-        }
-      });
-    });
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
