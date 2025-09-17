@@ -1,95 +1,107 @@
-// Hilfsfunktionen für Modals
-function openModal(el) {
-  el.classList.add("open");
-  document.body.style.overflow = "hidden";
-  el.setAttribute("aria-hidden", "false");
+// --- Helpers ---
+const $ = (sel) => document.querySelector(sel);
+const qs = new URLSearchParams(location.search);
+const workId = qs.get('id');
+
+// UI elements
+const modal = $('#modal');
+const modalTitle = $('#modalTitle');
+const modalBody  = $('#modalBody');
+const closeBtn   = $('#modalClose');
+
+// Load works.json and render header texts
+async function init() {
+  try {
+    const res = await fetch('works.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('works.json nicht erreichbar');
+    const works = await res.json();
+
+    const work = works.find(w => w.id === workId);
+    if (!work) {
+      $('.wrap').innerHTML = `<p><strong>Kein gültiges Werk gefunden.</strong><br>Parameter: <code>${workId ?? '(leer)'}</code></p>`;
+      return;
+    }
+
+    // Header – für deine „alte“ Logik gibt es keine Ausstellungsdaten hier.
+    // Wir zeigen deshalb generische Texte + Werk/Serie.
+    $('#ort').textContent = 'Ausstellungsort';
+    $('#ausstellungDatum').textContent = 'Titel · Datum';
+    $('#werkSerie').textContent = `${work.werk} – ein Werk aus der Werkserie „${work.serie}“`;
+
+    // Buttons
+    bindButtons(work);
+
+  } catch (e) {
+    console.error(e);
+    $('.wrap').innerHTML = `<p><strong>Fehler beim Laden der Daten.</strong></p>`;
+  }
 }
-function closeModal(el) {
-  el.classList.remove("open");
-  document.body.style.overflow = "";
-  el.setAttribute("aria-hidden", "true");
+
+function bindButtons(work) {
+  // AUDIO (Modal mit <audio>)
+  $('#btn-audio').addEventListener('click', () => {
+    modalTitle.textContent = 'Audiobeschreibung';
+    modalBody.innerHTML = `
+      <div class="audio-wrap">
+        <audio id="theAudio" controls preload="metadata">
+          <source src="${work.audio}" type="audio/mpeg">
+        </audio>
+      </div>`;
+    openModal();
+
+    // Nach Einfügen sicher laden (Safari)
+    const a = $('#theAudio');
+    a.addEventListener('canplay', () => { /* bereit */ }, { once:true });
+    a.load();
+    // Autoplay ist auf iOS ohne Interaktion gesperrt – Play bleibt beim Nutzer.
+  });
+
+  // PDF (Modal mit <embed> als stabiler Fallback)
+  $('#btn-pdf').addEventListener('click', () => {
+    modalTitle.textContent = 'PDF';
+    // Unterstützt iOS/Safari zuverlässig:
+    modalBody.innerHTML = `<embed src="${work.pdf}" type="application/pdf" />`;
+    openModal();
+  });
+
+  // Meine Arbeitsweise (YouTube im Modal)
+  $('#btn-approach').addEventListener('click', () => {
+    modalTitle.textContent = 'Meine Arbeitsweise';
+    // Falls du lieber ein festes Video willst, ersetze die ID hier:
+    const ytId = '_Yg0ta6Lk9w';
+    modalBody.innerHTML = `
+      <iframe class="video-frame"
+        src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&playsinline=1"
+        title="Meine Arbeitsweise" allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen></iframe>`;
+    openModal();
+  });
+
+  // Info Künstler (Modal mit Text)
+  $('#btn-artist').addEventListener('click', () => {
+    modalTitle.textContent = 'Über den Künstler';
+    modalBody.innerHTML = `
+      <div style="padding:10px; text-align:left; line-height:1.5">
+        <p><strong>Ulf Obermann-Löwenstein (Flu)</strong> arbeitet in Serien zwischen Struktur und Stille. 
+        Seine Arbeiten erforschen Material, Spur und Resonanzräume. Weitere Infos unter
+        <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.</p>
+      </div>`;
+    openModal();
+  });
 }
 
-// Buttons
-const btnAudio = document.getElementById("btn-audio");
-const btnPdf   = document.getElementById("btn-pdf");
-const btnVideo = document.getElementById("btn-video");
-const btnInfo  = document.getElementById("btn-info");
+// Modal helpers
+function openModal() {
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  modalBody.innerHTML = ''; // aufräumen (Video/Audio stoppen)
+}
 
-// Modals
-const audioModal = document.getElementById("audioModal");
-const pdfModal   = document.getElementById("pdfModal");
-const videoModal = document.getElementById("videoModal");
-const infoModal  = document.getElementById("infoModal");
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-// Close-Buttons
-const closeAudio = document.getElementById("closeAudio");
-const closePdf   = document.getElementById("closePdf");
-const closeVideo = document.getElementById("closeVideo");
-const closeInfo  = document.getElementById("closeInfo");
-
-// Audio Player
-const audioPlayer = document.getElementById("audioPlayer");
-
-// PDF Frame
-const pdfFrame = document.getElementById("pdfFrame");
-const pdfTitle = document.getElementById("pdfTitle");
-const pdfNewTab = document.getElementById("pdfNewTab");
-
-// Video Frame
-const videoFrame = document.getElementById("videoFrame");
-
-// Info Body
-const infoBody = document.getElementById("infoBody");
-
-// Beispiel-Künstlertext
-const INFO_HTML = `
-  <h3>Ulf Obermann-Löwenstein (Flu)</h3>
-  <p>arbeitet in Serien zwischen Struktur und Stille. 
-  Seine Arbeiten erforschen Material, Spur und Resonanzräume. 
-  Weitere Infos unter 
-  <a href="https://www.flu.ruhr" target="_blank" rel="noopener">flu.ruhr</a>.
-  </p>`;
-
-// Events
-btnAudio?.addEventListener("click", () => {
-  if (!window.CURRENT_WORK) return;
-  audioPlayer.src = window.CURRENT_WORK.audio;
-  openModal(audioModal);
-});
-closeAudio?.addEventListener("click", () => { audioPlayer.pause(); closeModal(audioModal); });
-audioModal?.addEventListener("click", (e) => { if (e.target === audioModal) { audioPlayer.pause(); closeModal(audioModal);} });
-
-btnPdf?.addEventListener("click", () => {
-  if (!window.CURRENT_WORK) return;
-  const pdfAbs = new URL(window.CURRENT_WORK.pdf, window.location.origin).href;
-  const viewer = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" + encodeURIComponent(pdfAbs) + "#zoom=page-width";
-  pdfFrame.src = viewer;
-  pdfTitle.textContent = "PDF: " + window.CURRENT_WORK.werk;
-  pdfNewTab.href = pdfAbs;
-  openModal(pdfModal);
-});
-closePdf?.addEventListener("click", () => { pdfFrame.src = ""; closeModal(pdfModal); });
-pdfModal?.addEventListener("click", (e) => { if (e.target === pdfModal) { pdfFrame.src=""; closeModal(pdfModal);} });
-
-btnVideo?.addEventListener("click", () => {
-  // Fester YouTube-Link
-  videoFrame.src = "https://www.youtube.com/embed/_Yg0ta6Lk9w?autoplay=1";
-  openModal(videoModal);
-});
-closeVideo?.addEventListener("click", () => { videoFrame.src=""; closeModal(videoModal); });
-videoModal?.addEventListener("click", (e) => { if (e.target === videoModal) { videoFrame.src=""; closeModal(videoModal);} });
-
-btnInfo?.addEventListener("click", () => {
-  infoBody.innerHTML = INFO_HTML;
-  openModal(infoModal);
-});
-closeInfo?.addEventListener("click", () => closeModal(infoModal));
-infoModal?.addEventListener("click", (e) => { if (e.target === infoModal) closeModal(infoModal); });
-
-// Dummy: Aktuelles Werk (zum Test)
-window.CURRENT_WORK = {
-  werk: "Montan",
-  audio: "audio/montan.mp3",
-  pdf: "pdf/montan.pdf"
-};
+init();
