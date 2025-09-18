@@ -1,5 +1,5 @@
 // ---------------- Einstellungen ----------------
-const ARTIST_WEBSITE = "https//:flu.ruhr.html"; // lokal einbetten (empfohlen). Externe Seiten blocken oft Iframes.
+const ARTIST_WEBSITE = "https://flu.ruhr"; // lokal einbetten (empfohlen). Externe Seiten blocken oft Iframes.
 const YT_VIDEO_ID    = "_Yg0ta6Lk9w";    // „Meine Arbeitsweise“
 
 // ---------------- Utilities --------------------
