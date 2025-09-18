@@ -9,28 +9,28 @@
   {
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
-    "serie": "Ein Werk aus der Serie Grenzzeit",
+    "serie": "Grenzzeit",
     "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
     "pdf": "pdf/Der_Moment_eingefroren.pdf"
   },
   {
     "id": "jenseits-der-grenzen",
     "werk": "Jenseits der Grenzen",
-    "serie": "Ein Werk aus der Serie Grenzzeit",
+    "serie": "Grenzzeit",
     "audio": "audio/Voice_Jenseits_der_Grenzen.mp3",
     "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf"
   },
   {
     "id": "resonanzkern",
     "werk": "Resonanzkern",
-    "serie": "Ein Werk aus der Serie Grenzzeit",
+    "serie": "Grenzzeit",
     "audio": "audio/Voice_Resonanzkern.mp3",
     "pdf": "pdf/FLU_Resonanzkern.pdf"
   },
   {
     "id": "ZTUT",
     "werk": "Zwischen Traum und Tür",
-    "serie": "Ein Werk aus der Serie Grenzzeit",
+    "serie": "Grenzzeit",
     "audio": "audio/Voice_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x100cm.mp3",
     "pdf": "pdf/PDF_Flu_Ulf_Obermann_Loewenstein_Grenzzeit_Zwischen_Traum_und_Tuer_2025_3x_20x100cm.pdf"
   },
@@ -72,56 +72,56 @@
   {
     "id": "einschnitt",
     "werk": "Einschnitt",
-    "serie": "Ein Werks aus der Serie Geometrien der Stille",
+    "serie": "Geometrien der Stille",
     "audio": "audio/Voice_Einschnitt.mp3",
     "pdf": "pdf/Einschnitt.pdf"
   },
   {
     "id": "flu_konstellation_der_flaeche",
     "werk": "Konstellation der Fläche",
-    "serie": "Ein Werks aus der Serie Geometrien der Stille",
+    "serie": "Geometrien der Stille",
     "audio": "audio/Voice_Konstellation_der_Flaeche.mp3",
     "pdf": "pdf/FLU_Konstellation_der_Flaeche.pdf"
   },
   {
     "id": "flu_lichtraum_gelb",
     "werk": "Lichtraum Gelb",
-    "serie": "Ein Werks aus der Serie Geometrien der Stille",
+    "serie": "Geometrien der Stille",
     "audio": "audio/Voice_Lichtraum_Gelb.mp3",
     "pdf": "pdf/FLU_Lichtraum_Gelb.pdf"
   },
   {
     "id": "flu_nebelraeume_iii_verborgene_horizonte",
     "werk": "NebelRäume III - Verborgene_Horizonte",
-    "serie": "Ein Werk aus der Serie Nebelräume",
+    "serie": "Nebelräume",
     "audio": "audio/Voice_Nebelraeume_III.mp3",
     "pdf": "pdf/FLU_NebelRaeume_III_Verborgene_Horizonte.pdf"
   },
   {
     "id": "flu_nebelraeume_ii_risse_im_grau",
     "werk": "NebelRäume II - Risse_im_Grau",
-    "serie": "Ein Werk aus der Serie Nebelräume",
+    "serie": "Nebelräume",
     "audio": "audio/Voice_Nebelraeume_II.mp3",
     "pdf": "pdf/FLU_NebelRaeume_II_Risse_im_Grau.pdf"
   },
   {
     "id": "flu_nebelraeume_iv_verwehter_zwischenraum",
     "werk": "NebelRäume IV - Verwehter Zwischenraum",
-    "serie": "Ein Werk aus der Serie Nebelräume",
+    "serie": "Nebelräume",
     "audio": "audio/Voice_Nebelraeume_IV.mp3",
     "pdf": "pdf/FLU_NebelRaeume_IV_Verwehter_Zwischenraum.pdf"
   },
   {
     "id": "flu_nebelraeume_i_schichtungen_des_schweigens",
     "werk": "NebelRäume I - Schichtungen des Schweigens",
-    "serie": "Ein Werk aus der Serie Nebelräume",
+    "serie": "Nebelräume",
     "audio": "audio/Voice_Nebelraeume_I.mp3",
     "pdf": "pdf/FLU_NebelRaeume_I_Schichtungen_des_Schweigens.pdf"
   },
   {
     "id": "flu_schnittstelle_gold",
     "werk": "Schnittstelle Gold",
-    "serie": "Ein Werks aus der Serie Geometrien der Stille",
+    "serie": "Geometrien der Stille",
     "audio": "audio/Voice_Schnittstelle_Gold.mp3",
     "pdf": "pdf/FLU_Schnittstelle_Gold.pdf"
   },
@@ -149,14 +149,14 @@
   {
     "id": "chlorophyllquartett",
     "werk": "Chlorophyllquartett",
-    "serie": "Ein Werk aus der Serie Grünzeug",
+    "serie": "Grünzeug",
     "audio": "audio/Voice_Chlorophylquartett.mp3",
     "pdf": "pdf/Chlorophyllquartett.pdf"
   },
   {
     "id": "geflecht-des-lebens",
     "werk": "Geflecht des Lebens",
-    "serie": "Ein Werk aus der Serie Grünzeug",
+    "serie": "Grünzeug",
     "audio": "audio/Voice_Geflecht_des_Lebens.mp3",
     "pdf": "pdf/Geflecht_des_Lebens.pdf"
   },
@@ -177,21 +177,21 @@
   {
     "id": "ruhezone",
     "werk": "Ruhezone",
-    "serie": "Ein Werk aus der Serie Grünzeug",
+    "serie": "Grünzeug",
     "audio": "audio/Voice_Ruhezone.mp3",
     "pdf": "pdf/Ruhezone.pdf"
   },
   {
     "id": "schattengruen",
     "werk": "Schattengrün",
-    "serie": "Ein Werk aus der Serie Grünzeug",
+    "serie": "Grünzeug",
     "audio": "audio/Voice_Schattengruen.mp3",
     "pdf": "pdf/Schattengruen.pdf"
   },
   {
     "id": "spur-im-gruen",
     "werk": "Spur im Grün",
-    "serie": "Ein Werk aus der Serie Grünzeug",
+    "serie": "Grünzeug",
     "audio": "audio/Voice_Spur_im_Gruen.mp3",
     "pdf": "pdf/Spur_im_Gruen.pdf"
   }
