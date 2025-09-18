@@ -1,5 +1,5 @@
 // ---------------- Einstellungen ----------------
-const ARTIST_WEBSITE = "https://flu.ruhr"; // lokal einbetten (empfohlen). Externe Seiten blocken oft Iframes.
+const ARTIST_WEBSITE = "kuenstler.html"; // lokal einbetten (empfohlen). Externe Seiten blocken oft Iframes.
 const YT_VIDEO_ID    = "_Yg0ta6Lk9w";    // „Meine Arbeitsweise“
 
 // ---------------- Utilities --------------------
@@ -58,7 +58,7 @@ modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }
   }
   window.CURRENT_WORK = work; // optional global
 
-  // Ausstellung versuchen (optional). Wenn exhibitions.json fehlt, einfach generisch anzeigen.
+  // Ausstellung versuchen (optional)
   let ex = null;
   try {
     const rx = await fetch("exhibitions.json", { cache: "no-store" });
@@ -78,8 +78,9 @@ modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }
     ? `${work.werk} – ein Werk aus der Werkserie „${cleanupSerie(work.serie)}“`
     : (work.werk || "");
 
-  // Buttons verdrahten
-  // Audio (Autoplay nach Klick möglich)
+  // ---------------- Buttons verdrahten ----------------
+
+  // Audio
   $("#btn-audio").onclick = () => {
     const wrap = document.createElement("div");
     wrap.className = "audio-wrap";
@@ -93,7 +94,7 @@ modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }
     setTimeout(() => audio.play().catch(()=>{}), 60);
   };
 
-  // PDF (PDF.js Viewer im Iframe) + Fallback-Link aktiv
+  // PDF (PDF.js Viewer im Iframe) + Fallback-Link
   $("#btn-pdf").onclick = () => {
     const pdfAbs = new URL(work.pdf, location.origin).href;
     const viewer = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" +
@@ -103,45 +104,61 @@ modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }
     iframe.setAttribute("allow", "fullscreen");
     iframe.src = viewer;
 
-    // Modal öffnen
     openModal(`PDF: ${work.werk}`, iframe);
 
-    // Fallback-Link (neuer Tab) einblenden
+    // Fallback-Link (neuer Tab)
     dlgOpen.style.display = "";
     dlgOpen.href = pdfAbs;
   };
 
-  // Meine Arbeitsweise (YouTube im Modal)
+  // Meine Arbeitsweise (YouTube im Modal) – mit Autoplay-Fix
   $("#btn-video").onclick = () => {
+    // YouTube-URL mit JS-API
+    const ytUrl =
+      `https://www.youtube-nocookie.com/embed/${YT_VIDEO_ID}` +
+      `?autoplay=1&playsinline=1&rel=0&modestbranding=1&mute=0&enablejsapi=1`;
+
     const iframe = document.createElement("iframe");
+    iframe.id = "ytFrame";
     iframe.className = "web-frame";
     iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
     iframe.referrerPolicy = "no-referrer";
-    iframe.src = `https://www.youtube-nocookie.com/embed/${YT_VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+    iframe.src = ytUrl;
+
     openModal("Meine Arbeitsweise", iframe);
+
+    // Autoplay erzwingen per JS-API
+    const playCmd = () => {
+      try {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+          "*"
+        );
+      } catch {}
+    };
+    iframe.addEventListener("load", () => setTimeout(playCmd, 100));
+    modal.addEventListener("click", playCmd, { once: true });
   };
 
-  // Info Künstler (lokale HTML im Modal). Externe Domains blocken oft iFrames!
+  // Info Künstler (lokale HTML im Modal)
   $("#btn-artist").onclick = () => {
     const iframe = document.createElement("iframe");
     iframe.className = "web-frame";
     iframe.referrerPolicy = "no-referrer";
     iframe.sandbox = "allow-same-origin allow-scripts allow-forms allow-popups";
-    iframe.src = ARTIST_WEBSITE; // z.B. "kuenstler.html"
+    iframe.src = ARTIST_WEBSITE;
     openModal("Über den Künstler", iframe);
   };
 })();
 
+// ---------------- Helpers ----------------------
 function showFatal(msg) {
   $(".wrap").innerHTML = `<p style="color:#b00020;font-weight:700">${msg}</p>`;
 }
-
 function cleanupSerie(txt="") {
-  // entfernt führende Phrasen wie „Ein Werk aus der Serie “
   return txt.replace(/^Ein\s+Werk\s+aus\s+der\s+Serie\s+/i, "").trim();
 }
 function formatDate(iso) {
-  // iso = YYYY-MM-DD
   const [y,m,d] = iso.split("-").map(n => parseInt(n,10));
   return `${String(d).padStart(2,"0")}.${String(m).padStart(2,"0")}.${String(y).slice(2)}`;
 }
