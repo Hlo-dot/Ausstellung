@@ -8,50 +8,45 @@
 </head>
 <body>
   <div class="page">
-    <main class="wrap">
-      <!-- Logo -->
-      <img src="logo.jpg" alt="Flu Logo" class="top-logo" onerror="this.style.display='none'">
+    <div class="wrap">
+      <img src="logo.jpg" alt="Logo" class="top-logo" />
+      <h1 id="title">Ausstellungsort</h1>
+      <div id="sub" class="sub">Titel · Datum</div>
+      <h2 id="h2">Werk + Serie</h2>
 
-      <!-- Kopfbereich -->
-      <h1 id="venue">Ausstellungsort</h1>
-      <div class="sub" id="subtitle">Titel · Datum</div>
-      <h2 id="caption">Werk + Serie</h2>
-
-      <!-- Aktionen -->
-      <div class="actions" role="group" aria-label="Aktionen">
-        <button class="btn" id="btn-audio" type="button">🎧 Audio</button>
-        <button class="btn" id="btn-pdf"   type="button">📄 PDF anzeigen</button>
-        <button class="btn" id="btn-video" type="button">🎬 Meine Arbeitsweise</button>
-        <button class="btn" id="btn-artist" type="button">ℹ️ Info Künstler</button>
+      <div class="actions">
+        <button id="btn-audio"   class="btn">🎧 Audio</button>
+        <button id="btn-pdf"     class="btn">🗎 PDF anzeigen</button>
+        <button id="btn-video"   class="btn">🎬 Meine Arbeitsweise</button>
+        <button id="btn-artist"  class="btn">ℹ️ Info Künstler</button>
       </div>
 
-      <p class="note">
-        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br />
+      <p class="hint" style="color:#b00; margin-top:16px;">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,
         dass andere Besucher nicht gestört werden.
       </p>
-    </main>
 
-    <footer class="footer">
-      <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br />
-      © 2025 Flu – New Fine Art
-    </footer>
-  </div>
-
-  <!-- Universal-Modal -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
-      <div class="dialog-hd">
-        <div id="dlg-title" class="dialog-ttl">Titel</div>
-
-        <!-- ⬇️ PDF-Fallback-Link (nur beim PDF sichtbar) -->
-        <a id="dlg-open-new" class="m-btn" href="#" target="_blank" rel="noopener" style="display:none">In neuem Tab</a>
-
-        <button class="m-btn" id="dlg-close" type="button">Schließen</button>
+      <div class="footer" style="margin-top:28px;">
+        <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br/>
+        © 2025 Flu – New Fine Art
       </div>
-      <div class="dialog-body" id="dlg-body"></div>
     </div>
   </div>
 
-  <script src="main.js"></script>
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true">
+      <div class="dialog-hd">
+        <div id="dlg-title" class="dialog-ttl">Titel</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button id="dlg-open-new" class="m-btn" style="display:none;">In neuem Tab öffnen</button>
+          <button id="dlg-close" class="m-btn">Schließen</button>
+        </div>
+      </div>
+      <div id="dlg-body" class="dialog-body"></div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
 </body>
 </html>
