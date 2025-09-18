@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -12,38 +12,39 @@
       <img src="logo.jpeg" alt="Logo" class="top-logo" />
 
       <h1 id="title">Ausstellungsort</h1>
-      <div class="sub" id="sub">Titel · Datum</div>
+      <div id="sub" class="sub">Titel · Datum</div>
       <h2 id="h2">Werk + Serie</h2>
 
       <div class="actions">
-        <button class="btn" id="btn-audio">🎧 Audio</button>
-        <button class="btn" id="btn-pdf">📄 PDF anzeigen</button>
-        <button class="btn" id="btn-video">🎬 Meine Arbeitsweise</button>
-        <button class="btn" id="btn-artist">ℹ️ Info Künstler</button>
+        <button id="btn-audio" class="m-btn">🎧 Audio</button>
+        <button id="btn-pdf"   class="m-btn">🧾 PDF anzeigen</button>
+        <button id="btn-video" class="m-btn">🎞️ Meine Arbeitsweise</button>
+        <button id="btn-artist" class="m-btn">ℹ️ Info Künstler</button>
       </div>
 
-      <p class="note">
-        Bitte Kopfhörer verwenden oder die Lautstärke so wählen, dass andere Besucher nicht gestört werden.
+      <p class="hint">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br />
+        dass andere Besucher nicht gestört werden.
       </p>
 
-      <footer class="footer">
-        <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br>
+      <p class="footer">
+        <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br/>
         © 2025 Flu – New Fine Art
-      </footer>
+      </p>
     </div>
   </div>
 
-  <!-- Modal (ein einziges, zentrales) -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+  <!-- Modal / Overlay -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true">
       <div class="dialog-hd">
-        <div class="dialog-ttl" id="dlg-title">Titel</div>
-        <div style="display:flex; gap:8px;">
-          <button class="m-btn" id="dlg-open-new" style="display:none;">In neuem Tab öffnen</button>
-          <button class="m-btn" id="dlg-close">Schließen</button>
+        <div id="dlg-title" class="dialog-ttl">Titel</div>
+        <div class="dialog-actions">
+          <button id="dlg-open-new" class="m-btn" style="display:none;">In neuem Tab öffnen</button>
+          <button id="dlg-close" class="m-btn">Schließen</button>
         </div>
       </div>
-      <div class="dialog-body" id="dlg-body"></div>
+      <div id="dlg-body" class="dialog-body"></div>
     </div>
   </div>
 
