@@ -8,41 +8,45 @@
 </head>
 <body>
   <div class="page">
-    <div class="wrap">
+    <main class="wrap">
       <!-- Logo -->
-      <img src="logo.jpg" alt="Logo" class="top-logo" />
+      <img src="logo.jpg" alt="Flu Logo" class="top-logo" onerror="this.style.display='none'">
 
-      <!-- Headline-Bereich -->
+      <!-- Kopfbereich -->
       <h1 id="venue">Ausstellungsort</h1>
       <div class="sub" id="subtitle">Titel · Datum</div>
       <h2 id="caption">Werk + Serie</h2>
 
-      <!-- Buttons -->
-      <div class="actions">
-        <button class="btn" id="btn-audio">🎧&nbsp;Audio</button>
-        <button class="btn" id="btn-pdf">📄&nbsp;PDF anzeigen</button>
-        <button class="btn" id="btn-video">🎬&nbsp;Meine Arbeitsweise</button>
-        <button class="btn" id="btn-artist">ℹ️&nbsp;Info Künstler</button>
+      <!-- Aktionen -->
+      <div class="actions" role="group" aria-label="Aktionen">
+        <button class="btn" id="btn-audio" type="button">🎧 Audio</button>
+        <button class="btn" id="btn-pdf"   type="button">📄 PDF anzeigen</button>
+        <button class="btn" id="btn-video" type="button">🎬 Meine Arbeitsweise</button>
+        <button class="btn" id="btn-artist" type="button">ℹ️ Info Künstler</button>
       </div>
 
-      <p class="hint">
-        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br/>
+      <p class="note">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br />
         dass andere Besucher nicht gestört werden.
       </p>
-    </div>
+    </main>
 
     <footer class="footer">
-      <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br/>
+      <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br />
       © 2025 Flu – New Fine Art
     </footer>
   </div>
 
-  <!-- Modal -->
+  <!-- Universal-Modal -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
       <div class="dialog-hd">
-        <div id="dlg-title" class="dialog-ttl"></div>
-        <button class="m-btn" id="dlg-close">Schließen</button>
+        <div id="dlg-title" class="dialog-ttl">Titel</div>
+
+        <!-- ⬇️ PDF-Fallback-Link (nur beim PDF sichtbar) -->
+        <a id="dlg-open-new" class="m-btn" href="#" target="_blank" rel="noopener" style="display:none">In neuem Tab</a>
+
+        <button class="m-btn" id="dlg-close" type="button">Schließen</button>
       </div>
       <div class="dialog-body" id="dlg-body"></div>
     </div>
