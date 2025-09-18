@@ -1,164 +1,141 @@
-// ---------------- Einstellungen ----------------
-const ARTIST_WEBSITE = "https://flu.ruhr"; // lokal einbetten (empfohlen). Externe Seiten blocken oft Iframes.
-const YT_VIDEO_ID    = "_Yg0ta6Lk9w";    // „Meine Arbeitsweise“
+/* =============== Einstellungen =============== */
 
-// ---------------- Utilities --------------------
-const $  = sel => document.querySelector(sel);
-const qs = new URLSearchParams(location.search);
-const ID = (qs.get("id") || "").trim();
+// Künstler-Website (kann intern oder extern sein)
+const ARTIST_WEBSITE = "https://flu.ruhr/uber";   // z.B. "/artist.html" (intern) ODER externe URL
+// Video (Meine Arbeitsweise)
+const VIDEO_ID = "_Yg0ta6Lk9w";                   // YouTube-ID
+// PDF-Viewer (interner PDF.js-Viewer; bleibt wie gehabt)
+const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html"; // oder deine gehostete viewer.html
 
-const modal     = $("#modal");
-const dlgBody   = $("#dlg-body");
-const dlgTitle  = $("#dlg-title");
-const dlgOpen   = $("#dlg-open-new");
-const dlgClose  = $("#dlg-close");
+/* =============== Utilities =============== */
 
-function openModal(title, node) {
-  dlgTitle.textContent = title || "";
-  dlgBody.innerHTML = "";
-  dlgBody.append(node);
-  // Standard: Fallback-Link verbergen (wird nur beim PDF eingeblendet)
-  dlgOpen.style.display = "none";
-  dlgOpen.removeAttribute("href");
+const $       = sel => document.querySelector(sel);
+const qs      = new URLSearchParams(location.search);
+const workId  = (qs.get("id") || "").trim();
 
+const modal   = $("#modal");
+const dlgBody = $("#dlg-body");
+const dlgTtl  = $("#dlg-title");
+const btnOpen = $("#dlg-open-new");   // Fallback-Button
+const btnClose= $("#dlg-close");
+
+function openModal(title, innerHtml, fallbackUrl) {
+  dlgTtl.textContent = title || "";
+  dlgBody.innerHTML = innerHtml;
   modal.classList.add("open");
-  modal.setAttribute("aria-hidden","false");
-  document.body.style.overflow = "hidden";
+
+  // Fallback: wenn iframe nicht lädt (z.B. X-Frame-Options), automatisch neuen Tab öffnen
+  const iframe = dlgBody.querySelector("iframe");
+  if (iframe && fallbackUrl) {
+    let loaded = false;
+    iframe.addEventListener("load", () => { loaded = true; }, { once: true });
+    setTimeout(() => {
+      if (!loaded) {
+        modal.classList.remove("open"); // Modal schließen
+        window.open(fallbackUrl, "_blank", "noopener");
+      }
+    }, 1500);
+  }
+
+  // „In neuem Tab öffnen“-Button zeigen, wenn fallbackUrl übergeben wurde
+  if (fallbackUrl) {
+    btnOpen.style.display = "inline-flex";
+    btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
+  } else {
+    btnOpen.style.display = "none";
+  }
 }
+
 function closeModal() {
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden","true");
-  document.body.style.overflow = "";
-  // Medien stoppen & Inhalt räumen
-  dlgBody.querySelectorAll("audio,video,iframe,embed").forEach(el => {
-    try { if (el.tagName === "AUDIO" || el.tagName === "VIDEO") el.pause(); } catch {}
-  });
   dlgBody.innerHTML = "";
+  modal.classList.remove("open");
 }
 
-dlgClose.addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+/* =============== Daten laden (works.json) =============== */
 
-// ---------------- Daten laden ------------------
-(async function init() {
-  let works = [];
-  try {
-    const res = await fetch("works.json", { cache: "no-store" });
-    works = await res.json();
-  } catch {
-    showFatal("Daten konnten nicht geladen werden (works.json).");
-    return;
-  }
+async function loadWorks() {
+  const res = await fetch("works.json", { cache: "no-store" });
+  if (!res.ok) throw new Error("works.json nicht gefunden");
+  return res.json();
+}
 
-  // Werk finden
-  const work = works.find(w => (w.id || "").toLowerCase() === ID.toLowerCase());
-  if (!work) {
-    showFatal("Kein gültiges Werk gefunden. (?id=...)");
-    return;
-  }
-  window.CURRENT_WORK = work; // optional global
+/* =============== Rendering =============== */
 
-  // Ausstellung versuchen (optional)
-  let ex = null;
-  try {
-    const rx = await fetch("exhibitions.json", { cache: "no-store" });
-    if (rx.ok) {
-      const exhibitions = await rx.json();
-      ex = exhibitions.find(e => e.current) ||
-           exhibitions.find(e => Array.isArray(e.works) && e.works.includes(work.id));
-    }
-  } catch { /* egal – optional */ }
-
-  // Kopf befüllen
-  $("#venue").textContent   = ex?.venue || "Ausstellungsort";
-  $("#subtitle").textContent = ex?.title
-    ? (ex.start && ex.end ? `${ex.title} · ${formatDate(ex.start)} — ${formatDate(ex.end)}` : ex.title)
+function render(work) {
+  // Kopfzeilen
+  $("#title").textContent = work.venue || "Ausstellungsort";
+  $("#sub").textContent   = work.exhibition
+    ? `${work.exhibition} · ${work.date || ""}`.trim()
     : "Titel · Datum";
-  $("#caption").textContent = work.serie
-    ? `${work.werk} – ein Werk aus der Werkserie „${cleanupSerie(work.serie)}“`
-    : (work.werk || "");
-
-  // ---------------- Buttons verdrahten ----------------
+  $("#h2").textContent = work.werk && work.serie
+    ? `${work.werk} – ein Werk aus der Werkserie „${work.serie}“`
+    : (work.werk || "Werk + Serie");
 
   // Audio
   $("#btn-audio").onclick = () => {
-    const wrap = document.createElement("div");
-    wrap.className = "audio-wrap";
-    const audio = document.createElement("audio");
-    audio.controls = true;
-    audio.preload = "metadata";
-    audio.src = work.audio;
-    wrap.append(audio);
-    openModal("Audiobeschreibung", wrap);
-    // Autoplay nach User-Geste (Modalöffnung) → iOS erlaubt
-    setTimeout(() => audio.play().catch(()=>{}), 60);
+    const audioHtml = `
+      <audio controls autoplay style="width:100%;height:52px;">
+        <source src="${work.audio}" type="audio/mpeg">
+        Ihr Browser unterstützt den Audioplayer nicht.
+      </audio>
+    `;
+    openModal("Audiobeschreibung", audioHtml, null); // Audio im Modal, kein Fallback
   };
 
-  // PDF (PDF.js Viewer im Iframe) + Fallback-Link
+  // PDF (Modal + Fallback-Button)
   $("#btn-pdf").onclick = () => {
-    const pdfAbs = new URL(work.pdf, location.origin).href;
-    const viewer = "https://mozilla.github.io/pdf.js/web/viewer.html?file=" +
-                   encodeURIComponent(pdfAbs) + "#zoom=page-width";
-    const iframe = document.createElement("iframe");
-    iframe.className = "pdf-frame";
-    iframe.setAttribute("allow", "fullscreen");
-    iframe.src = viewer;
-
-    openModal(`PDF: ${work.werk}`, iframe);
-
-    // Fallback-Link (neuer Tab)
-    dlgOpen.style.display = "";
-    dlgOpen.href = pdfAbs;
+    const viewerUrl = `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#zoom=page-width`;
+    const html = `<iframe class="pdfjs-frame" src="${viewerUrl}" allow="fullscreen" referrerpolicy="no-referrer"></iframe>`;
+    openModal("PDF", html, work.pdf);
   };
 
-  // Meine Arbeitsweise (YouTube im Modal) – mit Autoplay-Fix
+  // Meine Arbeitsweise (YouTube, Autoplay mit Klick)
   $("#btn-video").onclick = () => {
-    // YouTube-URL mit JS-API
-    const ytUrl =
-      `https://www.youtube-nocookie.com/embed/${YT_VIDEO_ID}` +
-      `?autoplay=1&playsinline=1&rel=0&modestbranding=1&mute=0&enablejsapi=1`;
-
-    const iframe = document.createElement("iframe");
-    iframe.id = "ytFrame";
-    iframe.className = "web-frame";
-    iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-    iframe.referrerPolicy = "no-referrer";
-    iframe.src = ytUrl;
-
-    openModal("Meine Arbeitsweise", iframe);
-
-    // Autoplay erzwingen per JS-API
-    const playCmd = () => {
-      try {
-        iframe.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-          "*"
-        );
-      } catch {}
-    };
-    iframe.addEventListener("load", () => setTimeout(playCmd, 100));
-    modal.addEventListener("click", playCmd, { once: true });
+    const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+    const html = `<iframe class="video-frame"
+                      src="${url}"
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      allowfullscreen></iframe>`;
+    openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
-  // Info Künstler (lokale HTML im Modal)
+  // Info Künstler (Auto-Erkennung: intern im Modal, extern im neuen Tab)
   $("#btn-artist").onclick = () => {
-    const iframe = document.createElement("iframe");
-    iframe.className = "web-frame";
-    iframe.referrerPolicy = "no-referrer";
-    iframe.sandbox = "allow-same-origin allow-scripts allow-forms allow-popups";
-    iframe.src = ARTIST_WEBSITE;
-    openModal("Über den Künstler", iframe);
-  };
-})();
+    const url = ARTIST_WEBSITE;
+    // gleiche Origin?
+    const isSameOrigin = (() => {
+      try { return new URL(url, location.href).origin === location.origin; }
+      catch { return false; }
+    })();
 
-// ---------------- Helpers ----------------------
-function showFatal(msg) {
-  $(".wrap").innerHTML = `<p style="color:#b00020;font-weight:700">${msg}</p>`;
+    if (isSameOrigin) {
+      // im Modal laden + Fallback, falls doch blockiert
+      const html = `<iframe class="video-frame" src="${url}" referrerpolicy="no-referrer"
+                         allow="autoplay; encrypted-media"></iframe>`;
+      openModal("Über den Künstler", html, url);
+    } else {
+      // extern: direkt in neuem Tab (Modal würde wegen X-Frame-Options/CSP blocken)
+      window.open(url, "_blank", "noopener");
+    }
+  };
 }
-function cleanupSerie(txt="") {
-  return txt.replace(/^Ein\s+Werk\s+aus\s+der\s+Serie\s+/i, "").trim();
-}
-function formatDate(iso) {
-  const [y,m,d] = iso.split("-").map(n => parseInt(n,10));
-  return `${String(d).padStart(2,"0")}.${String(m).padStart(2,"0")}.${String(y).slice(2)}`;
-}
+
+/* =============== Init =============== */
+
+(async function init() {
+  // Modal-Buttons
+  btnClose.onclick = closeModal;
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  try {
+    const works = await loadWorks();
+    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
+    if (!work) throw new Error("Werk nicht gefunden");
+    render(work);
+  } catch (e) {
+    console.error(e);
+    $("#title").textContent = "Fehler beim Laden der Daten.";
+  }
+})();
