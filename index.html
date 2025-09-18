@@ -2,45 +2,43 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ausstellung – Werk</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="page">
     <div class="wrap">
-      <!-- Logo -->
-      <img src="logo.jpeg" alt="Flu – New Fine Art" class="top-logo" />
-
-      <!-- Headline -->
+      <img id="top-logo" class="top-logo" alt="Logo" />
       <h1 id="title">Ausstellungsort</h1>
       <div id="sub" class="sub">Titel · Datum</div>
       <h2 id="h2">Werk + Serie</h2>
 
-      <!-- Actions -->
       <div class="actions">
-        <button id="btn-audio" class="btn">🎧&nbsp;Audio</button>
-        <button id="btn-pdf" class="btn">🗎&nbsp;PDF anzeigen</button>
-        <button id="btn-video" class="btn">🎥&nbsp;Meine Arbeitsweise</button>
-        <button id="btn-artist" class="btn">🛈&nbsp;Info Künstler</button>
+        <button id="btn-audio" class="btn">🪪 Audio</button>
+        <button id="btn-pdf" class="btn">🗂️ PDF anzeigen</button>
+        <button id="btn-video" class="btn">🎥 Meine Arbeitsweise</button>
+        <button id="btn-artist" class="btn">🛈 Info Künstler</button>
       </div>
 
-      <p class="hint">Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br> 
-      dass andere Besucher nicht gestört werden.</p>
+      <p class="hint">
+        Bitte Kopfhörer verwenden oder die Lautstärke so wählen,<br>
+        dass andere Besucher nicht gestört werden.
+      </p>
 
-      <footer class="footer">
+      <p class="footer">
         <a href="https://www.flu.ruhr" target="_blank" rel="noopener">www.flu.ruhr</a><br>
         © 2025 Flu – New Fine Art
-      </footer>
+      </p>
     </div>
   </div>
 
   <!-- Modal -->
   <div id="modal" class="modal" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+    <div class="dialog" role="dialog" aria-modal="true">
       <div class="dialog-hd">
-        <strong id="dlg-title"></strong>
-        <div class="dialog-actions">
+        <div id="dlg-title" class="dialog-ttl"></div>
+        <div style="display:flex; gap:8px;">
           <button id="dlg-open-new" class="m-btn" style="display:none;">In neuem Tab öffnen</button>
           <button id="dlg-close" class="m-btn">Schließen</button>
         </div>
