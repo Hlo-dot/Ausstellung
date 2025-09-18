@@ -29,3 +29,41 @@ a{ color:inherit; }
 
 .dialog-body iframe{ width:100%; height:100%; border:0; }
 .dialog-body audio{ width:100%; height:52px; display:block; }
+/* --- Fix: zentrierter Titelblock & saubere Abstände --- */
+.wrap{
+  max-width: 760px;         /* etwas mehr Raum für lange Titel */
+  margin: 0 auto;           /* wirklich zentrieren */
+  text-align: center;
+}
+
+.top-logo{
+  width: 180px;             /* optional: Logo-Größe konsistent */
+  height: auto;
+  display: block;           /* verhindert Inline-Grafik-"Versatz" */
+  margin: 16px auto 10px;   /* exakt zentriert */
+}
+
+/* Überschriften/Zeilenabstände konsistent und mittig */
+h1, .sub, h2 { margin-left: auto; margin-right: auto; }
+
+/* responsive Typografie + gleichmäßige Line-Heights */
+h1{
+  font-size: clamp(24px, 5vw, 40px);
+  line-height: 1.15;
+  margin: 10px 0 6px;
+}
+
+.sub{
+  font-size: clamp(14px, 3.4vw, 20px);
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+h2{
+  font-size: clamp(16px, 4vw, 22px);
+  line-height: 1.3;
+  margin-bottom: 18px;
+}
+
+/* Buttons bleiben zuverlässig mittig, auch bei Umbruch */
+.actions{ justify-content: center; }
