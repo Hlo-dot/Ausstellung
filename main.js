@@ -5,8 +5,8 @@
 // - Sonst: automatisch in neuem Tab (wegen X-Frame-Options/CSP).
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer. Du kannst hier deinen eigenen hosten (z.B. /pdfjs/web/viewer.html)
-const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
+// PDF.js Viewer (aktuell ungenutzt; wir öffnen PDFs direkt)
+// const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
 // YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
 const VIDEO_ID = "_Yg0ta6Lk9w";
@@ -48,8 +48,8 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // iFrame-Lade-Guard: wenn der Inhalt (z. B. fremde Seite oder 404) nicht lädt,
-  // schließen wir das Modal wieder und öffnen den Fallback im neuen Tab.
+  // iFrame-Lade-Guard: wenn der Inhalt (z. B. fremde Seite) nicht lädt,
+  // schließen wir das Modal wieder und öffnen den Fallback.
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -71,22 +71,6 @@ function closeModal() {
 }
 
 /* ================== Daten-Merge ================== */
-
-/**
- * Hilfsfunktion: ISO-Datum → deutsches Datum
- */
-function formatDate(dateStr) {
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
-  } catch {
-    return dateStr;
-  }
-}
 
 /**
  * Wir laden beide Dateien:
@@ -118,7 +102,7 @@ function buildHeaderText(work, exhibition) {
   const dateText = (exhibition?.title || "Titel") +
                    " · " +
                    (exhibition?.start && exhibition?.end
-                     ? `${formatDate(exhibition.start)} — ${formatDate(exhibition.end)}`
+                     ? `${exhibition.start.replaceAll("-", ".")} — ${exhibition.end.replaceAll("-", ".")}`
                      : "Datum");
 
   let h2 = "Werk + Serie";
@@ -152,7 +136,7 @@ function wireButtons(work, exhibition) {
     openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
-  // Info Künstler
+  // Info Künstler – gleiche Origin im Modal, sonst neuer Tab
   $("#btn-artist").onclick = () => {
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
@@ -165,7 +149,7 @@ function wireButtons(work, exhibition) {
     }
   };
 
-  // PDF (Modal + robuster iOS-Fallback)
+  // ---------------- PDF (Modal + robuster iOS-Fallback) ----------------
   $("#btn-pdf").onclick = () => {
     const pdfUrl = work.pdf;
 
@@ -174,25 +158,24 @@ function wireButtons(work, exhibition) {
                   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
     // iOS: iframe direkt auf die PDF (voller nativer Viewer)
-    // Andere: wie gehabt per <embed>
+    // Andere: per <embed> (wie zuvor)
     const viewer = isIOS
       ? `<iframe src="${pdfUrl}#toolbar=1" style="width:100%;height:100%;border:0;"></iframe>`
       : `<embed src="${pdfUrl}#view=FitH&toolbar=1" type="application/pdf" style="width:100%;height:100%;border:0;">`;
 
     const html = `
       <div style="height:100%;display:flex;flex-direction:column;">
-        <div style="flex:1;min-height:0;">
-          ${viewer}
-        </div>
+        <div style="flex:1;min-height:0;">${viewer}</div>
       </div>
     `;
 
     // zeigt oben rechts automatisch den Header-Button „In neuem Tab öffnen“
     openModal("PDF", html, pdfUrl);
 
-    // leiser Erreichbarkeits-Check (keine UI-Auswirkung)
+    // leiser Erreichbarkeits-Check
     fetch(pdfUrl, { method: "HEAD", cache: "no-store" }).catch(() => {});
   };
+}
 
 function renderPage(work, exhibition) {
   const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
@@ -201,28 +184,33 @@ function renderPage(work, exhibition) {
   $("#sub").textContent   = dateText;
   $("#h2").textContent    = h2;
 
+  // Logo bleibt wie im HTML gesetzt (src via index.html)
   wireButtons(work, exhibition);
 }
 
 /* ================== Init ================== */
 
 (async function init() {
+  // Modal schließen per Button oder Klick auf den dunklen Hintergrund
   btnClose.onclick = closeModal;
   modal.addEventListener("click", (e) => {
     if (e.target === modal) closeModal();
   });
 
   try {
+    // Beide JSONs parallel laden
     const [works, exhibitions] = await Promise.all([
       fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null),
+      fetchJSON("exhibitions.json").catch(() => null), // exhibitions.json optional
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
 
+    // Gewünschtes Werk finden
     const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
     if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
 
+    // Passende Ausstellung ermitteln (falls vorhanden)
     const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
 
     renderPage(work, exhibition);
