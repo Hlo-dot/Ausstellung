@@ -1,12 +1,12 @@
 /* ================== Einstellungen ================== */
 
-// Künstler-Webseite: extern -> neuer Tab; intern -> Modal
+// Externe/Interne Künstler-Seite (extern = neuer Tab; intern = Modal).
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// Immer PDF.js nutzen (robust auf iOS). Du kannst hier auch deinen eigenen Viewer hosten.
+// PDF.js Viewer (bewährt & mobil stabil).
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-ID für „Meine Arbeitsweise“
+// YouTube-Video (startet nach Klick).
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -37,7 +37,7 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // Fallback-Button sichtbar machen, wenn sinnvoll
+  // Fallback-Button (oben rechts im Header)
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -45,13 +45,18 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // “Lade-Guard”: wenn iframe gar nicht lädt (z.B. blockiert), Tab öffnen
+  // Lade-Guard: wenn iFrame nicht lädt, neuen Tab öffnen
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
     const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
     iframe.addEventListener("load", onLoad, { once: true });
-    setTimeout(() => { if (!loaded) { modal.classList.remove("open"); window.open(fallbackUrl, "_blank", "noopener"); } }, 1500);
+    setTimeout(() => {
+      if (!loaded) {
+        modal.classList.remove("open");
+        window.open(fallbackUrl, "_blank", "noopener");
+      }
+    }, 1600);
   }
 }
 
@@ -60,74 +65,67 @@ function closeModal() {
   modal.classList.remove("open");
 }
 
-/* ================== Ausstellung + Werk zusammenführen ================== */
+/* ================== Daten-Merge ================== */
 
+/** Ausstellung zum Werk finden (erst current:true, sonst erste passende) */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
+  const byId = id => (id || "").toLowerCase() === wId.toLowerCase();
 
-  const inCurrent = exhibitions.find(ex =>
-    ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
-  );
-  if (inCurrent) return inCurrent;
+  const current = exhibitions.find(ex => ex.current && ex.works?.some(byId));
+  if (current) return current;
 
-  const any = exhibitions.find(ex =>
-    Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
-  );
-  return any || null;
+  return exhibitions.find(ex => ex.works?.some(byId)) || null;
 }
 
 function buildHeaderText(work, exhibition) {
   const venue = exhibition?.venue || "Ausstellungsort";
-  const dateText = (exhibition?.title || "Titel") +
-                   " · " +
+  const dateText = (exhibition?.title || "Titel") + " · " +
                    (exhibition?.start && exhibition?.end
-                     ? `${exhibition.start.replaceAll("-", ".")} — ${exhibition.end.replaceAll("-", ".")}`
-                     : "Datum");
+                    ? `${exhibition.start.replaceAll("-", ".")} — ${exhibition.end.replaceAll("-", ".")}`
+                    : "Datum");
 
   let h2 = "Werk + Serie";
   if (work?.werk && work?.serie) {
-    // (nur leicht angepasst – typografische Anführungen bleiben)
-    h2 = `${work.werk} – ein Werk aus der Werkserie „${work.serie}“`;
+    // Formulierung: „<Werk> – ein Werk aus der Werkserie „<Serie>““
+    const label = work.serie === "Einzelwerk" ? "Werkserie „Einzelwerk“" : `Werkserie „${work.serie}“`;
+    h2 = `${work.werk} – ein Werk aus der ${label}`;
   }
   return { venue, dateText, h2 };
 }
 
-/* ================== Rendering & Button-Logik ================== */
+/* ================== Rendering ================== */
 
-function wireButtons(work) {
-  // Audio (Autoplay nach Klick – Browser-Policy lässt Ton zu)
+function wireButtons(work, exhibition) {
+  // Audio – im Modal mit Autoplay (durch Klick erlaubt)
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
         <source src="${work.audio}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
-      </audio>`;
+      </audio>
+    `;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF – **absoluter** URL + PDF.js (Fix für iOS “0 von 0”)
+  // PDF – IMMER über PDF.js im iFrame (mobil zuverlässig) + Fallback oben rechts
   $("#btn-pdf").onclick = () => {
-    const absPdf = new URL(work.pdf, location.origin).href;  // wichtig: absolut!
-    const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(absPdf)}#zoom=page-width&pagemode=none`;
-
-    const html = `<iframe class="pdfjs-frame" src="${viewerUrl}" allow="fullscreen"></iframe>`;
-    openModal("PDF", html, absPdf);
+    const viewerUrl = `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#zoom=page-width`;
+    const html = `<iframe class="pdfjs-frame" src="${viewerUrl}" allow="fullscreen" referrerpolicy="no-referrer"></iframe>`;
+    openModal("PDF", html, work.pdf);
   };
 
-  // Video
+  // Video (Meine Arbeitsweise) – 16:9, Klick startet
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `<iframe class="video-frame"
-                    src="${url}"
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowfullscreen></iframe>`;
+                      src="${url}"
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      allowfullscreen></iframe>`;
     openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
-  // Info Künstler
+  // Info Künstler – intern im Modal (gleiche Origin) sonst neuer Tab
   $("#btn-artist").onclick = () => {
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
@@ -145,8 +143,8 @@ function renderPage(work, exhibition) {
   $("#sub").textContent   = dateText;
   $("#h2").textContent    = h2;
 
-  // Buttons aktivieren
-  wireButtons(work);
+  // Buttons verdrahten
+  wireButtons(work, exhibition);
 }
 
 /* ================== Init ================== */
@@ -159,12 +157,12 @@ function renderPage(work, exhibition) {
   try {
     const [works, exhibitions] = await Promise.all([
       fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null)
+      fetchJSON("exhibitions.json").catch(() => null),
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
     const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
-    if (!work) throw new Error(`Werk '${workId}' nicht gefunden`);
+    if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
 
     const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
     renderPage(work, exhibition);
