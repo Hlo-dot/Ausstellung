@@ -195,5 +195,13 @@
     "audio": "audio/Voice_Spur_im_Gruen.mp3",
     "pdf": "pdf/Spur_im_Gruen.pdf"
   }
+    {
+    "id": "Roter-Takt",
+    "werk": "Roter Takt",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Roter_Takt.mp3",
+    "pdf": "pdf/PDF_Roter_Takt.pdf
+"
+  }
 ]
  
