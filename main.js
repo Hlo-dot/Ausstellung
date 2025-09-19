@@ -1,23 +1,18 @@
-/* ================== Einstellungen ================== */
+/* ================= Einstellungen ================= */
 
-// Externe/Interne Künstler-Seite.
-// - Wenn gleiche Domain wie deine App: im Modal.
-// - Sonst: automatisch in neuem Tab (wegen X-Frame-Options/CSP).
+// Künstlerseite: externe Domains werden aus Policy-Gründen im neuen Tab geöffnet.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
-
-// PDF.js Viewer (aktuell ungenutzt; wir öffnen PDFs direkt)
-// const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
-
-// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
+// Stabiler Mehrseiten-Viewer:
+const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
+// Video-ID für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
-/* ================== Utilities ================== */
+/* ================= Utilities ================= */
 
 const $  = (sel) => document.querySelector(sel);
 const qs = new URLSearchParams(location.search);
 const workId = (qs.get("id") || "").trim();
 
-// Modal-Referenzen (IDs müssen zu index.html passen)
 const modal   = $("#modal");
 const dlgBody = $("#dlg-body");
 const dlgTtl  = $("#dlg-title");
@@ -40,28 +35,12 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“-Button ein-/ausblenden
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
   } else {
     btnOpen.style.display = "none";
-  }
-
-  // iFrame-Lade-Guard: wenn der Inhalt (z. B. fremde Seite) nicht lädt,
-  // schließen wir das Modal wieder und öffnen den Fallback.
-  const iframe = dlgBody.querySelector("iframe");
-  if (iframe && fallbackUrl) {
-    let loaded = false;
-    const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
-    iframe.addEventListener("load", onLoad, { once: true });
-
-    setTimeout(() => {
-      if (!loaded) {
-        modal.classList.remove("open");
-        window.open(fallbackUrl, "_blank", "noopener");
-      }
-    }, 1500);
+    btnOpen.onclick = null;
   }
 }
 
@@ -70,63 +49,68 @@ function closeModal() {
   modal.classList.remove("open");
 }
 
-/* ================== Daten-Merge ================== */
+/* ============== Exhibition-Merge (wie gehabt) ============== */
 
-/**
- * Wir laden beide Dateien:
- *  - works.json: Werk-Metadaten (werk, serie, audio, pdf)
- *  - exhibitions.json: Ausstellungen (venue, dates, works-Liste)
- *
- * 1) Falls eine Ausstellung „current:true“ ist und das Werk enthält → nimm die.
- * 2) Sonst nimm die erste Ausstellung, die das Werk enthält.
- * 3) Falls keine, rendere nur Werkdaten (ohne Venue/Datum).
- */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
+  const lc = (s) => (s||"").toLowerCase();
 
-  const inCurrent = exhibitions.find(ex =>
-    ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+  const current = exhibitions.find(ex =>
+    ex.current && Array.isArray(ex.works) && ex.works.some(id => lc(id)===lc(wId))
   );
-  if (inCurrent) return inCurrent;
+  if (current) return current;
 
-  const any = exhibitions.find(ex =>
-    Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
-  );
-  return any || null;
+  return exhibitions.find(ex =>
+    Array.isArray(ex.works) && ex.works.some(id => lc(id)===lc(wId))
+  ) || null;
 }
 
 function buildHeaderText(work, exhibition) {
+  const pretty = (d) => d ? d.replace(/-/g, ".") : "";
   const venue = exhibition?.venue || "Ausstellungsort";
-  const dateText = (exhibition?.title || "Titel") +
-                   " · " +
-                   (exhibition?.start && exhibition?.end
-                     ? `${exhibition.start.replaceAll("-", ".")} — ${exhibition.end.replaceAll("-", ".")}`
-                     : "Datum");
+
+  let dateLine = "Titel · Datum";
+  if (exhibition?.title) {
+    if (exhibition?.start && exhibition?.end) {
+      dateLine = `${exhibition.title} · ${pretty(exhibition.start)} — ${pretty(exhibition.end)}`;
+    } else {
+      dateLine = `${exhibition.title}`;
+    }
+  }
 
   let h2 = "Werk + Serie";
   if (work?.werk && work?.serie) {
-    h2 = `${work.werk} – ein Werk aus der Werkserie „${work.serie}“`;
+    // typografische Variante wie zuvor
+    const serie = work.serie;
+    h2 = `${work.werk} – ein Werk aus der Werkserie „${serie}“`;
   }
-  return { venue, dateText, h2 };
+  return { venue, dateLine, h2 };
 }
 
-/* ================== Rendering ================== */
+/* ================= Rendering ================= */
 
-function wireButtons(work, exhibition) {
+function wireButtons(work) {
   // Audio
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
         <source src="${work.audio}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
-      </audio>
-    `;
+      </audio>`;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // Meine Arbeitsweise (YouTube)
+  // PDF – **immer über PDF.js** (zeigt alle Seiten, mobil stabil)
+  $("#btn-pdf").onclick = () => {
+    const viewerUrl = `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#page=1&zoom=page-width`;
+    const html = `<iframe class="pdfjs-frame"
+                    src="${viewerUrl}"
+                    allow="fullscreen"
+                    referrerpolicy="no-referrer"></iframe>`;
+    openModal("PDF", html, work.pdf);   // Fallback: Original-PDF im neuen Tab
+  };
+
+  // Video
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `<iframe class="video-frame"
@@ -136,84 +120,48 @@ function wireButtons(work, exhibition) {
     openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
-  // Info Künstler – gleiche Origin im Modal, sonst neuer Tab
+  // Künstlerinfo
   $("#btn-artist").onclick = () => {
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
-      const html = `<iframe class="video-frame"
-                      src="${url}"
-                      referrerpolicy="no-referrer"></iframe>`;
+      const html = `<iframe class="video-frame" src="${url}" referrerpolicy="no-referrer"></iframe>`;
       openModal("Über den Künstler", html, url);
     } else {
+      // Extern → direkt neuer Tab (CSP/X-Frame-Options)
       window.open(url, "_blank", "noopener");
     }
-  };
-
-  // ---------------- PDF (Modal + robuster iOS-Fallback) ----------------
-  $("#btn-pdf").onclick = () => {
-    const pdfUrl = work.pdf;
-
-    // iOS-Erkennung (inkl. iPadOS im Desktop-Mode)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-    // iOS: iframe direkt auf die PDF (voller nativer Viewer)
-    // Andere: per <embed> (wie zuvor)
-    const viewer = isIOS
-      ? `<iframe src="${pdfUrl}#toolbar=1" style="width:100%;height:100%;border:0;"></iframe>`
-      : `<embed src="${pdfUrl}#view=FitH&toolbar=1" type="application/pdf" style="width:100%;height:100%;border:0;">`;
-
-    const html = `
-      <div style="height:100%;display:flex;flex-direction:column;">
-        <div style="flex:1;min-height:0;">${viewer}</div>
-      </div>
-    `;
-
-    // zeigt oben rechts automatisch den Header-Button „In neuem Tab öffnen“
-    openModal("PDF", html, pdfUrl);
-
-    // leiser Erreichbarkeits-Check
-    fetch(pdfUrl, { method: "HEAD", cache: "no-store" }).catch(() => {});
   };
 }
 
 function renderPage(work, exhibition) {
-  const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
-
+  const { venue, dateLine, h2 } = buildHeaderText(work, exhibition);
   $("#title").textContent = venue;
-  $("#sub").textContent   = dateText;
+  $("#sub").textContent   = dateLine;
   $("#h2").textContent    = h2;
-
-  // Logo bleibt wie im HTML gesetzt (src via index.html)
-  wireButtons(work, exhibition);
 }
 
-/* ================== Init ================== */
+/* ================= Init ================= */
 
 (async function init() {
-  // Modal schließen per Button oder Klick auf den dunklen Hintergrund
+  // Modal Closing
   btnClose.onclick = closeModal;
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
   try {
-    // Beide JSONs parallel laden
     const [works, exhibitions] = await Promise.all([
       fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null), // exhibitions.json optional
+      fetchJSON("exhibitions.json").catch(() => null)
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
 
-    // Gewünschtes Werk finden
-    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
+    const work = works.find(w => (w.id||"").toLowerCase() === workId.toLowerCase());
     if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
 
-    // Passende Ausstellung ermitteln (falls vorhanden)
     const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
 
     renderPage(work, exhibition);
+    wireButtons(work);
   } catch (err) {
     console.error(err);
     $("#title").textContent = "Fehler beim Laden der Daten.";
