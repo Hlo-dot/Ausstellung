@@ -125,3 +125,32 @@ h2 {
   aspect-ratio: 16 / 9;    /* saubere Proportion */
   height: auto;
 }
+/* Logo stabil skalieren – nie zu groß, nie zu klein */
+.top-logo {
+  width: clamp(160px, 62vw, 320px);
+  height: auto;
+  display: block;
+  margin: 12px auto 8px;
+}
+
+/* Kompaktere Typo-Abstände mobil */
+@media (max-width: 420px) {
+  h1 { font-size: 1.9rem; line-height: 1.15; }
+  .sub { margin-top: 6px; }
+}
+
+/* Modals: iOS-Safari zuverlässig füllen */
+.dialog-body { padding: 0; }
+.dialog-body iframe,
+.dialog-body embed {
+  width: 100%;
+  height: 82vh;        /* etwas höher für iOS, damit die PDF-Toolbar nicht drückt */
+  border: 0;
+  display: block;
+}
+
+/* YouTube-Frame leicht kleiner, damit keine seitlichen Balken */
+.video-frame { height: 58vh; }
+
+/* PDF-Toolbar nicht vom Close-Button verdecken */
+.dialog-hd { position: sticky; top: 0; background:#fff; z-index: 1; }
