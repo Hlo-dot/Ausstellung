@@ -201,6 +201,13 @@
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Roter_Takt.mp3",
     "pdf": "pdf/PDF_Roter_Takt.pdf"
+  },
+  {
+    "id": "Goldene-Schwelle",
+    "werk": "Goldene Schwelle",
+    "serie": "Einzelwerk",
+    "audio": "audio/Voice_Goldene_Schwelle.mp3",
+    "pdf": "pdf/PDF_Goldene_Schwelle.pdf"
   }
 ]
  
