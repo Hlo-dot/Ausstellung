@@ -165,31 +165,34 @@ function wireButtons(work, exhibition) {
     }
   };
 
-  // PDF
+  // PDF (Modal + robuster iOS-Fallback)
   $("#btn-pdf").onclick = () => {
     const pdfUrl = work.pdf;
+
+    // iOS-Erkennung (inkl. iPadOS im Desktop-Mode)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    // iOS: iframe direkt auf die PDF (voller nativer Viewer)
+    // Andere: wie gehabt per <embed>
+    const viewer = isIOS
+      ? `<iframe src="${pdfUrl}#toolbar=1" style="width:100%;height:100%;border:0;"></iframe>`
+      : `<embed src="${pdfUrl}#view=FitH&toolbar=1" type="application/pdf" style="width:100%;height:100%;border:0;">`;
+
     const html = `
       <div style="height:100%;display:flex;flex-direction:column;">
         <div style="flex:1;min-height:0;">
-          <embed src="${pdfUrl}#view=FitH&toolbar=1" type="application/pdf"
-                 style="width:100%;height:100%;border:0;"
-                 onerror="this.replaceWith(Object.assign(document.createElement('iframe'),{src:'${pdfUrl}',style:'width:100%;height:100%;border:0;'}));">
-        </div>
-        <div style="padding:8px 0; text-align:right;">
-          <button id="dlg-open-new" class="m-btn">In neuem Tab öffnen</button>
+          ${viewer}
         </div>
       </div>
     `;
-    openModal("PDF", html);
 
-    const openNew = document.getElementById("dlg-open-new");
-    if (openNew) {
-      openNew.onclick = () => window.open(pdfUrl, "_blank", "noopener");
-    }
+    // zeigt oben rechts automatisch den Header-Button „In neuem Tab öffnen“
+    openModal("PDF", html, pdfUrl);
 
+    // leiser Erreichbarkeits-Check (keine UI-Auswirkung)
     fetch(pdfUrl, { method: "HEAD", cache: "no-store" }).catch(() => {});
   };
-}
 
 function renderPage(work, exhibition) {
   const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
