@@ -135,3 +135,11 @@ h2 {
   h1 { font-size: 1.9rem; line-height: 1.15; }
   .sub { margin-top: 6px; }
 }
+/* --- Mobile Tweaks (unter 420px) --- */
+@media (max-width: 420px) {
+  .top-logo { width: clamp(140px, 48vw, 220px); }
+  h1 { font-size: 1.6rem; line-height: 1.15; }
+  .sub { font-size: 1.0rem; }
+  h2  { font-size: 1.0rem; }
+  .actions .btn { padding: 9px 14px; font-size: 15px; }
+}
