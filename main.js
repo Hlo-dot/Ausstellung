@@ -13,16 +13,22 @@ const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
 
-const $  = (sel) => document.querySelector(sel);
-const qs = new URLSearchParams(location.search);
-const workId = (qs.get("id") || "").trim();
+const $ = (sel) => document.querySelector(sel);
+
+// --- ERSETZT die bisherige Ermittlung von workId ---
+// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
+const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
+const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
+const qs         = new URLSearchParams(location.search);
+const workId     = (qs.get("id") || idFromPath || "").trim();
+// --- ENDE ERSATZ ---
 
 // Modal-Referenzen (IDs müssen zu index.html passen)
-const modal   = $("#modal");
-const dlgBody = $("#dlg-body");
-const dlgTtl  = $("#dlg-title");
-const btnOpen = $("#dlg-open-new");
-const btnClose= $("#dlg-close");
+const modal    = $("#modal");
+const dlgBody  = $("#dlg-body");
+const dlgTtl   = $("#dlg-title");
+const btnOpen  = $("#dlg-open-new");
+const btnClose = $("#dlg-close");
 
 function isSameOrigin(url) {
   try { return new URL(url, location.href).origin === location.origin; }
@@ -48,8 +54,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // iFrame-Lade-Guard: wenn der Inhalt (z. B. fremde Seite oder 404) nicht lädt,
-  // schließen wir das Modal wieder und öffnen den Fallback im neuen Tab.
+  // iFrame-Lade-Guard: falls Inhalt (z. B. fremde Seite/404) nicht lädt -> Fallback
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -123,16 +128,11 @@ function wireButtons(work) {
 
   // --------- PDF (robust, iOS-freundlich) ----------
   $("#btn-pdf").onclick = () => {
-    // PDF.js-Viewer mit sinnvollen Defaults:
-    // - page=1: immer auf Seite 1 starten
-    // - zoom=page-width: Seitenbreite
-    // - pagemode=none: keine Seitenleiste erzwungen
-    // - view=FitH: Höhe sinnvoll
+    // PDF.js-Viewer mit sinnvollen Defaults
     const viewerUrl =
       `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}` +
       `#page=1&zoom=page-width&pagemode=none&view=FitH`;
 
-    // Iframe ins Modal; Fallback: direktes PDF in neuem Tab
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -173,11 +173,9 @@ function wireButtons(work) {
 
 function renderPage(work, exhibition) {
   const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
-
   $("#title").textContent = venue;
   $("#sub").textContent   = dateText;
   $("#h2").textContent    = h2;
-
   wireButtons(work);
 }
 
