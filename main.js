@@ -1,14 +1,12 @@
 /* ================== Einstellungen ================== */
 
 // Externe/Interne Künstler-Seite.
-// - Wenn gleiche Domain wie deine App: im Modal.
-// - Sonst: automatisch in neuem Tab (wegen X-Frame-Options/CSP).
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer (bleibt wie gehabt)
+// PDF.js Viewer
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
+// YouTube-Video für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -23,7 +21,9 @@ const qs         = new URLSearchParams(location.search);
 const workId     = (qs.get("id") || idFromPath || "").trim();
 // --- ENDE ERSATZ ---
 
-// Modal-Referenzen (IDs müssen zu index.html passen)
+// absolute URL bauen (verhindert /work/… Relativpfade)
+const ABS = (p) => new URL(p, location.origin).href;
+
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
 const dlgTtl   = $("#dlg-title");
@@ -36,7 +36,7 @@ function isSameOrigin(url) {
 }
 
 async function fetchJSON(path) {
-  const res = await fetch(path, { cache: "no-store" });
+  const res = await fetch(ABS(path), { cache: "no-store" });
   if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
   return res.json();
 }
@@ -46,7 +46,6 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“-Button ein-/ausblenden
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -54,7 +53,6 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // iFrame-Lade-Guard: falls Inhalt (z. B. fremde Seite/404) nicht lädt -> Fallback
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -77,22 +75,20 @@ function closeModal() {
 
 /* ================== Daten-Merge ================== */
 
-/**
- * exhibitions.json:
- *  - finde Ausstellung, die das Werk enthält (bevorzugt current:true)
- */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
+  const needle = (wId || "").toLowerCase();
+
   const inCurrent = exhibitions.find(ex =>
     ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+    ex.works.some(id => (id || "").toLowerCase() === needle)
   );
   if (inCurrent) return inCurrent;
 
   const any = exhibitions.find(ex =>
     Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+    ex.works.some(id => (id || "").toLowerCase() === needle)
   );
   return any || null;
 }
@@ -115,23 +111,22 @@ function buildHeaderText(work, exhibition) {
 /* ================== Rendering ================== */
 
 function wireButtons(work) {
-  // Audio – Browser-Policy entscheidet über Autoplay
+  // Audio
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${work.audio}" type="audio/mpeg">
+        <source src="${ABS(work.audio)}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // --------- PDF (robust, iOS-freundlich) ----------
+  // PDF – absoluter Pfad in den Viewer
   $("#btn-pdf").onclick = () => {
-    // PDF.js-Viewer mit sinnvollen Defaults
+    const pdfAbs = ABS(work.pdf);
     const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}` +
-      `#page=1&zoom=page-width&pagemode=none&view=FitH`;
+      `${PDF_VIEWER}?file=${encodeURIComponent(pdfAbs)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
 
     const html = `
       <iframe
@@ -142,10 +137,10 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, work.pdf);
+    openModal("PDF", html, pdfAbs);
   };
 
-  // Meine Arbeitsweise (YouTube) – startet nach Klick
+  // Meine Arbeitsweise (YouTube)
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `<iframe class="video-frame"
@@ -156,7 +151,7 @@ function wireButtons(work) {
     openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
-  // Info Künstler – gleiche Origin im Modal, sonst neuer Tab
+  // Info Künstler
   $("#btn-artist").onclick = () => {
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
@@ -182,14 +177,13 @@ function renderPage(work, exhibition) {
 /* ================== Init ================== */
 
 (async function init() {
-  // Modal schließen per Button oder Klick auf den dunklen Hintergrund
   btnClose.onclick = closeModal;
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
   try {
     const [works, exhibitions] = await Promise.all([
-      fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null), // exhibitions.json optional
+      fetchJSON("/works.json"),
+      fetchJSON("/exhibitions.json").catch(() => null),
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
