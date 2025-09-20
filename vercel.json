@@ -1,37 +1,24 @@
 {
-  "headers": [
-    {
-      "source": "/pdf/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/audio/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
-  ]
-}
-{
   "cleanUrls": true,
   "rewrites": [
     { "source": "/work/:id", "destination": "/" }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/pdf/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, immutable" }
+      ]
+    },
+    {
+      "source": "/audio/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/(index.html|works.json|exhibitions.json|main.js)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store" }
       ]
