@@ -44,7 +44,7 @@ h1{
   letter-spacing:.2px;
   margin:8px 0 6px;
   word-break:normal;
-  overflow-wrap:anywhere;     /* lange Namen brechen sauber */
+  overflow-wrap:anywhere;   /* lange Namen brechen sauber */
   hyphens:auto;
 }
 .sub{
@@ -101,15 +101,15 @@ h2{
   align-items:center; justify-content:center;
   background:rgba(0,0,0,.65);
   z-index:1000;
-  padding:10px;              /* Rand auf iOS */
-  touch-action:none;         /* verhindert Scrollen der Seite darunter */
+  padding:10px;
+  touch-action:none;         /* verhindert Scrollen darunter */
 }
 #modal.open{display:flex}
 
 .dialog{
   background:#fff;
   width:min(900px, 96vw);
-  height: min(86svh, 860px);   /* svh = iOS sicher */
+  height: min(86svh, 860px); /* svh = iOS-sicher */
   border-radius:12px;
   display:flex; flex-direction:column;
   overflow:hidden;
@@ -146,67 +146,66 @@ h2{
   height:auto;
 }
 
-/* ==== Mobile-Feinschliff (≤ 430px) ==== */
+/* ==== Mobile-Feinschliff (≤ 430px) – mehr Luft & ruhiger Rhythmus ==== */
 @media (max-width: 430px) {
   .wrap{
-    padding: 14px 16px 20px calc(16px + env(safe-area-inset-left));
+    padding: 18px 18px 24px calc(18px + env(safe-area-inset-left));
   }
 
-  /* Logo etwas kleiner, mehr Luft */
   .top-logo{
-    width: clamp(135px, 44vw, 210px);
-    margin: 6px auto 8px;
+    width: clamp(140px, 44vw, 210px);
+    margin: 8px auto 14px;
   }
 
-  /* H1: balancierter Umbruch + schmalere Spalte */
+  /* Haupttitel ruhiger + mehr Abstand nach unten */
   h1{
-    font-size: clamp(1.02rem, 4.6vw, 1.32rem);
-    line-height: 1.18;
-    letter-spacing: -0.005em;
-    margin: 4px auto 6px;
-    max-width: 22ch;            /* hübsche 2–3 Zeilen */
-    text-wrap: balance;         /* iOS 17+ */
-    word-break: keep-all;
-    hyphens: auto;
+    font-size: clamp(1.06rem, 4.6vw, 1.36rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 6px 0 12px;
   }
 
-  /* Datum dezenter & balanciert */
+  /* Datum dezenter + mehr Luft */
   .sub{
-    font-size: clamp(0.90rem, 3.5vw, 1.00rem);
+    font-size: clamp(0.92rem, 3.5vw, 1.02rem);
     letter-spacing: 0.02em;
-    color: #575757;
-    margin: 4px auto 12px;
-    max-width: 28ch;
-    text-wrap: balance;
+    color:#555;
+    margin: 6px 0 16px;
   }
 
-  /* Werktitel kompakter & harmonisch */
+  /* Werktitel mit zusätzlichem Abstand */
   h2{
-    font-size: clamp(0.95rem, 3.6vw, 1.08rem);
-    line-height: 1.24;
-    margin: 8px auto 12px;
-    max-width: 30ch;
-    text-wrap: balance;
+    font-size: clamp(0.98rem, 3.6vw, 1.12rem);
+    line-height: 1.3;
+    margin: 14px 0 18px;
   }
 
-  .actions{ gap: 8px; margin: 10px 0; }
-  .btn{ padding: 9px 13px; font-size: 0.95rem; border-radius: 12px; }
+  /* Buttons: mehr Abstand nach oben */
+  .actions{
+    gap: 10px;
+    margin: 16px 0 4px;
+  }
+  .btn{
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
 
   .hint{
-    font-size: clamp(0.88rem, 3.4vw, 0.98rem);
-    line-height: 1.25;
-    margin: 12px 0;
+    font-size: clamp(0.9rem, 3.4vw, 0.98rem);
+    line-height: 1.28;
+    margin: 16px 0;
   }
 }
 
 /* Extra-enge Geräte (≤360px) */
 @media (max-width: 360px){
-  .top-logo{ width: clamp(128px, 50vw, 188px); }
-  h1{ font-size: 1.10rem; line-height: 1.16; }
-  .btn{ font-size: 0.90rem; padding: 8px 12px; }
+  .top-logo{ width: clamp(130px, 50vw, 190px); }
+  h1{ font-size: 1.12rem; line-height: 1.15; }
+  .btn{ font-size: 0.9rem; padding: 8px 12px; }
 }
 
-/* Optional: weniger Bewegung für Nutzer mit Reduzierung */
+/* Weniger Bewegung für Nutzer mit Reduzierung */
 @media (prefers-reduced-motion: reduce){
   .btn{ transition:none }
   .btn:active{ transform:none }
