@@ -3,10 +3,10 @@
 // Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer (bleibt wie gehabt)
+// PDF.js Viewer
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
+// YouTube-Video für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -31,9 +31,16 @@ function isSameOrigin(url) {
   catch { return false; }
 }
 
-async function fetchJSON(path) {
-  const res = await fetch(path, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
+function toAbs(url) {
+  if (!url) return url;
+  if (/^https?:\/\//i.test(url)) return url;      // schon absolut
+  if (url.startsWith("/")) return url;            // schon root-relativ
+  return "/" + url.replace(/^\.?\//, "");         // z.B. "pdf/x.pdf" -> "/pdf/x.pdf"
+}
+
+async function fetchJSON(pathFromRoot) {
+  const res = await fetch(pathFromRoot, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${pathFromRoot}`);
   return res.json();
 }
 
@@ -49,7 +56,6 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -71,7 +77,6 @@ function closeModal() {
 
 /* ================== Daten-Merge ================== */
 
-/** Ausstellung finden, die das Werk enthält (current bevorzugt) */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
@@ -88,7 +93,7 @@ function findExhibitionForWork(exhibitions, wId) {
   return any || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust) */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -116,11 +121,14 @@ function buildHeaderText(work, exhibition) {
 /* ================== Rendering ================== */
 
 function wireButtons(work) {
+  const audioSrc = toAbs(work.audio);
+  const pdfSrc   = toAbs(work.pdf);
+
   // Audio
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${work.audio}" type="audio/mpeg">
+        <source src="${audioSrc}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
@@ -130,8 +138,7 @@ function wireButtons(work) {
   // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
     const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}` +
-      `#page=1&zoom=page-width&pagemode=none&view=FitH`;
+      `${PDF_VIEWER}?file=${encodeURIComponent(pdfSrc)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -141,7 +148,7 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, work.pdf);
+    openModal("PDF", html, pdfSrc);
   };
 
   // Meine Arbeitsweise (YouTube)
@@ -183,25 +190,4 @@ function renderPage(work, exhibition) {
 (async function init() {
   // Modal schließen
   btnClose.onclick = closeModal;
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-
-  try {
-    const [works, exhibitions] = await Promise.all([
-      fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null),
-    ]);
-
-    if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
-
-    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
-    if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
-
-    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
-    renderPage(work, exhibition);
-  } catch (err) {
-    console.error(err);
-    $("#title").textContent = "Fehler beim Laden der Daten.";
-    $("#sub").textContent   = "";
-    $("#h2").textContent    = "";
-  }
-})();
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal();
