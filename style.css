@@ -1,7 +1,7 @@
 :root {
-  --fg: #111; 
-  --muted: #666; 
-  --rule: #e9e9e9; 
+  --fg: #111;
+  --muted: #666;
+  --rule: #e9e9e9;
   --accent: #c5ad86;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,149 +17,121 @@ body {
 .wrap { width: 100%; max-width: 720px; padding: 20px; text-align: center; }
 
 /* Logo & Typo */
-.top-logo { 
-  width: 280px;           /* feste Zielbreite */
-  max-width: 60vw;        /* aber auf kleinen Screens schrumpfen */
-  height: auto; 
-  margin: 8px auto 12px; 
-  display: block;
-}
-
-h1 { 
-  font-size: clamp(1.6rem, 3.8vw, 2.4rem); 
-  line-height: 1.2; 
-  margin: 6px 0 4px; 
-}
-.sub { 
-  color: var(--muted); 
-  margin: 6px 0 18px; 
-  font-size: clamp(1rem, 2.8vw, 1.2rem);
-}
-h2 { 
-  font-size: clamp(1rem, 2.8vw, 1.25rem); 
-  font-style: italic; 
-  margin-bottom: 18px; 
-}
-
-/* Buttons */
-.actions { 
-  display: flex; 
-  gap: 10px; 
-  flex-wrap: wrap; 
-  justify-content: center; 
-  margin-bottom: 8px;
-}
-.btn, .m-btn {
-  border: 2px solid var(--fg); 
-  background: #fff; 
-  padding: 10px 16px;
-  border-radius: 12px; 
-  cursor: pointer; 
-  font-size: 16px;
-}
-.btn:hover, .m-btn:hover { background: #f7f5f1; border-color: var(--accent); }
-.footer { text-align: center; font-size: 0.9rem; color: var(--muted); padding: 10px; }
-
-/* Hinweis */
-.hint { 
-  color: #b10000; 
-  font-weight: 700; 
-  margin: 16px 0;
-}
-
-/* ===== Modal ===== */
-.modal { 
-  position: fixed; inset: 0; 
-  background: rgba(0,0,0,0.6);
-  display: none; 
-  align-items: center; 
-  justify-content: center; 
-  z-index: 9999; 
-  padding: 10px;           /* damit auf iOS nichts anstößt */
-}
-.modal.open { display: flex; }
-
-.dialog { 
-  background: #fff; 
-  width: 100%; 
-  max-width: 900px; 
-  height: 92vh;                     /* genug Platz für Inhalt */
-  border-radius: 12px;
-  display: flex; 
-  flex-direction: column; 
-  overflow: hidden; 
-}
-
-.dialog-hd { 
-  padding: 8px 12px; 
-  border-bottom: 1px solid var(--rule); 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-}
-
-.dialog-ttl { font-weight: 700; }
-
-.dialog-body { 
-  flex: 1; 
-  min-height: 0; 
-  overflow: auto; 
-  -webkit-overflow-scrolling: touch; 
-  background: #f7f7f7;
-}
-
-/* eingebettete Inhalte im Modal */
-.dialog-body iframe, 
-.dialog-body embed, 
-.dialog-body object { 
-  width: 100%; 
-  height: 100%; 
-  border: 0; 
-  display: block; 
-}
-
-/* Spezielle Frames */
-.pdfjs-frame { height: 100%; }
-.video-frame { 
-  width: 100%;
-  aspect-ratio: 16 / 9;    /* saubere Proportion */
-  height: auto;
-}
-/* Logo stabil skalieren – nie zu groß, nie zu klein */
 .top-logo {
+  /* einheitlich, keine zweite widersprüchliche Definition */
   width: clamp(160px, 62vw, 320px);
   height: auto;
   display: block;
   margin: 12px auto 8px;
 }
 
+h1 {
+  font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+  line-height: 1.2;
+  margin: 6px 0 4px;
+}
+.sub {
+  color: var(--muted);
+  margin: 6px 0 18px;
+  font-size: clamp(1rem, 2.8vw, 1.2rem);
+}
+h2 {
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
+  font-style: italic;
+  margin-bottom: 18px;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.btn, .m-btn {
+  border: 2px solid var(--fg);
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.btn:hover, .m-btn:hover { background: #f7f5f1; border-color: var(--accent); }
+
+.footer { text-align: center; font-size: 0.9rem; color: var(--muted); padding: 10px; }
+
+/* Hinweis */
+.hint {
+  color: #b10000;
+  font-weight: 700;
+  margin: 16px 0;
+}
+
+/* ===== Modal ===== */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 10px; /* damit auf iOS nichts anstößt */
+}
+.modal.open { display: flex; }
+
+.dialog {
+  background: #fff;
+  width: 100%;
+  max-width: 900px;
+  height: 92vh;           /* genug Platz für Inhalt */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dialog-hd {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky; top: 0; background: #fff; z-index: 1; /* Toolbar niemals überdecken */
+}
+.dialog-ttl { font-weight: 700; }
+
+.dialog-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f7f7f7;
+  padding: 0;
+}
+
+/* Eingebettete Inhalte im Modal – EINMAL und konsistent */
+.dialog-body iframe,
+.dialog-body embed,
+.dialog-body object {
+  width: 100%;
+  height: 78vh;                  /* stabiler Wert für iOS/Android */
+  border: 0;
+  display: block;
+}
+
+/* Spezielle Frames */
+.pdfjs-frame { height: 78vh; }   /* explizit, identisch zur Regel oben */
+
+.video-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;          /* saubere Proportion */
+  height: auto;
+  max-height: 70vh;              /* verhindert „zu hoch“ im Modal */
+}
+
 /* Kompaktere Typo-Abstände mobil */
 @media (max-width: 420px) {
   h1 { font-size: 1.9rem; line-height: 1.15; }
   .sub { margin-top: 6px; }
-}
-
-/* Modals: iOS-Safari zuverlässig füllen */
-.dialog-body { padding: 0; }
-.dialog-body iframe,
-.dialog-body embed {
-  width: 100%;
-  height: 82vh;        /* etwas höher für iOS, damit die PDF-Toolbar nicht drückt */
-  border: 0;
-  display: block;
-}
-
-/* YouTube-Frame leicht kleiner, damit keine seitlichen Balken */
-.video-frame { height: 58vh; }
-
-/* PDF-Toolbar nicht vom Close-Button verdecken */
-.dialog-hd { position: sticky; top: 0; background:#fff; z-index: 1; }
-/* Modal-Inhalte stabil in der Höhe */
-.dialog-body iframe,
-.dialog-body embed {
-  width: 100%;
-  height: 78vh;
-  border: 0;
-  display: block;
-  -webkit-overflow-scrolling: touch;
 }
