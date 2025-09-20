@@ -1,6 +1,6 @@
 /* ================== Einstellungen ================== */
 
-// Externe/Interne Künstler-Seite.
+// Externe/Interne Künstler-Seite
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
 // PDF.js Viewer
@@ -13,11 +13,17 @@ const VIDEO_ID = "_Yg0ta6Lk9w";
 
 const $ = (sel) => document.querySelector(sel);
 
-// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
-const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
-const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
-const qs         = new URLSearchParams(location.search);
-const workId     = (qs.get("id") || idFromPath || "").trim();
+// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) ermitteln
+function getWorkId() {
+  const qs = new URLSearchParams(location.search);
+  const fromQuery = (qs.get("id") || "").trim();
+  if (fromQuery) return fromQuery;
+
+  // /work/foo oder /work/foo/
+  const m = location.pathname.match(/^\/work\/([^\/?#]+)\/?$/i);
+  return m ? decodeURIComponent(m[1]) : "";
+}
+const workId = getWorkId();
 
 // Modal-Referenzen
 const modal    = $("#modal");
@@ -31,16 +37,9 @@ function isSameOrigin(url) {
   catch { return false; }
 }
 
-function toAbs(url) {
-  if (!url) return url;
-  if (/^https?:\/\//i.test(url)) return url;      // schon absolut
-  if (url.startsWith("/")) return url;            // schon root-relativ
-  return "/" + url.replace(/^\.?\//, "");         // z.B. "pdf/x.pdf" -> "/pdf/x.pdf"
-}
-
-async function fetchJSON(pathFromRoot) {
-  const res = await fetch(pathFromRoot, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${pathFromRoot}`);
+async function fetchJSON(path) {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
   return res.json();
 }
 
@@ -49,6 +48,7 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
+  // „In neuem Tab öffnen“ nur zeigen, wenn wir eine Fallback-URL haben
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -56,6 +56,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
+  // Lade-Guard für iFrames (falls fremde Seite blockt)
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -77,23 +78,24 @@ function closeModal() {
 
 /* ================== Daten-Merge ================== */
 
+// Ausstellung finden, die das Werk enthält (current bevorzugt)
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
+  const idEq = (id) => (id || "").toLowerCase() === (wId || "").toLowerCase();
+
   const inCurrent = exhibitions.find(ex =>
-    ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+    ex.current && Array.isArray(ex.works) && ex.works.some(idEq)
   );
   if (inCurrent) return inCurrent;
 
   const any = exhibitions.find(ex =>
-    Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+    Array.isArray(ex.works) && ex.works.some(idEq)
   );
   return any || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust) */
+// ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -108,7 +110,6 @@ function buildHeaderText(work, exhibition) {
   if (exhibition?.start && exhibition?.end) {
     datePart = `${formatIsoDate(exhibition.start)} — ${formatIsoDate(exhibition.end)}`;
   }
-
   const dateText = `${title} · ${datePart}`;
 
   let h2 = "Werk + Serie";
@@ -121,14 +122,11 @@ function buildHeaderText(work, exhibition) {
 /* ================== Rendering ================== */
 
 function wireButtons(work) {
-  const audioSrc = toAbs(work.audio);
-  const pdfSrc   = toAbs(work.pdf);
-
   // Audio
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${audioSrc}" type="audio/mpeg">
+        <source src="${work.audio}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
@@ -138,7 +136,7 @@ function wireButtons(work) {
   // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
     const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(pdfSrc)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+      `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -148,7 +146,7 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, pdfSrc);
+    openModal("PDF", html, work.pdf);
   };
 
   // Meine Arbeitsweise (YouTube)
@@ -190,4 +188,27 @@ function renderPage(work, exhibition) {
 (async function init() {
   // Modal schließen
   btnClose.onclick = closeModal;
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal();
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  try {
+    if (!workId) throw new Error("Keine Werk-ID in URL gefunden.");
+
+    const [works, exhibitions] = await Promise.all([
+      fetchJSON("works.json"),
+      fetchJSON("exhibitions.json").catch(() => null),
+    ]);
+
+    if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
+
+    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
+    if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
+
+    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
+    renderPage(work, exhibition);
+  } catch (err) {
+    console.error(err);
+    $("#title").textContent = "Fehler beim Laden der Daten.";
+    $("#sub").textContent   = "";
+    $("#h2").textContent    = "";
+  }
+})();
