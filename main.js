@@ -1,25 +1,26 @@
 /* ================== Einstellungen ================== */
 
-// Externe/Interne Künstler-Seite.
+// Künstler-Seite (intern = im Modal, extern = neuer Tab)
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer (stabil, mit Fallback)
+// Stabile PDF-Anzeige mit Fallback
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“
+// YouTube-Video „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
 
 const $ = (sel) => document.querySelector(sel);
 
-// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
+// ID aus Query (?id=foo) ODER Pfad (/work/foo) ermitteln
 const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
-const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
+const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : "";
 const qs         = new URLSearchParams(location.search);
-const workId     = (qs.get("id") || idFromPath || "").trim();
+const workIdRaw  = (qs.get("id") || idFromPath || "").trim();
+const workId     = workIdRaw.toLowerCase();
 
-// Modal-Referenzen
+// Modale Elemente
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
 const dlgTtl   = $("#dlg-title");
@@ -43,13 +44,14 @@ async function fetchJSON(path) {
   return res.json();
 }
 
-/* ===== Modal helpers ===== */
+/* ================== Modal helpers ================== */
+
 function openModal(title, innerHtml, fallbackUrl) {
   dlgTtl.textContent = title || "";
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“ anzeigen, wenn sinnvoll
+  // „In neuem Tab öffnen“ nur zeigen, wenn sinnvoll
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -57,12 +59,13 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard: wenn iframe nicht lädt, Fallback öffnen
+  // Lade-Guard: wenn iframe nicht lädt (CSP/X-Frame-Options), Fallback
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
     const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
     iframe.addEventListener("load", onLoad, { once: true });
+
     setTimeout(() => {
       if (!loaded) {
         modal.classList.remove("open");
@@ -71,49 +74,49 @@ function openModal(title, innerHtml, fallbackUrl) {
     }, 1500);
   }
 }
+
 function closeModal() {
   dlgBody.innerHTML = "";
   modal.classList.remove("open");
 }
 
-/* ================== Daten-Merge & Format ================== */
+/* ================== Daten & Format ================== */
 
-/** Ausstellung finden, die das Werk enthält (current bevorzugt) */
+// Ausstellung finden, die das Werk enthält (current bevorzugt)
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
-
-  const inCurrent = exhibitions.find(ex =>
-    ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
-  );
-  if (inCurrent) return inCurrent;
-
-  const any = exhibitions.find(ex =>
+  const has = (ex) =>
     Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
-  );
-  return any || null;
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase());
+
+  return exhibitions.find(ex => ex.current && has(ex))
+      || exhibitions.find(has)
+      || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“; alles andere unverändert */
+// ISO "YYYY-MM-DD" -> "YYYY.MM.DD"
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return m ? `${m[1]}.${m[2]}.${m[3]}` : iso;
 }
 
+// Header-Texte bauen (nur vorhandene Teile anzeigen)
 function buildHeaderText(work, exhibition) {
   const venue = exhibition?.venue || "Ausstellungsort";
-  const title = exhibition?.title || "Titel";
 
-  let datePart = "Datum";
+  const parts = [];
+  if (exhibition?.title) parts.push(exhibition.title);
+
   if (exhibition?.start && exhibition?.end) {
-    const s = formatIsoDate(exhibition.start);
-    const e = formatIsoDate(exhibition.end);
-    datePart = `${s} — ${e}`;
+    const NBSP_NARROW = "\u202F";   // schmales geschütztes Leerzeichen
+    const ENDASH = "—";
+    const start = formatIsoDate(exhibition.start);
+    const end   = formatIsoDate(exhibition.end);
+    parts.push(`${start}${NBSP_NARROW}${ENDASH}${NBSP_NARROW}${end}`);
   }
 
-  const dateText = `${title} · ${datePart}`;
+  const dateText = parts.join(" · ");
 
   let h2 = "Werk + Serie";
   if (work?.werk && work?.serie) {
@@ -135,13 +138,11 @@ function wireButtons(work) {
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF (PDF.js)
+  // PDF (PDF.js) mit Fallback
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
-    // Voll-qualifizierte URL für Viewer (CORS-sicher)
     const fileParam = encodeURIComponent(location.origin + pdfUrl);
     const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
-
     const html = `
       <iframe class="pdfjs-frame"
               src="${viewerUrl}"
@@ -150,7 +151,7 @@ function wireButtons(work) {
     openModal("PDF", html, pdfUrl);
   };
 
-  // Meine Arbeitsweise (YouTube)
+  // Meine Arbeitsweise (YouTube, klickstart)
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `
@@ -179,7 +180,7 @@ function wireButtons(work) {
 function renderPage(work, exhibition) {
   const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
   $("#title").textContent = venue;
-  $("#sub").textContent   = dateText;
+  $("#sub").textContent   = dateText;  // zeigt nur, was vorhanden ist
   $("#h2").textContent    = h2;
   wireButtons(work);
 }
@@ -196,13 +197,14 @@ function renderPage(work, exhibition) {
       fetchJSON("/works.json"),
       fetchJSON("/exhibitions.json").catch(() => null),
     ]);
-
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
 
-    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
-    if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
+    // Werk suchen (fallback: erstes Werk, falls keine ID übergeben)
+    let work = works.find(w => (w.id || "").toLowerCase() === workId)
+            || works[0];
+    if (!work) throw new Error("Kein Werk gefunden.");
 
-    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
+    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, work.id) : null;
     renderPage(work, exhibition);
   } catch (err) {
     console.error(err);
