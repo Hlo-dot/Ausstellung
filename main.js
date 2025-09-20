@@ -1,26 +1,25 @@
 /* ================== Einstellungen ================== */
 
-// Künstler-Seite (intern = im Modal, extern = neuer Tab)
+// Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// Stabile PDF-Anzeige mit Fallback
+// PDF.js Viewer (stabil, mit Fallback)
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video „Meine Arbeitsweise“
+// YouTube-Video für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
 
 const $ = (sel) => document.querySelector(sel);
 
-// ID aus Query (?id=foo) ODER Pfad (/work/foo) ermitteln
+// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
 const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
-const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : "";
+const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
 const qs         = new URLSearchParams(location.search);
-const workIdRaw  = (qs.get("id") || idFromPath || "").trim();
-const workId     = workIdRaw.toLowerCase();
+const workId     = (qs.get("id") || idFromPath || "").trim();
 
-// Modale Elemente
+// Modal-Referenzen
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
 const dlgTtl   = $("#dlg-title");
@@ -44,14 +43,13 @@ async function fetchJSON(path) {
   return res.json();
 }
 
-/* ================== Modal helpers ================== */
-
+/* ===== Modal helpers ===== */
 function openModal(title, innerHtml, fallbackUrl) {
   dlgTtl.textContent = title || "";
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“ nur zeigen, wenn sinnvoll
+  // „In neuem Tab öffnen“ anzeigen, wenn sinnvoll
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -59,13 +57,12 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard: wenn iframe nicht lädt (CSP/X-Frame-Options), Fallback
+  // Lade-Guard: wenn iframe nicht lädt, Fallback öffnen
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
     const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
     iframe.addEventListener("load", onLoad, { once: true });
-
     setTimeout(() => {
       if (!loaded) {
         modal.classList.remove("open");
@@ -74,49 +71,55 @@ function openModal(title, innerHtml, fallbackUrl) {
     }, 1500);
   }
 }
-
 function closeModal() {
   dlgBody.innerHTML = "";
   modal.classList.remove("open");
 }
 
-/* ================== Daten & Format ================== */
+/* ================== Daten-Merge & Format ================== */
 
-// Ausstellung finden, die das Werk enthält (current bevorzugt)
+/** Ausstellung finden, die das Werk enthält (current bevorzugt) */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
-  const has = (ex) =>
-    Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase());
 
-  return exhibitions.find(ex => ex.current && has(ex))
-      || exhibitions.find(has)
-      || null;
+  const inCurrent = exhibitions.find(ex =>
+    ex.current && Array.isArray(ex.works) &&
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+  );
+  if (inCurrent) return inCurrent;
+
+  const any = exhibitions.find(ex =>
+    Array.isArray(ex.works) &&
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
+  );
+  return any || null;
 }
 
-// ISO "YYYY-MM-DD" -> "YYYY.MM.DD"
+/** ISO "YYYY-MM-DD" -> **deutsch** "DD.MM.YYYY" */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  return m ? `${m[1]}.${m[2]}.${m[3]}` : iso;
+  if (!m) return iso;
+  const [_, y, mo, d] = m;
+  return `${d}.${mo}.${y}`;
 }
 
-// Header-Texte bauen (nur vorhandene Teile anzeigen)
+/** Header-Text bauen (mit schmalen geschützten Leerzeichen) */
 function buildHeaderText(work, exhibition) {
   const venue = exhibition?.venue || "Ausstellungsort";
+  const title = exhibition?.title || "Titel";
 
-  const parts = [];
-  if (exhibition?.title) parts.push(exhibition.title);
+  const NBSP_NARROW = "\u202F";  // schmales geschütztes Leerzeichen
+  const ENDASH = "—";
 
+  let datePart = "Datum";
   if (exhibition?.start && exhibition?.end) {
-    const NBSP_NARROW = "\u202F";   // schmales geschütztes Leerzeichen
-    const ENDASH = "—";
     const start = formatIsoDate(exhibition.start);
     const end   = formatIsoDate(exhibition.end);
-    parts.push(`${start}${NBSP_NARROW}${ENDASH}${NBSP_NARROW}${end}`);
+    datePart = `${start}${NBSP_NARROW}${ENDASH}${NBSP_NARROW}${end}`;
   }
 
-  const dateText = parts.join(" · ");
+  const dateText = `${title} · ${datePart}`;
 
   let h2 = "Werk + Serie";
   if (work?.werk && work?.serie) {
@@ -138,11 +141,13 @@ function wireButtons(work) {
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF (PDF.js) mit Fallback
+  // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
+    // Voll-qualifizierte URL für Viewer (CORS-sicher)
     const fileParam = encodeURIComponent(location.origin + pdfUrl);
     const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+
     const html = `
       <iframe class="pdfjs-frame"
               src="${viewerUrl}"
@@ -151,7 +156,7 @@ function wireButtons(work) {
     openModal("PDF", html, pdfUrl);
   };
 
-  // Meine Arbeitsweise (YouTube, klickstart)
+  // Meine Arbeitsweise (YouTube)
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `
@@ -180,7 +185,7 @@ function wireButtons(work) {
 function renderPage(work, exhibition) {
   const { venue, dateText, h2 } = buildHeaderText(work, exhibition);
   $("#title").textContent = venue;
-  $("#sub").textContent   = dateText;  // zeigt nur, was vorhanden ist
+  $("#sub").textContent   = dateText;
   $("#h2").textContent    = h2;
   wireButtons(work);
 }
@@ -197,14 +202,13 @@ function renderPage(work, exhibition) {
       fetchJSON("/works.json"),
       fetchJSON("/exhibitions.json").catch(() => null),
     ]);
+
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
 
-    // Werk suchen (fallback: erstes Werk, falls keine ID übergeben)
-    let work = works.find(w => (w.id || "").toLowerCase() === workId)
-            || works[0];
-    if (!work) throw new Error("Kein Werk gefunden.");
+    const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
+    if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
 
-    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, work.id) : null;
+    const exhibition = exhibitions ? findExhibitionForWork(exhibitions, workId) : null;
     renderPage(work, exhibition);
   } catch (err) {
     console.error(err);
