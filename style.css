@@ -1,158 +1,54 @@
-:root{
-  --fg:#111;
-  --muted:#666;
-  --rule:#e9e9e9;
-  --accent:#c5ad86;
-}
+/* ====== Mobile Tuning: Logo + Typo ====== */
 
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  color:var(--fg);
-  background:#fff;
-  line-height:1.35;
-}
-img,svg,video{max-width:100%;height:auto;display:block}
-
-/* ===== Seite ===== */
-.page{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-.wrap{
-  width:100%;
-  max-width:720px;
-  padding:20px;
-  text-align:center;
-}
-
-/* ===== Logo ===== */
+/* Logo spürbar kleiner auf Phones */
 .top-logo{
-  /* strenger clamp, damit es auf iPhone nicht ausufert */
-  width:clamp(160px,46vw,320px);
-  height:auto;
-  margin:10px auto 12px;
+  width: clamp(140px, 42vw, 280px);
+  height: auto;
+  display:block;
+  margin: 10px auto 6px;
 }
 
-/* ===== Typo ===== */
+/* H1 und Subline insgesamt kompakter */
 h1{
-  /* kleiner als zuvor + balancierte Zeilenumbrüche */
-  font-size:clamp(1.6rem,4.2vw,2.3rem);
-  line-height:1.18;
-  margin:6px 0 6px;
-  text-wrap:balance;
+  font-size: clamp(1.35rem, 5.2vw, 2.1rem);
+  line-height: 1.12;
+  margin: 6px 0 4px;
+  word-break: keep-all;
+  hyphens: auto;
 }
 .sub{
-  color:var(--muted);
-  margin:6px 0 14px;
-  font-size:clamp(1rem,2.6vw,1.15rem);
-  text-wrap:balance;
+  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+  line-height: 1.25;
+  margin: 6px 0 14px;
 }
+
+/* Untertitel (H2) etwas kleiner und dichter */
 h2{
-  font-size:clamp(1rem,2.6vw,1.25rem);
-  font-style:italic;
-  margin:0 0 16px;
-  text-wrap:balance;
+  font-size: clamp(0.98rem, 3.2vw, 1.18rem);
+  line-height: 1.25;
+  margin: 10px 0 16px;
 }
 
-/* ===== Buttons ===== */
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-bottom:8px;
-}
-.btn,.m-btn{
-  border:2px solid var(--fg);
-  background:#fff;
-  padding:10px 16px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:16px;
-}
-.btn:hover,.m-btn:hover{background:#f7f5f1;border-color:var(--accent)}
-
-/* Hinweis + Footer */
-.hint{
-  color:#b10000;
-  font-weight:700;
-  margin:16px 0;
-  text-wrap:balance;
-}
-.footer{
-  text-align:center;
-  font-size:.9rem;
-  color:var(--muted);
-  padding:10px;
+/* Buttons: etwas kompakter */
+.btn, .m-btn{
+  padding: 9px 14px;
+  font-size: 15px;
+  border-radius: 12px;
 }
 
-/* ===== Modal ===== */
-.modal{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-  padding:10px; /* iOS safe padding */
-}
-.modal.open{display:flex}
-.dialog{
-  background:#fff;
-  width:100%;
-  max-width:900px;
-  height:92vh;            /* stabil, damit Toolbar Platz hat */
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.dialog-hd{
-  position:sticky;top:0;z-index:1;
-  padding:8px 12px;
-  border-bottom:1px solid var(--rule);
-  display:flex;justify-content:space-between;align-items:center;
-  background:#fff;
-}
-.dialog-ttl{font-weight:700}
-.dialog-body{
-  flex:1;min-height:0;overflow:auto;
-  -webkit-overflow-scrolling:touch;
-  background:#f7f7f7;
-  padding:0;
+/* Sehr schmale iPhones (<= 390px) – zusätzliche Reduktion */
+@media (max-width: 390px){
+  .top-logo{ width: clamp(128px, 50vw, 240px); }
+  h1{ font-size: 1.6rem; line-height: 1.1; }
+  .sub{ font-size: 1rem; }
+  h2{ font-size: 0.98rem; }
+  .actions{ gap: 8px; }
 }
 
-/* eingebettete Inhalte */
-.dialog-body iframe,
-.dialog-body embed,
-.dialog-body object{
-  width:100%;
-  height:78vh;           /* bewährt für iOS */
-  border:0;display:block;
-  -webkit-overflow-scrolling:touch;
-}
-
-/* YouTube etwas niedriger, damit keine Seitenbalken */
-.video-frame{height:min(58vh,56.25vw)}
-
-/* ===== Mobile Feinschliff ===== */
-@media (max-width:430px){
-  .wrap{padding:16px}
-  .top-logo{width:clamp(150px,52vw,240px);margin:8px auto 10px}
-  h1{font-size:clamp(1.45rem,6.0vw,2.0rem);line-height:1.14}
-  .sub{font-size:clamp(.97rem,3.8vw,1.05rem);margin:6px 0 12px}
-  h2{font-size:clamp(.95rem,3.6vw,1.1rem);margin-bottom:14px}
-  .btn,.m-btn{padding:9px 14px;font-size:15px}
-  .hint{margin:14px 0}
-}
-
-/* ganz kleine Geräte */
-@media (max-width:360px){
-  .top-logo{width:clamp(140px,58vw,220px)}
-  h1{font-size:clamp(1.35rem,6.6vw,1.85rem)}
-  .btn,.m-btn{padding:8px 12px;font-size:14.5px}
+/* Mini-Phones (<= 340px) – harte Bremse, damit alles drauf passt */
+@media (max-width: 340px){
+  h1{ font-size: 1.45rem; }
+  .sub{ font-size: 0.95rem; }
+  h2{ font-size: 0.92rem; }
+  .btn, .m-btn{ padding: 8px 12px; font-size: 14px; }
 }
