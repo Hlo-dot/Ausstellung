@@ -3,27 +3,23 @@
 // Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer
+// PDF.js Viewer (bleibt wie gehabt)
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“
+// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
 
 const $ = (sel) => document.querySelector(sel);
 
-// --- ERSETZT die bisherige Ermittlung von workId ---
 // ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
 const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
 const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
 const qs         = new URLSearchParams(location.search);
 const workId     = (qs.get("id") || idFromPath || "").trim();
-// --- ENDE ERSATZ ---
 
-// absolute URL bauen (verhindert /work/… Relativpfade)
-const ABS = (p) => new URL(p, location.origin).href;
-
+// Modal-Referenzen
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
 const dlgTtl   = $("#dlg-title");
@@ -36,7 +32,7 @@ function isSameOrigin(url) {
 }
 
 async function fetchJSON(path) {
-  const res = await fetch(ABS(path), { cache: "no-store" });
+  const res = await fetch(path, { cache: "no-store" });
   if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
   return res.json();
 }
@@ -53,12 +49,12 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
+  // Lade-Guard
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
     const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
     iframe.addEventListener("load", onLoad, { once: true });
-
     setTimeout(() => {
       if (!loaded) {
         modal.classList.remove("open");
@@ -75,31 +71,40 @@ function closeModal() {
 
 /* ================== Daten-Merge ================== */
 
+/** Ausstellung finden, die das Werk enthält (current bevorzugt) */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
-  const needle = (wId || "").toLowerCase();
-
   const inCurrent = exhibitions.find(ex =>
     ex.current && Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === needle)
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
   );
   if (inCurrent) return inCurrent;
 
   const any = exhibitions.find(ex =>
     Array.isArray(ex.works) &&
-    ex.works.some(id => (id || "").toLowerCase() === needle)
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
   );
   return any || null;
 }
 
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
+function formatIsoDate(iso) {
+  if (typeof iso !== "string") return "";
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[1]}.${m[2]}.${m[3]}` : iso;
+}
+
 function buildHeaderText(work, exhibition) {
   const venue = exhibition?.venue || "Ausstellungsort";
-  const dateText = (exhibition?.title || "Titel") +
-                   " · " +
-                   (exhibition?.start && exhibition?.end
-                     ? `${exhibition.start.replaceAll("-", ".")} — ${exhibition.end.replaceAll("-", ".")}`
-                     : "Datum");
+  const title = exhibition?.title || "Titel";
+
+  let datePart = "Datum";
+  if (exhibition?.start && exhibition?.end) {
+    datePart = `${formatIsoDate(exhibition.start)} — ${formatIsoDate(exhibition.end)}`;
+  }
+
+  const dateText = `${title} · ${datePart}`;
 
   let h2 = "Werk + Serie";
   if (work?.werk && work?.serie) {
@@ -115,19 +120,18 @@ function wireButtons(work) {
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${ABS(work.audio)}" type="audio/mpeg">
+        <source src="${work.audio}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF – absoluter Pfad in den Viewer
+  // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
-    const pdfAbs = ABS(work.pdf);
     const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(pdfAbs)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
-
+      `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}` +
+      `#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -137,7 +141,7 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, pdfAbs);
+    openModal("PDF", html, work.pdf);
   };
 
   // Meine Arbeitsweise (YouTube)
@@ -177,16 +181,18 @@ function renderPage(work, exhibition) {
 /* ================== Init ================== */
 
 (async function init() {
+  // Modal schließen
   btnClose.onclick = closeModal;
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
   try {
     const [works, exhibitions] = await Promise.all([
-      fetchJSON("/works.json"),
-      fetchJSON("/exhibitions.json").catch(() => null),
+      fetchJSON("works.json"),
+      fetchJSON("exhibitions.json").catch(() => null),
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
+
     const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
     if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
 
