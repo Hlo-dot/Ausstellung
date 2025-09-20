@@ -1,54 +1,85 @@
-/* ====== Mobile Tuning: Logo + Typo ====== */
-
-/* Logo spürbar kleiner auf Phones */
-.top-logo{
-  width: clamp(140px, 42vw, 280px);
-  height: auto;
-  display:block;
-  margin: 10px auto 6px;
+/* ===== Modal – robust (immer über allem, iOS-freundlich) ===== */
+.modal {
+  position: fixed !important;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.6);
+  z-index: 999999;           /* sehr hoch */
+  padding: 10px;             /* iOS Safe-Area Puffer */
 }
+.modal.open { display: flex; }
 
-/* H1 und Subline insgesamt kompakter */
-h1{
-  font-size: clamp(1.35rem, 5.2vw, 2.1rem);
-  line-height: 1.12;
-  margin: 6px 0 4px;
-  word-break: keep-all;
-  hyphens: auto;
-}
-.sub{
-  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
-  line-height: 1.25;
-  margin: 6px 0 14px;
-}
+/* Scroll-Lock, wenn Modal offen */
+body.modal-open { overflow: hidden; }
 
-/* Untertitel (H2) etwas kleiner und dichter */
-h2{
-  font-size: clamp(0.98rem, 3.2vw, 1.18rem);
-  line-height: 1.25;
-  margin: 10px 0 16px;
-}
-
-/* Buttons: etwas kompakter */
-.btn, .m-btn{
-  padding: 9px 14px;
-  font-size: 15px;
+/* Dialog-Container */
+.dialog {
+  background: #fff;
+  width: 100%;
+  max-width: 900px;
+  height: 92vh;
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-/* Sehr schmale iPhones (<= 390px) – zusätzliche Reduktion */
-@media (max-width: 390px){
-  .top-logo{ width: clamp(128px, 50vw, 240px); }
-  h1{ font-size: 1.6rem; line-height: 1.1; }
-  .sub{ font-size: 1rem; }
-  h2{ font-size: 0.98rem; }
-  .actions{ gap: 8px; }
+/* Header bleibt sichtbar */
+.dialog-hd {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  border-bottom: 1px solid #e9e9e9;
+  padding: 8px 12px;
+  display: flex; justify-content: space-between; align-items: center;
 }
 
-/* Mini-Phones (<= 340px) – harte Bremse, damit alles drauf passt */
-@media (max-width: 340px){
-  h1{ font-size: 1.45rem; }
-  .sub{ font-size: 0.95rem; }
-  h2{ font-size: 0.92rem; }
-  .btn, .m-btn{ padding: 8px 12px; font-size: 14px; }
+/* Inhalt scrollt separat (iOS weich) */
+.dialog-body {
+  flex: 1; min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f7f7f7;
+  padding: 0;
 }
+
+/* Iframes im Modal füllen sauber */
+.dialog-body iframe,
+.dialog-body embed,
+.dialog-body object {
+  width: 100%;
+  height: 78vh;
+  border: 0;
+  display: block;
+}
+
+/* ===== Mobile Typo & Logo ===== */
+.top-logo {                /* kleiner + weicher clamp */
+  width: clamp(140px, 55vw, 260px);
+  height: auto;
+  display: block;
+  margin: 10px auto 8px;
+}
+
+h1 {                        /* Titel */
+  font-size: clamp(1.35rem, 4.8vw, 2.05rem);
+  line-height: 1.15;
+  margin: 6px 0 2px;
+}
+.sub {                      /* Unterzeile/Datum */
+  color: #666;
+  font-size: clamp(0.95rem, 3.6vw, 1.1rem);
+  margin: 4px 0 14px;
+}
+h2 {                        /* Werk + Serie */
+  font-size: clamp(1.0rem, 3.8vw, 1.25rem);
+  margin: 8px 0 14px;
+  font-style: italic;
+}
+
+/* Buttons kompakter auf schmalen Screens */
+.actions { gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn, .m-btn { padding: 10px 14px; border-radius: 12px; font-size: 16px; }
