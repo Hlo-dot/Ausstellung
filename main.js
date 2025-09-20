@@ -3,10 +3,10 @@
 // Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer
+// PDF.js Viewer (stabil, mit Fallback)
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
+// YouTube-Video für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -26,12 +26,7 @@ const dlgTtl   = $("#dlg-title");
 const btnOpen  = $("#dlg-open-new");
 const btnClose = $("#dlg-close");
 
-// Modal sicher ans Dokument-Ende hängen (verhindert Stacking-Kontext-Probleme)
-if (modal && modal.parentElement !== document.body) {
-  document.body.appendChild(modal);
-}
-
-// Hilfsfunktion: Pfade immer relativ zur Domainwurzel laden
+// Pfade sicher relativ zur Domainwurzel
 function asRoot(url){
   if (!url) return url;
   return url.startsWith("/") ? url : "/" + url;
@@ -48,15 +43,13 @@ async function fetchJSON(path) {
   return res.json();
 }
 
+/* ===== Modal helpers ===== */
 function openModal(title, innerHtml, fallbackUrl) {
   dlgTtl.textContent = title || "";
   dlgBody.innerHTML  = innerHtml;
-
-  // Scroll-Lock aktivieren, dann anzeigen
-  document.body.classList.add("modal-open");
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“-Button an/aus
+  // „In neuem Tab öffnen“ anzeigen, wenn sinnvoll
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -64,7 +57,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard: wenn der iFrame nicht lädt (z. B. geblockt), Fallback im neuen Tab
+  // Lade-Guard: wenn iframe nicht lädt, Fallback öffnen
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -72,25 +65,18 @@ function openModal(title, innerHtml, fallbackUrl) {
     iframe.addEventListener("load", onLoad, { once: true });
     setTimeout(() => {
       if (!loaded) {
-        closeModal();
+        modal.classList.remove("open");
         window.open(fallbackUrl, "_blank", "noopener");
       }
     }, 1500);
   }
 }
-
 function closeModal() {
   dlgBody.innerHTML = "";
   modal.classList.remove("open");
-  document.body.classList.remove("modal-open");
 }
 
-/* ESC schließt Modal */
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
-});
-
-/* ================== Daten-Merge ================== */
+/* ================== Daten-Merge & Format ================== */
 
 /** Ausstellung finden, die das Werk enthält (current bevorzugt) */
 function findExhibitionForWork(exhibitions, wId) {
@@ -109,10 +95,10 @@ function findExhibitionForWork(exhibitions, wId) {
   return any || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“; alles andere unverändert */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
-  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const m = iso.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return m ? `${m[1]}.${m[2]}.${m[3]}` : iso;
 }
 
@@ -122,7 +108,9 @@ function buildHeaderText(work, exhibition) {
 
   let datePart = "Datum";
   if (exhibition?.start && exhibition?.end) {
-    datePart = `${formatIsoDate(exhibition.start)} — ${formatIsoDate(exhibition.end)}`;
+    const s = formatIsoDate(exhibition.start);
+    const e = formatIsoDate(exhibition.end);
+    datePart = `${s} — ${e}`;
   }
 
   const dateText = `${title} · ${datePart}`;
@@ -143,35 +131,33 @@ function wireButtons(work) {
       <audio controls autoplay style="width:100%;height:52px;">
         <source src="${asRoot(work.audio)}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
-      </audio>
-    `;
+      </audio>`;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
   // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
-    const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(location.origin + pdfUrl)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+    // Voll-qualifizierte URL für Viewer (CORS-sicher)
+    const fileParam = encodeURIComponent(location.origin + pdfUrl);
+    const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+
     const html = `
-      <iframe
-        class="pdfjs-frame"
-        src="${viewerUrl}"
-        allow="fullscreen"
-        referrerpolicy="no-referrer"
-      ></iframe>
-    `;
+      <iframe class="pdfjs-frame"
+              src="${viewerUrl}"
+              allow="fullscreen"
+              referrerpolicy="no-referrer"></iframe>`;
     openModal("PDF", html, pdfUrl);
   };
 
   // Meine Arbeitsweise (YouTube)
   $("#btn-video").onclick = () => {
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
-    const html = `<iframe class="video-frame"
-                    src="${url}"
-                    style="width:100%;height:56.25vw;max-height:70vh;border:0;display:block;"
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowfullscreen></iframe>`;
+    const html = `
+      <iframe class="video-frame"
+              src="${url}"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen></iframe>`;
     openModal("Meine Arbeitsweise", html, `https://youtu.be/${VIDEO_ID}`);
   };
 
@@ -179,10 +165,10 @@ function wireButtons(work) {
   $("#btn-artist").onclick = () => {
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
-      const html = `<iframe class="video-frame"
-                      src="${url}"
-                      style="width:100%;height:78vh;border:0;display:block;"
-                      referrerpolicy="no-referrer"></iframe>`;
+      const html = `
+        <iframe class="pdfjs-frame"
+                src="${url}"
+                referrerpolicy="no-referrer"></iframe>`;
       openModal("Über den Künstler", html, url);
     } else {
       window.open(url, "_blank", "noopener");
@@ -201,14 +187,14 @@ function renderPage(work, exhibition) {
 /* ================== Init ================== */
 
 (async function init() {
-  // Modal schließen per Button / Klick auf Overlay
+  // Modal schließen
   btnClose.onclick = closeModal;
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
   try {
     const [works, exhibitions] = await Promise.all([
-      fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null),
+      fetchJSON("/works.json"),
+      fetchJSON("/exhibitions.json").catch(() => null),
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
