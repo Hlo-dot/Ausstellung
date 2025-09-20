@@ -24,3 +24,17 @@
     }
   ]
 }
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/work/:id", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}
