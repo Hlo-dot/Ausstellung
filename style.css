@@ -15,6 +15,7 @@ body{
   background:#fff;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
+  -webkit-text-size-adjust:100%;
 }
 
 /* ===== Page layout ===== */
@@ -37,12 +38,14 @@ body{
 
 /* ===== Typography ===== */
 h1{
-  font-size: clamp(1.6rem, 4.4vw, 2.2rem);
+  font-size: clamp(1.55rem, 4.0vw, 2.1rem);
   line-height:1.15;
   font-weight:800;
   letter-spacing:.2px;
   margin:8px 0 6px;
-  word-break:break-word;
+  word-break:normal;
+  overflow-wrap:anywhere;     /* lange Namen brechen sauber */
+  hyphens:auto;
 }
 .sub{
   color:var(--muted);
@@ -99,6 +102,7 @@ h2{
   background:rgba(0,0,0,.65);
   z-index:1000;
   padding:10px;              /* Rand auf iOS */
+  touch-action:none;         /* verhindert Scrollen der Seite darunter */
 }
 #modal.open{display:flex}
 
@@ -142,52 +146,61 @@ h2{
   height:auto;
 }
 
-/* ==== Mobile-Finetuning (iPhone etc.) ==== */
+/* ==== Mobile-Feinschliff (≤ 430px) ==== */
 @media (max-width: 430px) {
-  .wrap{ padding:16px 18px 22px calc(18px + env(safe-area-inset-left)); }
-  .page{ padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .wrap{
+    padding: 14px 16px 20px calc(16px + env(safe-area-inset-left));
+  }
 
-  /* Logo kleiner & kompakter */
+  /* Logo kompakter */
   .top-logo{
-    width: clamp(150px, 58vw, 230px);
-    margin: 8px auto 10px;
+    width: clamp(140px, 46vw, 220px);
+    margin: 6px auto 10px;
   }
 
-  /* Haupttitel, Untertitel, Werktitel */
+  /* Titel kleiner & besserer Zeilenumbruch */
   h1{
-    font-size: clamp(1.35rem, 6.2vw, 1.75rem);
-    line-height: 1.13;
-    letter-spacing: -0.01em;
-    margin: 4px 0 6px;
-  }
-  .sub{
-    font-size: clamp(0.95rem, 3.8vw, 1.05rem);
-    margin: 6px 0 12px;
-  }
-  h2{
-    font-size: clamp(1.0rem, 3.9vw, 1.12rem);
-    margin: 10px 0 14px;
+    font-size: clamp(1.18rem, 4.8vw, 1.52rem);
+    line-height: 1.12;
+    letter-spacing: 0;
+    margin: 6px 0 6px;
+    overflow-wrap:anywhere;
+    hyphens:auto;
   }
 
-  /* Buttons dichter & etwas kleiner */
-  .actions{ gap: 8px; margin-bottom: 10px; }
+  .sub{
+    font-size: clamp(0.92rem, 3.6vw, 1.02rem);
+    margin: 6px 0 10px;
+  }
+
+  h2{
+    font-size: clamp(0.98rem, 3.7vw, 1.10rem);
+    margin: 8px 0 12px;
+  }
+
+  .actions{ gap: 8px; margin: 8px 0 10px; }
   .btn{
-    padding: 10px 14px;
-    font-size: 16px;
+    padding: 9px 13px;
+    font-size: 0.95rem;
     border-radius: 12px;
   }
 
-  /* Hinweistext kleiner und kompakter */
   .hint{
-    font-size: clamp(0.95rem, 3.8vw, 1.05rem);
-    line-height: 1.28;
-    margin: 14px 0;
+    font-size: clamp(0.92rem, 3.6vw, 1.0rem);
+    line-height: 1.25;
+    margin: 12px 0;
   }
 }
 
-/* Extra-enge Geräte (≤360px Breite) */
+/* Extra-enge Geräte (≤360px) */
 @media (max-width: 360px){
-  .top-logo{ width: clamp(140px, 56vw, 200px); }
-  h1{ font-size: 1.28rem; line-height: 1.12; }
-  .btn{ font-size: 15px; padding: 9px 12px; }
+  .top-logo{ width: clamp(130px, 50vw, 190px); }
+  h1{ font-size: 1.16rem; line-height: 1.10; }
+  .btn{ font-size: 0.92rem; padding: 8px 12px; }
+}
+
+/* Optional: weniger Bewegung für Nutzer mit Reduzierung */
+@media (prefers-reduced-motion: reduce){
+  .btn{ transition:none }
+  .btn:active{ transform:none }
 }
