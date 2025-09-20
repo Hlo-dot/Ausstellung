@@ -3,10 +3,10 @@
 // Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer (extern)
+// PDF.js Viewer
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“
+// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -19,17 +19,6 @@ const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
 const qs         = new URLSearchParams(location.search);
 const workId     = (qs.get("id") || idFromPath || "").trim();
 
-// Absolute Basis der Seite
-const ORIGIN = location.origin;
-
-// Hilfsfunktion: beliebigen Pfad in absolute URL wandeln
-function toAbs(path) {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;            // bereits absolut
-  if (path.startsWith("/")) return ORIGIN + path;         // root-relativ
-  return ORIGIN + "/" + path.replace(/^\.?\//, "");       // relativ -> absolut
-}
-
 // Modal-Referenzen
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
@@ -37,14 +26,19 @@ const dlgTtl   = $("#dlg-title");
 const btnOpen  = $("#dlg-open-new");
 const btnClose = $("#dlg-close");
 
+// Hilfsfunktion: Pfade immer relativ zur Domainwurzel laden
+function asRoot(url){
+  if (!url) return url;
+  return url.startsWith("/") ? url : "/" + url;
+}
+
 function isSameOrigin(url) {
   try { return new URL(url, location.href).origin === location.origin; }
   catch { return false; }
 }
 
 async function fetchJSON(path) {
-  // WICHTIG: absolut laden, damit /work/:id nicht nach /work/works.json greift
-  const res = await fetch(toAbs(path), { cache: "no-store" });
+  const res = await fetch(asRoot(path), { cache: "no-store" });
   if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
   return res.json();
 }
@@ -54,6 +48,7 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
+  // „In neuem Tab öffnen“-Button an/aus
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -61,7 +56,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard
+  // Lade-Guard: wenn der iFrame nicht lädt (z. B. geblockt), Fallback im neuen Tab
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -132,17 +127,18 @@ function wireButtons(work) {
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${toAbs(work.audio)}" type="audio/mpeg">
+        <source src="${asRoot(work.audio)}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF (PDF.js) – absolute URL übergeben (CORS-freundlich)
+  // PDF (PDF.js)
   $("#btn-pdf").onclick = () => {
-    const fileUrl   = toAbs(work.pdf);
-    const viewerUrl = `${PDF_VIEWER}?file=${encodeURIComponent(fileUrl)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+    const pdfUrl = asRoot(work.pdf);
+    const viewerUrl =
+      `${PDF_VIEWER}?file=${encodeURIComponent(location.origin + pdfUrl)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -152,7 +148,7 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, fileUrl);
+    openModal("PDF", html, pdfUrl);
   };
 
   // Meine Arbeitsweise (YouTube)
@@ -198,8 +194,8 @@ function renderPage(work, exhibition) {
 
   try {
     const [works, exhibitions] = await Promise.all([
-      fetchJSON("/works.json"),         // << absolut
-      fetchJSON("/exhibitions.json").catch(() => null), // << absolut
+      fetchJSON("works.json"),
+      fetchJSON("exhibitions.json").catch(() => null),
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
