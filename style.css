@@ -154,3 +154,12 @@ h2 {
 
 /* PDF-Toolbar nicht vom Close-Button verdecken */
 .dialog-hd { position: sticky; top: 0; background:#fff; z-index: 1; }
+/* Modal-Inhalte stabil in der Höhe */
+.dialog-body iframe,
+.dialog-body embed {
+  width: 100%;
+  height: 78vh;
+  border: 0;
+  display: block;
+  -webkit-overflow-scrolling: touch;
+}
