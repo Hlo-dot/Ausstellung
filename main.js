@@ -1,6 +1,6 @@
 /* ================== Einstellungen ================== */
 
-// Externe/Interne Künstler-Seite
+// Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
 // PDF.js Viewer
@@ -13,17 +13,11 @@ const VIDEO_ID = "_Yg0ta6Lk9w";
 
 const $ = (sel) => document.querySelector(sel);
 
-// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) ermitteln
-function getWorkId() {
-  const qs = new URLSearchParams(location.search);
-  const fromQuery = (qs.get("id") || "").trim();
-  if (fromQuery) return fromQuery;
-
-  // /work/foo oder /work/foo/
-  const m = location.pathname.match(/^\/work\/([^\/?#]+)\/?$/i);
-  return m ? decodeURIComponent(m[1]) : "";
-}
-const workId = getWorkId();
+// ID aus Query (?id=foo) ODER aus Pfad (/work/foo) auslesen
+const pathMatch  = location.pathname.match(/^\/work\/([^\/?#]+)/i);
+const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
+const qs         = new URLSearchParams(location.search);
+const workId     = (qs.get("id") || idFromPath || "").trim();
 
 // Modal-Referenzen
 const modal    = $("#modal");
@@ -48,7 +42,7 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“ nur zeigen, wenn wir eine Fallback-URL haben
+  // „In neuem Tab öffnen“-Button ein-/ausblenden
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -56,7 +50,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard für iFrames (falls fremde Seite blockt)
+  // Lade-Guard (wenn iFrame gar nicht lädt → neuer Tab)
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -82,20 +76,20 @@ function closeModal() {
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
-  const idEq = (id) => (id || "").toLowerCase() === (wId || "").toLowerCase();
-
   const inCurrent = exhibitions.find(ex =>
-    ex.current && Array.isArray(ex.works) && ex.works.some(idEq)
+    ex.current && Array.isArray(ex.works) &&
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
   );
   if (inCurrent) return inCurrent;
 
   const any = exhibitions.find(ex =>
-    Array.isArray(ex.works) && ex.works.some(idEq)
+    Array.isArray(ex.works) &&
+    ex.works.some(id => (id || "").toLowerCase() === wId.toLowerCase())
   );
   return any || null;
 }
 
-// ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“
+// ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale)
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -110,6 +104,7 @@ function buildHeaderText(work, exhibition) {
   if (exhibition?.start && exhibition?.end) {
     datePart = `${formatIsoDate(exhibition.start)} — ${formatIsoDate(exhibition.end)}`;
   }
+
   const dateText = `${title} · ${datePart}`;
 
   let h2 = "Werk + Serie";
@@ -133,7 +128,7 @@ function wireButtons(work) {
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF (PDF.js)
+  // PDF (PDF.js im Modal, Fallback neuer Tab)
   $("#btn-pdf").onclick = () => {
     const viewerUrl =
       `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
@@ -191,8 +186,6 @@ function renderPage(work, exhibition) {
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
   try {
-    if (!workId) throw new Error("Keine Werk-ID in URL gefunden.");
-
     const [works, exhibitions] = await Promise.all([
       fetchJSON("works.json"),
       fetchJSON("exhibitions.json").catch(() => null),
