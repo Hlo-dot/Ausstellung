@@ -102,14 +102,14 @@ h2{
   background:rgba(0,0,0,.65);
   z-index:1000;
   padding:10px;
-  touch-action:none;         /* verhindert Scrollen darunter */
+  touch-action:none;
 }
 #modal.open{display:flex}
 
 .dialog{
   background:#fff;
   width:min(900px, 96vw);
-  height:min(86svh, 860px); /* svh = iOS-sicher */
+  height:min(86svh, 860px);
   border-radius:12px;
   display:flex; flex-direction:column;
   overflow:hidden;
@@ -146,53 +146,53 @@ h2{
   height:auto;
 }
 
-/* ==== Mobile-Feinschliff (≤ 430px) – NUR Mobile, luftiger & ausgewogen ==== */
+/* ==== Mobile (≤ 430px) – luftig & ausgewogen, nur Mobile ==== */
 @media (max-width: 430px){
 
   .wrap{
     padding: 28px 22px 34px calc(22px + env(safe-area-inset-left));
   }
 
-  /* Logo bewusst kleiner, damit Text blockweise wirken kann */
+  /* Logo bewusst kleiner, damit Typo atmen kann */
   .top-logo{
-    width: clamp(112px, 34vw, 160px);
-    margin: 2px auto 20px;
+    width: clamp(110px, 32vw, 150px);
+    margin: 4px auto 20px;
   }
 
-  /* H1 größer, aber mit max. Zeilenlänge und balanciertem Umbruch */
+  /* H1: größere Präsenz, begrenzte Zeilenlänge & balancierter Umbruch */
   h1{
-    font-size: clamp(1.24rem, 5.8vw, 1.70rem);
+    font-size: clamp(1.26rem, 6.1vw, 1.78rem);
     line-height: 1.28;
     letter-spacing: -0.012em;
-    margin: 4px auto 18px;
-    max-width: 20ch;                 /* harmonische Zeilenlänge */
-    text-wrap: balance;              /* iOS 17+ / moderne Browser */
+    max-width: 19.5ch;
+    margin: 6px auto 20px;
+    text-wrap: balance;          /* iOS 17+/moderne Browser */
     word-break: keep-all;
   }
 
-  /* Datum – ruhiger, schmaler Satz, mehr Luft zum Werktitel */
+  /* Datum: schmaler Satz, ruhiger Abstand */
   .sub{
-    font-size: clamp(0.90rem, 3.4vw, 1.04rem);
+    font-size: clamp(0.92rem, 3.6vw, 1.06rem);
     letter-spacing: 0.01em;
     color:#555;
-    margin: 2px auto 22px;
-    max-width: 28ch;
+    max-width: 30ch;
+    margin: 0 auto 22px;
     text-wrap: balance;
   }
 
-  /* Werktitel – minimal größer, angenehmer Rhythmus, begrenzte Breite */
+  /* Werktitel: etwas größer, mehr Luft zu Buttons */
   h2{
-    font-size: clamp(1.06rem, 3.9vw, 1.22rem);
-    line-height: 1.36;
-    margin: 6px auto 26px;
-    max-width: 28ch;
+    font-size: clamp(1.04rem, 3.8vw, 1.24rem);
+    line-height: 1.34;
+    max-width: 30ch;
+    margin: 10px auto 26px;
     text-wrap: balance;
   }
 
-  /* Buttons – deutlichere Lücken */
+  /* Buttons: klarere Lücken */
   .actions{
     gap: 16px;
-    margin: 18px 0 14px;
+    margin: 22px 0 14px;
   }
   .btn{
     padding: 11px 16px;
@@ -200,22 +200,22 @@ h2{
     border-radius: 12px;
   }
 
-  /* Hinweis – etwas entkrampft */
+  /* Hinweis: etwas beruhigt */
   .hint{
     font-size: clamp(0.90rem, 3.3vw, 1rem);
     line-height: 1.34;
-    margin: 18px 0;
+    margin: 20px 0;
   }
 }
 
 /* Extra-enge Geräte (≤360px) */
 @media (max-width: 360px){
-  .top-logo{ width: clamp(108px, 48vw, 150px); }
-  h1{ font-size: 1.18rem; line-height: 1.30; }
+  .top-logo{ width: clamp(104px, 46vw, 148px); }
+  h1{ font-size: 1.22rem; line-height: 1.30; }
   .btn{ font-size: 0.96rem; padding: 9px 13px; }
 }
 
-/* Weniger Bewegung für Nutzer mit Reduzierung */
+/* Bewegungsreduktion */
 @media (prefers-reduced-motion: reduce){
   .btn{ transition:none }
   .btn:active{ transform:none }
