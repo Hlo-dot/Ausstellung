@@ -3,7 +3,7 @@
 // Externe/Interne Künstler-Seite.
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 
-// PDF.js Viewer
+// PDF.js Viewer (extern)
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
 // YouTube-Video für „Meine Arbeitsweise“
@@ -19,6 +19,17 @@ const idFromPath = pathMatch ? decodeURIComponent(pathMatch[1]) : null;
 const qs         = new URLSearchParams(location.search);
 const workId     = (qs.get("id") || idFromPath || "").trim();
 
+// Absolute Basis der Seite
+const ORIGIN = location.origin;
+
+// Hilfsfunktion: beliebigen Pfad in absolute URL wandeln
+function toAbs(path) {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;            // bereits absolut
+  if (path.startsWith("/")) return ORIGIN + path;         // root-relativ
+  return ORIGIN + "/" + path.replace(/^\.?\//, "");       // relativ -> absolut
+}
+
 // Modal-Referenzen
 const modal    = $("#modal");
 const dlgBody  = $("#dlg-body");
@@ -32,7 +43,8 @@ function isSameOrigin(url) {
 }
 
 async function fetchJSON(path) {
-  const res = await fetch(path, { cache: "no-store" });
+  // WICHTIG: absolut laden, damit /work/:id nicht nach /work/works.json greift
+  const res = await fetch(toAbs(path), { cache: "no-store" });
   if (!res.ok) throw new Error(`Fetch fehlgeschlagen: ${path}`);
   return res.json();
 }
@@ -42,7 +54,6 @@ function openModal(title, innerHtml, fallbackUrl) {
   dlgBody.innerHTML  = innerHtml;
   modal.classList.add("open");
 
-  // „In neuem Tab öffnen“-Button ein-/ausblenden
   if (fallbackUrl) {
     btnOpen.style.display = "inline-flex";
     btnOpen.onclick = () => window.open(fallbackUrl, "_blank", "noopener");
@@ -50,7 +61,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  // Lade-Guard (wenn iFrame gar nicht lädt → neuer Tab)
+  // Lade-Guard
   const iframe = dlgBody.querySelector("iframe");
   if (iframe && fallbackUrl) {
     let loaded = false;
@@ -72,7 +83,7 @@ function closeModal() {
 
 /* ================== Daten-Merge ================== */
 
-// Ausstellung finden, die das Werk enthält (current bevorzugt)
+/** Ausstellung finden, die das Werk enthält (current bevorzugt) */
 function findExhibitionForWork(exhibitions, wId) {
   if (!Array.isArray(exhibitions)) return null;
 
@@ -89,7 +100,7 @@ function findExhibitionForWork(exhibitions, wId) {
   return any || null;
 }
 
-// ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale)
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -121,17 +132,17 @@ function wireButtons(work) {
   $("#btn-audio").onclick = () => {
     const audioHtml = `
       <audio controls autoplay style="width:100%;height:52px;">
-        <source src="${work.audio}" type="audio/mpeg">
+        <source src="${toAbs(work.audio)}" type="audio/mpeg">
         Ihr Browser unterstützt den Audioplayer nicht.
       </audio>
     `;
     openModal("Audiobeschreibung", audioHtml, null);
   };
 
-  // PDF (PDF.js im Modal, Fallback neuer Tab)
+  // PDF (PDF.js) – absolute URL übergeben (CORS-freundlich)
   $("#btn-pdf").onclick = () => {
-    const viewerUrl =
-      `${PDF_VIEWER}?file=${encodeURIComponent(work.pdf)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
+    const fileUrl   = toAbs(work.pdf);
+    const viewerUrl = `${PDF_VIEWER}?file=${encodeURIComponent(fileUrl)}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe
         class="pdfjs-frame"
@@ -141,7 +152,7 @@ function wireButtons(work) {
         referrerpolicy="no-referrer"
       ></iframe>
     `;
-    openModal("PDF", html, work.pdf);
+    openModal("PDF", html, fileUrl);
   };
 
   // Meine Arbeitsweise (YouTube)
@@ -187,8 +198,8 @@ function renderPage(work, exhibition) {
 
   try {
     const [works, exhibitions] = await Promise.all([
-      fetchJSON("works.json"),
-      fetchJSON("exhibitions.json").catch(() => null),
+      fetchJSON("/works.json"),         // << absolut
+      fetchJSON("/exhibitions.json").catch(() => null), // << absolut
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
