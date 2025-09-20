@@ -6,7 +6,7 @@ const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 // PDF.js Viewer
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“
+// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -26,7 +26,12 @@ const dlgTtl   = $("#dlg-title");
 const btnOpen  = $("#dlg-open-new");
 const btnClose = $("#dlg-close");
 
-// Pfade immer relativ zur Domain-Wurzel laden
+// Modal sicher ans Dokument-Ende hängen (verhindert Stacking-Kontext-Probleme)
+if (modal && modal.parentElement !== document.body) {
+  document.body.appendChild(modal);
+}
+
+// Hilfsfunktion: Pfade immer relativ zur Domainwurzel laden
 function asRoot(url){
   if (!url) return url;
   return url.startsWith("/") ? url : "/" + url;
@@ -46,6 +51,9 @@ async function fetchJSON(path) {
 function openModal(title, innerHtml, fallbackUrl) {
   dlgTtl.textContent = title || "";
   dlgBody.innerHTML  = innerHtml;
+
+  // Scroll-Lock aktivieren, dann anzeigen
+  document.body.classList.add("modal-open");
   modal.classList.add("open");
 
   // „In neuem Tab öffnen“-Button an/aus
@@ -64,7 +72,7 @@ function openModal(title, innerHtml, fallbackUrl) {
     iframe.addEventListener("load", onLoad, { once: true });
     setTimeout(() => {
       if (!loaded) {
-        modal.classList.remove("open");
+        closeModal();
         window.open(fallbackUrl, "_blank", "noopener");
       }
     }, 1500);
@@ -74,7 +82,13 @@ function openModal(title, innerHtml, fallbackUrl) {
 function closeModal() {
   dlgBody.innerHTML = "";
   modal.classList.remove("open");
+  document.body.classList.remove("modal-open");
 }
+
+/* ESC schließt Modal */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+});
 
 /* ================== Daten-Merge ================== */
 
@@ -95,7 +109,7 @@ function findExhibitionForWork(exhibitions, wId) {
   return any || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (ohne Locale, robust) */
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -143,7 +157,6 @@ function wireButtons(work) {
       <iframe
         class="pdfjs-frame"
         src="${viewerUrl}"
-        style="width:100%;height:78vh;border:0;display:block;"
         allow="fullscreen"
         referrerpolicy="no-referrer"
       ></iframe>
@@ -188,7 +201,7 @@ function renderPage(work, exhibition) {
 /* ================== Init ================== */
 
 (async function init() {
-  // Modal schließen
+  // Modal schließen per Button / Klick auf Overlay
   btnClose.onclick = closeModal;
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
@@ -199,8 +212,6 @@ function renderPage(work, exhibition) {
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
-
-    if (!workId) throw new Error("Keine Werk-ID übergeben.");
 
     const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
     if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
