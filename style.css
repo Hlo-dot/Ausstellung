@@ -146,55 +146,55 @@ h2{
   height:auto;
 }
 
-/* ==== Mobile-Feinschliff (≤ 430px) – mehr Luft & ruhiger Rhythmus ==== */
+/* ==== Mobile-Feinschliff (≤ 430px) – luftiger & ruhiger ==== */
 @media (max-width: 430px) {
   .wrap{
-    padding: 22px 20px 26px calc(20px + env(safe-area-inset-left));
+    padding: 24px 22px 30px calc(22px + env(safe-area-inset-left));
   }
 
   .top-logo{
-    width: clamp(138px, 43vw, 205px);
-    margin: 10px auto 18px;               /* mehr Luft unter dem Logo */
+    width: clamp(136px, 42vw, 204px);
+    margin: 10px auto 22px;                 /* + Luft unter dem Logo */
   }
 
-  /* Haupttitel ruhiger + spürbar mehr Abstand nach unten */
+  /* Haupttitel: kleiner, mehr Zeilenhöhe & Abstand */
   h1{
-    font-size: clamp(1.08rem, 4.7vw, 1.38rem);
-    line-height: 1.28;
+    font-size: clamp(1.02rem, 4.6vw, 1.34rem);
+    line-height: 1.32;
     letter-spacing: -0.01em;
-    margin: 6px 0 18px;                   /* + Abstand */
+    margin: 4px 0 16px;                     /* + Abstand nach unten */
   }
 
-  /* Datum dezenter + mehr Luft */
+  /* Datum dezenter mit klarerem Abstand */
   .sub{
-    font-size: clamp(0.92rem, 3.5vw, 1.02rem);
+    font-size: clamp(0.9rem, 3.4vw, 1.02rem);
     letter-spacing: 0.02em;
     color:#555;
-    margin: 4px 0 20px;                   /* + Abstand zum Werktitel */
+    margin: 0 0 18px;                       /* + Abstand zum Werktitel */
   }
 
-  /* Werktitel mit zusätzlichem Abstand nach unten */
+  /* Werktitel entspannter und mit größerem Abstand zu Buttons */
   h2{
-    font-size: clamp(0.98rem, 3.6vw, 1.12rem);
-    line-height: 1.32;
-    margin: 14px 0 24px;                  /* + Abstand zu den Buttons */
+    font-size: clamp(0.96rem, 3.5vw, 1.12rem);
+    line-height: 1.34;
+    margin: 12px 0 26px;                    /* + Abstand zu Buttons */
   }
 
-  /* Buttons: rhythmischer Abstand & etwas mehr Lücke */
+  /* Buttons: größere Lücken & etwas mehr Padding */
   .actions{
-    gap: 12px;
-    margin: 20px 0 10px;                  /* + Abstand über den Buttons */
+    gap: 14px;
+    margin: 18px 0 12px;
   }
-
   .btn{
     padding: 11px 15px;
     font-size: 0.98rem;
     border-radius: 12px;
   }
 
+  /* Hinweis etwas beruhigt und mit Luft */
   .hint{
     font-size: clamp(0.9rem, 3.4vw, 1rem);
-    line-height: 1.3;
+    line-height: 1.32;
     margin: 18px 0;
   }
 }
@@ -202,7 +202,7 @@ h2{
 /* Extra-enge Geräte (≤360px) */
 @media (max-width: 360px){
   .top-logo{ width: clamp(128px, 50vw, 188px); }
-  h1{ font-size: 1.14rem; line-height: 1.22; }
+  h1{ font-size: 1.12rem; line-height: 1.28; }
   .btn{ font-size: 0.94rem; padding: 9px 13px; }
 }
 
