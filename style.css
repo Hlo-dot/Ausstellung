@@ -30,7 +30,7 @@ body{
 
 /* ===== Logo ===== */
 .top-logo{
-  width:clamp(160px,42vw,360px);
+  width: clamp(160px, 42vw, 360px);
   height:auto;
   margin:8px auto 14px;
   display:block;
@@ -38,7 +38,7 @@ body{
 
 /* ===== Typography ===== */
 h1{
-  font-size:clamp(1.55rem,4.0vw,2.1rem);
+  font-size: clamp(1.55rem, 4.0vw, 2.1rem);
   line-height:1.15;
   font-weight:800;
   letter-spacing:.2px;
@@ -49,18 +49,20 @@ h1{
 }
 .sub{
   color:var(--muted);
-  font-size:clamp(0.95rem,2.5vw,1.1rem);
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   margin:4px 0 16px;
 }
 h2{
-  font-size:clamp(1.05rem,2.6vw,1.25rem);
+  font-size: clamp(1.05rem, 2.6vw, 1.25rem);
   font-style:italic;
   margin:10px 0 16px;
 }
 
 /* ===== Buttons ===== */
 .actions{
-  display:flex;flex-wrap:wrap;gap:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
   justify-content:center;
   margin:6px 0 10px;
 }
@@ -70,7 +72,8 @@ h2{
   background:#fff;
   padding:10px 16px;
   border-radius:var(--radius);
-  font-size:1rem;line-height:1;
+  font-size:1rem;
+  line-height:1;
   cursor:pointer;
   transition:background .15s,border-color .15s,transform .05s;
 }
@@ -93,35 +96,35 @@ h2{
 
 /* ===== Modal overlay ===== */
 #modal{
-  position:fixed;inset:0;
-  display:none;               /* toggled via .open */
-  align-items:center;justify-content:center;
+  position: fixed; inset: 0;
+  display:none;              /* toggled via .open */
+  align-items:center; justify-content:center;
   background:rgba(0,0,0,.65);
   z-index:1000;
-  padding:10px;               /* Rand auf iOS */
-  touch-action:none;          /* keine Gesten-Scrolls darunter */
-  overscroll-behavior:contain;
+  padding:10px;
+  touch-action:none;
 }
 #modal.open{display:flex}
 
 .dialog{
   background:#fff;
-  width:min(900px,96vw);
-  height:min(86svh,860px);    /* svh = iOS safe */
+  width:min(900px, 96vw);
+  height: min(86svh, 860px);
   border-radius:12px;
-  display:flex;flex-direction:column;
+  display:flex; flex-direction:column;
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,.28);
 }
 .dialog-hd{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
   padding:10px 12px;
   border-bottom:1px solid var(--rule);
   position:sticky;top:0;background:#fff;z-index:1;
 }
 .dialog-ttl{font-weight:700}
 .dialog-body{
-  flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
+  flex:1; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch;
   background:#f7f7f7;
 }
 
@@ -129,53 +132,65 @@ h2{
 .dialog-body iframe,
 .dialog-body embed,
 .dialog-body object{
-  display:block;width:100%;height:100%;border:0;
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
 }
 
 /* Specific helpers */
-.pdfjs-frame{height:100%}
-.video-frame{width:100%;aspect-ratio:16/9;height:auto}
+.pdfjs-frame{ height:100% }
+.video-frame{
+  width:100%;
+  aspect-ratio:16/9;
+  height:auto;
+}
 
 /* ==== Mobile-Feinschliff (≤ 430px) ==== */
-@media (max-width:430px){
-  .wrap{padding:14px 16px 20px calc(16px + env(safe-area-inset-left));}
-
-  /* Logo kompakter */
-  .top-logo{width:clamp(140px,46vw,220px);margin:6px auto 10px;}
-
-  /* Titel kleiner & kompakter */
-  h1{
-    font-size:clamp(1.05rem,4.6vw,1.35rem);
-    line-height:1.18;
-    letter-spacing:-0.015em;
-    margin:4px 0 6px;
-    word-break:keep-all;
-    hyphens:auto;
+@media (max-width: 430px) {
+  .wrap{
+    padding: 14px 16px 20px calc(16px + env(safe-area-inset-left));
   }
 
-  .sub{font-size:clamp(0.92rem,3.6vw,1.02rem);margin:6px 0 10px;}
-  h2{font-size:clamp(0.98rem,3.7vw,1.10rem);margin:8px 0 12px;}
+  .top-logo{
+    width: clamp(140px, 46vw, 220px);
+    margin: 6px auto 10px;
+  }
 
-  .actions{gap:8px;margin:8px 0 10px;}
-  .btn{padding:9px 13px;font-size:.95rem;border-radius:12px;}
+  /* Haupttitel kompakter & mit sauberem Umbruch */
+  h1 {
+    font-size: clamp(1.1rem, 4.8vw, 1.4rem);
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    margin: 4px 0 8px;
+  }
 
-  .hint{font-size:clamp(0.92rem,3.6vw,1rem);line-height:1.25;margin:12px 0;}
+  /* Datum dezenter & mit mehr Luft nach unten */
+  .sub {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    letter-spacing: 0.02em;
+    margin: 4px 0 14px;
+    color: #555;
+  }
+
+  h2 {
+    font-size: clamp(0.95rem, 3.7vw, 1.1rem);
+    margin: 10px 0 14px;
+  }
+
+  .actions { gap: 8px; margin: 10px 0; }
+  .btn { padding: 9px 13px; font-size: 0.95rem; border-radius: 12px; }
+
+  .hint {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    line-height: 1.25;
+    margin: 12px 0;
+  }
 }
 
 /* Extra-enge Geräte (≤360px) */
-@media (max-width:360px){
-  .top-logo{width:clamp(130px,50vw,190px);}
-  h1{font-size:1.16rem;line-height:1.10;}
-  .btn{font-size:.92rem;padding:8px 12px;}
-}
-
-/* Weniger Bewegung, wenn gewünscht */
-@media (prefers-reduced-motion:reduce){
-  .btn{transition:none}
-  .btn:active{transform:none}
-}
-/* H1-Zeilen optisch ausbalancieren (unterstützte Browser) */
-.balance { text-wrap: balance; }
-@supports not (text-wrap: balance) {
-  .balance { /* deine bestehenden Fallbacks greifen weiterhin */ }
+@media (max-width: 360px){
+  .top-logo{ width: clamp(130px, 50vw, 190px); }
+  h1{ font-size: 1.12rem; line-height: 1.15; }
+  .btn{ font-size: 0.9rem; padding: 8px 12px; }
 }
