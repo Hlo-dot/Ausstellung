@@ -174,3 +174,8 @@ h2{
   .btn{transition:none}
   .btn:active{transform:none}
 }
+/* H1-Zeilen optisch ausbalancieren (unterstützte Browser) */
+.balance { text-wrap: balance; }
+@supports not (text-wrap: balance) {
+  .balance { /* deine bestehenden Fallbacks greifen weiterhin */ }
+}
