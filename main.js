@@ -6,7 +6,7 @@ const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 // PDF.js Viewer
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 
-// YouTube-Video für „Meine Arbeitsweise“ (startet nach Klick, nicht stumm)
+// YouTube-Video für „Meine Arbeitsweise“
 const VIDEO_ID = "_Yg0ta6Lk9w";
 
 /* ================== Utilities ================== */
@@ -26,7 +26,7 @@ const dlgTtl   = $("#dlg-title");
 const btnOpen  = $("#dlg-open-new");
 const btnClose = $("#dlg-close");
 
-// Hilfsfunktion: Pfade immer relativ zur Domainwurzel laden
+// Pfade immer relativ zur Domain-Wurzel laden
 function asRoot(url){
   if (!url) return url;
   return url.startsWith("/") ? url : "/" + url;
@@ -95,7 +95,7 @@ function findExhibitionForWork(exhibitions, wId) {
   return any || null;
 }
 
-/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (robust, ohne Locale) */
+/** ISO „YYYY-MM-DD“ -> „YYYY.MM.DD“ (ohne Locale, robust) */
 function formatIsoDate(iso) {
   if (typeof iso !== "string") return "";
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -199,6 +199,8 @@ function renderPage(work, exhibition) {
     ]);
 
     if (!Array.isArray(works)) throw new Error("works.json hat kein Array.");
+
+    if (!workId) throw new Error("Keine Werk-ID übergeben.");
 
     const work = works.find(w => (w.id || "").toLowerCase() === workId.toLowerCase());
     if (!work) throw new Error(`Werk '${workId}' nicht gefunden.`);
