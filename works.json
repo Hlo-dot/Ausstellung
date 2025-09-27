@@ -209,42 +209,49 @@
     "audio": "audio/Voice_Goldene_Schwelle.mp3",
     "pdf": "pdf/PDF_Goldene_Schwelle.pdf"
   },
+  {
       "id": "Bodenproben",
     "werk": "Bodenproben der Erinnerung",
     "serie": "Was bleibt",
     "audio": "audio/BodernprobenDerErinnerung.mp3",
     "pdf": "pdf/BodernprobenDerErinnerung.pdf"
   },
+  {
       "id": "Funde",
     "werk": "Die letzten Funde unter Tage",
     "serie": "Was bleibt",
     "audio": "audio/Voice_Goldene_Schwelle.mp3",
     "pdf": "pdf/PDF_Goldene_Schwelle.pdf"
   },
+{
       "id": "Feuerschacht",
     "werk": "Feuerschacht",
     "serie": "Was bleibt",
     "audio": "audio/Feuerschacht.mp3",
     "pdf": "pdf/Feuerschact.pdf"
   },
+  {
       "id": "Glutkern",
     "werk": "Glutkern",
     "serie": "Was bleibt",
     "audio": "audio/Glutkern.mp3",
     "pdf": "pdf/Glutkern.pdf"
   },
+  {
       "id": "Feuer",
     "werk": "Im Feuer gehärtet",
     "serie": "Was bleibt",
     "audio": "audio/ImFeuerGehaertet.mp3",
     "pdf": "pdf/ImFeuerGehaertet.pdf"
   },
+  {
       "id": "Kernbruch",
     "werk": "Kernbruch",
     "serie": "Was bleibt",
     "audio": "audio/Kernbruch.mp3",
     "pdf": "pdf/Kernbruch.pdf"
   },
+  {
       "id": "Schicht",
     "werk": "Letzte Schicht Licht",
     "serie": "Was bleibt",
