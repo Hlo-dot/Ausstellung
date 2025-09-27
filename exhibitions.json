@@ -45,7 +45,7 @@
     "venue": "Kühlhaus Berlin",
     "start": "2025-10-03",
     "end": "2025-10-05",
-    "current": false,
+    "current": true,
     "works": [
       "montan",
       "Bodenproben",
