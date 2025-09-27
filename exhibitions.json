@@ -47,13 +47,13 @@
     "end": "2025-10-05",
     "current": false,
     "works": [
-      "montan"
-      "Bodenproben"
-      "Funde"
-      "Feuerschacht"
-      "Glutkern"
-      "Feuer"
-      "Kernbruch"
+      "montan",
+      "Bodenproben",
+      "Funde",
+      "Feuerschacht",
+      "Glutkern",
+      "Feuer",
+      "Kernbruch",
       "Schicht"
     ]
   }
