@@ -5,7 +5,7 @@
     "venue": "Kunstverein Hattingen e.V. – Galerie Neue Räume",
     "start": "2025-09-28",
     "end": "2025-10-26",
-    "current": true,
+    "current": false,
     "works": [
       "der-moment-eingefroren",
       "jenseits-der-grenzen",
