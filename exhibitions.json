@@ -1,3 +1,43 @@
+[
+  {
+    "id": "kv-hattingen-2025",
+    "title": "Ein Raum aus Spuren",
+    "venue": "Kunstverein Hattingen e.V. – Galerie Neue Räume",
+    "start": "2025-09-28",
+    "end": "2025-10-26",
+    "current": false,
+    "works": [
+      "der-moment-eingefroren",
+      "jenseits-der-grenzen",
+      "resonanzkern",
+      "ZTUT",
+      "leuchtlast",
+      "partitur-des-lichts",
+      "rot-in-ruhe",
+      "verdichtetrot",
+      "bruch-im-rot",
+      "einschnitt",
+      "flu_konstellation_der_flaeche",
+      "flu_lichtraum_gelb",
+      "flu_nebelraeume_iii_verborgene_horizonte",
+      "flu_nebelraeume_ii_risse_im_grau",
+      "flu_nebelraeume_iv_verwehter_zwischenraum",
+      "flu_nebelraeume_i_schichtungen_des_schweigens",
+      "flu_schnittstelle_gold",
+      "Ich_wusste_nicht_das_er_fehlt",
+      "Ein-spaeter-Tag",
+      "boettcher-streifen-ensemble",
+      "chlorophyllquartett",
+      "geflecht-des-lebens",
+      "rotkaeppchen",
+      "rotkaeppchens-kleine-schwester",
+      "ruhezone",
+      "schattengruen",
+      "spur-im-gruen",
+      "Roter-Takt",
+      "Goldene-Schwelle"
+    ]
+  },
   {
     "id": "kuehlhaus-berlin-2025",
     "title": "Bridging Cultures",
@@ -15,13 +55,11 @@
       "Kernbruch",
       "Schicht"
     ]
-  }
-]
- },
-{
+  },
+  {
     "id": "extraschicht-2026",
     "title": "Extraschicht 2026",
-    "venue": "Heinrich-Robert_Hamm",
+    "venue": "Heinrich-Robert Hamm",
     "start": "2026-06-27",
     "end": "2026-06-27",
     "current": true,
@@ -37,4 +75,3 @@
     ]
   }
 ]
-
