@@ -74,5 +74,23 @@
       "Schicht",
       "lichtachse"
     ]
+  },
+    "id": "OLG",
+    "title": "Vom Bleiben und Werde",
+    "venue": "Oberlandesgericht Hamm",
+    "start": "2026-06-27",
+    "end": "2026-06-27",
+    "current": true,
+    "works": [
+      "montan",
+      "Bodenproben",
+      "Funde",
+      "Feuerschacht",
+      "Glutkern",
+      "Feuer",
+      "Kernbruch",
+      "Schicht",
+      "lichtachse"
+    ]
   }
 ]
