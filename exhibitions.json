@@ -62,7 +62,7 @@
     "venue": "Heinrich-Robert Hamm",
     "start": "2026-06-27",
     "end": "2026-06-27",
-    "current": true,
+    "current": false,
     "works": [
       "montan",
       "Bodenproben",
