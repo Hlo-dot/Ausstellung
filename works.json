@@ -266,6 +266,15 @@
   "audio": "audio/Lichtachse_Voice.mp3",
   "pdf": "pdf/Lichtachse_PDF.pdf"
 
+},
+{
+
+  "id": "Tafel1",
+  "werk": "Begrüßung",
+  "serie": "Vom Bleiben und Werden",
+  "audio": "audio/Tafel1.mp3",
+  "pdf": "pdf/Tafel1_PDF.pdf"
+
 }
 ]
  
