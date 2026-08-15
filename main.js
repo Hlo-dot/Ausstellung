@@ -104,6 +104,16 @@ function workClassification(work) {
   return `Werkserie „${series}“`;
 }
 
+function workTheme(work) {
+  const series = (work?.serie || "").trim().toLowerCase();
+  if (series === "grenzzeit") return "grenzzeit";
+  if (series === "was bleibt") return "was-bleibt";
+  if (series === "grünzeug" || series === "gruenzeug") return "gruenzeug";
+  if (series === "geometrien der stille") return "geometrien";
+  if (series === "nebelräume" || series === "nebelraeume" || series === "nebelräume") return "nebelraeume";
+  return "neutral";
+}
+
 function buildHeaderText(work, exhibition) {
   const venue = exhibition?.venue || "Ausstellungsort";
   const exhibitionTitle = exhibition?.title || "Ausstellung";
@@ -119,6 +129,7 @@ function buildHeaderText(work, exhibition) {
     dateText,
     workTitle: work?.werk || "Werk",
     workMeta: workClassification(work),
+    theme: workTheme(work),
   };
 }
 
@@ -169,11 +180,13 @@ function wireButtons(work) {
 
 function renderPage(work, exhibition) {
   const text = buildHeaderText(work, exhibition);
-  $("#title").textContent      = text.venue;
-  $("#exhibition").textContent = text.exhibitionTitle;
-  $("#sub").textContent        = text.dateText;
-  $("#work-meta").textContent  = text.workMeta;
-  $("#work-title").textContent = text.workTitle;
+  $(".wrap").dataset.theme      = text.theme;
+  $("#venue").textContent       = text.venue;
+  $("#exhibition").textContent  = text.exhibitionTitle;
+  $("#sub").textContent         = text.dateText;
+  $("#work-meta").textContent   = text.workMeta;
+  $("#work-title").textContent  = text.workTitle;
+  $("#copyright-year").textContent = new Date().getFullYear();
   document.title = `${text.workTitle} – ${text.venue}`;
   wireButtons(work);
 }
@@ -199,10 +212,11 @@ function renderPage(work, exhibition) {
     renderPage(work, exhibition);
   } catch (err) {
     console.error(err);
-    $("#title").textContent = "Fehler beim Laden der Daten";
+    $("#venue").textContent = "Fehler beim Laden der Daten";
     $("#exhibition").textContent = "";
     $("#sub").textContent = "";
     $("#work-meta").textContent = "";
     $("#work-title").textContent = "";
+    $("#copyright-year").textContent = new Date().getFullYear();
   }
 })();
