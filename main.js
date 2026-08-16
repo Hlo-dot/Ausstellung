@@ -1,7 +1,6 @@
 /* ================== Einstellungen ================== */
 
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
-const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 const VIDEO_ID = "_Yg0ta6Lk9w";
 const ART_STRIPS = {
   "tafel1": "/artstrips/Tafel1-horizontal.jpg",
@@ -65,23 +64,51 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  const iframe = dlgBody.querySelector("iframe");
-  if (iframe && fallbackUrl) {
-    let loaded = false;
-    const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
-    iframe.addEventListener("load", onLoad, { once: true });
-    setTimeout(() => {
-      if (!loaded) {
-        modal.classList.remove("open");
-        window.open(fallbackUrl, "_blank", "noopener");
-      }
-    }, 1500);
-  }
+  // Eingebettete Inhalte bleiben im Dialog. Der externe Link ist nur eine
+  // freiwillige Ausweichmöglichkeit und wird niemals automatisch geöffnet.
 }
 
 function closeModal() {
   dlgBody.innerHTML = "";
   modal.classList.remove("open");
+}
+
+async function renderPdfDocument(pdfUrl) {
+  const container = $("#pdf-document");
+  if (!container) return;
+
+  try {
+    if (!window.pdfjsLib) throw new Error("PDF-Komponente konnte nicht geladen werden.");
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await window.pdfjsLib.getDocument({ url: pdfUrl, withCredentials: true }).promise;
+    container.innerHTML = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const naturalViewport = page.getViewport({ scale: 1 });
+      const availableWidth = Math.max(280, container.clientWidth - 20);
+      const cssScale = availableWidth / naturalViewport.width;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      const renderViewport = page.getViewport({ scale: cssScale * outputScale });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d", { alpha: false });
+
+      canvas.width = Math.floor(renderViewport.width);
+      canvas.height = Math.floor(renderViewport.height);
+      canvas.style.width = `${Math.floor(renderViewport.width / outputScale)}px`;
+      canvas.style.height = "auto";
+      canvas.setAttribute("aria-label", `PDF-Seite ${pageNumber} von ${pdf.numPages}`);
+      container.appendChild(canvas);
+
+      await page.render({ canvasContext: context, viewport: renderViewport }).promise;
+    }
+  } catch (err) {
+    console.error(err);
+    container.innerHTML =
+      '<p class="pdf-error">Der Werktext konnte nicht eingebettet werden. Bitte „Extern öffnen“ verwenden.</p>';
+  }
 }
 
 /* ================== Daten und Texte ================== */
@@ -156,7 +183,10 @@ function buildHeaderText(work, exhibition) {
 function wireButtons(work) {
   const audioButton = $("#btn-audio");
   const audioSubtitle = $("#audio-subtitle");
+  const audioActionIcon = $("#audio-action-icon");
+  const audioLive = $("#audio-live");
   const idleSubtitle = audioSubtitle.textContent;
+  const audioTitle = $("#audio-title").textContent;
   const audio = new Audio(asRoot(work.audio));
   let animationFrame = null;
 
@@ -177,14 +207,18 @@ function wireButtons(work) {
 
   function setAudioState(state) {
     audioButton.dataset.audioState = state;
+    const labels = {
+      playing: ["Zum Pausieren tippen", "Ⅱ", `${audioTitle} pausieren`, "Audiowiedergabe läuft."],
+      paused: ["Zum Fortsetzen tippen", "▶", `${audioTitle} fortsetzen`, "Audiowiedergabe pausiert."],
+      finished: ["Noch einmal anhören", "↻", `${audioTitle} erneut abspielen`, "Audiowiedergabe vollständig gehört."],
+      idle: [idleSubtitle, "▶", audioTitle, ""],
+    };
+    const [subtitle, icon, ariaLabel, liveMessage] = labels[state] || labels.idle;
     audioButton.setAttribute("aria-pressed", state === "playing" ? "true" : "false");
-    audioSubtitle.textContent = state === "playing"
-      ? "Zum Pausieren tippen"
-      : state === "finished"
-        ? "Noch einmal anhören"
-        : state === "paused"
-          ? "Zum Fortsetzen tippen"
-          : idleSubtitle;
+    audioButton.setAttribute("aria-label", ariaLabel);
+    audioSubtitle.textContent = subtitle;
+    audioActionIcon.textContent = icon;
+    audioLive.textContent = liveMessage;
   }
 
   audioButton.onclick = async () => {
@@ -226,14 +260,12 @@ function wireButtons(work) {
 
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
-    const fileParam = encodeURIComponent(location.origin + pdfUrl);
-    const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
-      <iframe class="pdfjs-frame"
-              src="${viewerUrl}"
-              allow="fullscreen"
-              referrerpolicy="no-referrer"></iframe>`;
+      <div id="pdf-document" class="pdf-document" aria-busy="true">
+        <p class="pdf-loading">Werktext wird geladen …</p>
+      </div>`;
     openModal("Werktext", html, pdfUrl);
+    renderPdfDocument(pdfUrl);
   };
 
   $("#btn-video").onclick = () => {
@@ -265,6 +297,9 @@ function renderPage(work, exhibition) {
   $("#sub").textContent         = text.dateText;
   $("#work-meta").textContent   = text.workMeta;
   $("#work-title").textContent  = text.workTitle;
+  const workDetails = [work?.format, work?.jahr].filter(Boolean).join(" · ");
+  $("#work-details").textContent = workDetails;
+  $("#work-details").hidden = !workDetails;
   const artStrip = $("#art-strip");
   const artStripImage = $("#art-strip-image");
   const isIntroduction = (work?.id || "").toLowerCase() === "tafel1";

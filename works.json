@@ -4,28 +4,36 @@
     "werk": "Montan",
     "serie": "Was bleibt",
     "audio": "audio/montan.mp3",
-    "pdf": "pdf/montan.pdf"
+    "pdf": "pdf/montan.pdf",
+    "format": "80 × 60 cm",
+    "jahr": 2024
   },
   {
     "id": "der-moment-eingefroren",
     "werk": "Der Moment eingefroren",
     "serie": "Grenzzeit",
     "audio": "audio/Voice_Der_Moment_eingefroren.mp3",
-    "pdf": "pdf/Der_Moment_eingefroren.pdf"
+    "pdf": "pdf/Der_Moment_eingefroren.pdf",
+    "format": "80 × 80 cm",
+    "jahr": 2024
   },
   {
     "id": "jenseits-der-grenzen",
     "werk": "Jenseits der Grenzen",
     "serie": "Grenzzeit",
     "audio": "audio/Voice_Jenseits_der_Grenzen.mp3",
-    "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf"
+    "pdf": "pdf/FLU_Jenseits_der_Grenzen_Grenzzeit.pdf",
+    "format": "80 × 80 cm",
+    "jahr": 2024
   },
   {
     "id": "resonanzkern",
     "werk": "Resonanzkern",
     "serie": "Grenzzeit",
     "audio": "audio/Voice_Resonanzkern.mp3",
-    "pdf": "pdf/FLU_Resonanzkern.pdf"
+    "pdf": "pdf/FLU_Resonanzkern.pdf",
+    "format": "80 × 80 cm",
+    "jahr": 2025
   },
   {
     "id": "ZTUT",
@@ -131,16 +139,16 @@
     "serie": "Einzelwerk",
     "audio": "audio/Ich_wußte_nicht_das_er_fehlt.mp3",
     "pdf": "pdf/Ich_wußte_nicht_das_er_fehlt.pdf"
- },
-    {
+  },
+  {
     "id": "Ein-spaeter-Tag",
     "werk": "Ein später Tag",
     "serie": "Einzelwerk",
     "audio": "audio/Ein_spaeter_Tag.mp3",
     "pdf": "pdf/Ein_spaeter_Tag.pdf"
   },
-  {  
-  "id": "boettcher-streifen-ensemble",
+  {
+    "id": "boettcher-streifen-ensemble",
     "werk": "Böttcher Streifen ENSEMBLE",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Boettcher_Steifen_Ensemble.mp3",
@@ -195,7 +203,7 @@
     "audio": "audio/Voice_Spur_im_Gruen.mp3",
     "pdf": "pdf/Spur_im_Gruen.pdf"
   },
-    {
+  {
     "id": "Roter-Takt",
     "werk": "Roter Takt",
     "serie": "Einzelwerk",
@@ -207,74 +215,87 @@
     "werk": "Goldene Schwelle",
     "serie": "Grenzzeit",
     "audio": "audio/Voice_Goldene_Schwelle.mp3",
-    "pdf": "pdf/PDF_Goldene_Schwelle.pdf"
+    "pdf": "pdf/PDF_Goldene_Schwelle.pdf",
+    "format": "140 × 100 cm",
+    "jahr": 2025
   },
   {
-      "id": "Bodenproben",
+    "id": "Bodenproben",
     "werk": "Bodenproben der Erinnerung",
     "serie": "Was bleibt",
     "audio": "audio/Bodenproben.mp3",
-    "pdf": "pdf/Bodenproben2.pdf"
+    "pdf": "pdf/Bodenproben2.pdf",
+    "format": "92 × 92 cm",
+    "jahr": 2022
   },
   {
-      "id": "Funde",
+    "id": "Funde",
     "werk": "Die letzten Funde unter Tage",
     "serie": "Was bleibt",
     "audio": "audio/DieLetztenFundeUnterTage.mp3",
-    "pdf": "pdf/DieLetztenFundeUnterTage.pdf"
+    "pdf": "pdf/DieLetztenFundeUnterTage.pdf",
+    "format": "92 × 92 cm",
+    "jahr": 2022
   },
-{
-      "id": "Feuerschacht",
+  {
+    "id": "Feuerschacht",
     "werk": "Feuerschacht",
     "serie": "Was bleibt",
     "audio": "audio/Feuerschacht.mp3",
-    "pdf": "pdf/Feuerschacht.pdf"
+    "pdf": "pdf/Feuerschacht.pdf",
+    "format": "100 × 70 cm",
+    "jahr": 2025
   },
   {
-      "id": "Glutkern",
+    "id": "Glutkern",
     "werk": "Glutkern",
     "serie": "Was bleibt",
     "audio": "audio/Glutkern.mp3",
-    "pdf": "pdf/Glutkern.pdf"
+    "pdf": "pdf/Glutkern.pdf",
+    "format": "80 × 60 cm",
+    "jahr": 2024
   },
   {
-      "id": "Feuer",
+    "id": "Feuer",
     "werk": "Im Feuer gehärtet",
     "serie": "Was bleibt",
     "audio": "audio/ImFeuerGehaertet.mp3",
-    "pdf": "pdf/ImFeuerGehaertet.pdf"
+    "pdf": "pdf/ImFeuerGehaertet.pdf",
+    "format": "100 × 70 cm",
+    "jahr": 2025
   },
   {
-      "id": "Kernbruch",
+    "id": "Kernbruch",
     "werk": "Kernbruch",
     "serie": "Was bleibt",
     "audio": "audio/Kernbruch.mp3",
-    "pdf": "pdf/Kernbruch.pdf"
+    "pdf": "pdf/Kernbruch.pdf",
+    "format": "100 × 70 cm",
+    "jahr": 2025
   },
   {
-      "id": "Schicht",
+    "id": "Schicht",
     "werk": "Letzte Schicht Licht",
     "serie": "Was bleibt",
     "audio": "audio/LetzteSchichtLicht.mp3",
-    "pdf": "pdf/LetzteSchichtLicht.pdf"
+    "pdf": "pdf/LetzteSchichtLicht.pdf",
+    "format": "100 × 80 cm",
+    "jahr": 2023
   },
-      {
-
-  "id": "lichtachse",
-  "werk": "Lichtachse",
-  "serie": "Einzelwerk",
-  "audio": "audio/Lichtachse_Voice.mp3",
-  "pdf": "pdf/Lichtachse_PDF.pdf"
-
-},
-{
-
-  "id": "Tafel1",
-  "werk": "Begrüßung",
-  "serie": "Vom Bleiben und Werden",
-  "audio": "audio/Tafel1.mp3",
-  "pdf": "pdf/Tafel1.pdf"
-
-}
+  {
+    "id": "lichtachse",
+    "werk": "Lichtachse",
+    "serie": "Einzelwerk",
+    "audio": "audio/Lichtachse_Voice.mp3",
+    "pdf": "pdf/Lichtachse_PDF.pdf",
+    "format": "100 × 100 cm",
+    "jahr": 2026
+  },
+  {
+    "id": "Tafel1",
+    "werk": "Begrüßung",
+    "serie": "Vom Bleiben und Werden",
+    "audio": "audio/Tafel1.mp3",
+    "pdf": "pdf/Tafel1.pdf"
+  }
 ]
- 
