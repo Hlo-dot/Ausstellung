@@ -1,0 +1,34 @@
+name: Projektvalidierung
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Werk- und Ausstellungsdaten prüfen
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regressionstests ausführen
+        run: python -m unittest discover -s tests -v
+
+      - name: Projektbestand validieren
+        run: python scripts/validate_project.py
