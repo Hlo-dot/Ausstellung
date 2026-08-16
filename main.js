@@ -65,18 +65,8 @@ function openModal(title, innerHtml, fallbackUrl) {
     btnOpen.style.display = "none";
   }
 
-  const iframe = dlgBody.querySelector("iframe");
-  if (iframe && fallbackUrl) {
-    let loaded = false;
-    const onLoad = () => { loaded = true; iframe.removeEventListener("load", onLoad); };
-    iframe.addEventListener("load", onLoad, { once: true });
-    setTimeout(() => {
-      if (!loaded) {
-        modal.classList.remove("open");
-        window.open(fallbackUrl, "_blank", "noopener");
-      }
-    }, 1500);
-  }
+  // Eingebettete Inhalte bleiben im Dialog. Der externe Link ist nur eine
+  // freiwillige Ausweichmöglichkeit und wird niemals automatisch geöffnet.
 }
 
 function closeModal() {
