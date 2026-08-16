@@ -332,7 +332,15 @@ h1{
   .text-action svg{width:18px;height:18px}
   .text-action .action-arrow{display:none}
   .hint{margin-top:18px;font-size:.72rem}
-  .footer{margin-top:18px;padding-top:13px;font-size:.62rem}
+  .footer{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:9px;
+    margin-top:18px;
+    padding-top:13px;
+    font-size:.62rem;
+  }
+  .footer span{text-align:left}
 }
 
 @media(max-width:360px){
