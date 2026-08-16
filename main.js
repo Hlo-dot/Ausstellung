@@ -5,7 +5,7 @@ const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 const VIDEO_ID = "_Yg0ta6Lk9w";
 const ART_STRIPS = {
   "montan": "/artstrips/montan-horizontal.jpg",
-  "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.jpg",
+  "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.svg",
 };
 
 /* ================== Utilities ================== */
