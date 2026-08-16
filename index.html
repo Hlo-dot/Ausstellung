@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/logo.jpg" />
   <script>
+    (function normalizeWorkPath() {
+      const id = new URLSearchParams(location.search).get("id");
+      if (id && location.pathname === "/") {
+        history.replaceState(null, "", "/work/" + encodeURIComponent(id));
+      }
+    })();
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
