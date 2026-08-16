@@ -154,14 +154,75 @@ function buildHeaderText(work, exhibition) {
 /* ================== Rendering ================== */
 
 function wireButtons(work) {
-  $("#btn-audio").onclick = () => {
-    const audioHtml = `
-      <audio controls autoplay playsinline style="width:100%;height:52px;">
-        <source src="${asRoot(work.audio)}" type="audio/mpeg">
-        Ihr Browser unterstützt den Audioplayer nicht.
-      </audio>`;
-    openModal("Audiobeschreibung", audioHtml, null);
+  const audioButton = $("#btn-audio");
+  const audioSubtitle = $("#audio-subtitle");
+  const idleSubtitle = audioSubtitle.textContent;
+  const audio = new Audio(asRoot(work.audio));
+  let animationFrame = null;
+
+  audio.preload = "metadata";
+  audioButton.style.setProperty("--audio-progress", "0%");
+  audioButton.setAttribute("aria-pressed", "false");
+
+  function renderAudioProgress() {
+    const progress = Number.isFinite(audio.duration) && audio.duration > 0
+      ? Math.min(100, (audio.currentTime / audio.duration) * 100)
+      : 0;
+    audioButton.style.setProperty("--audio-progress", `${progress}%`);
+
+    if (!audio.paused && !audio.ended) {
+      animationFrame = requestAnimationFrame(renderAudioProgress);
+    }
+  }
+
+  function setAudioState(state) {
+    audioButton.dataset.audioState = state;
+    audioButton.setAttribute("aria-pressed", state === "playing" ? "true" : "false");
+    audioSubtitle.textContent = state === "playing"
+      ? "Zum Pausieren tippen"
+      : state === "finished"
+        ? "Noch einmal anhören"
+        : state === "paused"
+          ? "Zum Fortsetzen tippen"
+          : idleSubtitle;
+  }
+
+  audioButton.onclick = async () => {
+    if (audio.ended) {
+      audio.currentTime = 0;
+      audioButton.style.setProperty("--audio-progress", "0%");
+    }
+
+    if (audio.paused) {
+      try {
+        await audio.play();
+        setAudioState("playing");
+        cancelAnimationFrame(animationFrame);
+        renderAudioProgress();
+      } catch (err) {
+        console.error(err);
+        setAudioState("idle");
+        audioSubtitle.textContent = "Audio konnte nicht gestartet werden";
+      }
+    } else {
+      audio.pause();
+      cancelAnimationFrame(animationFrame);
+      renderAudioProgress();
+      setAudioState("paused");
+    }
   };
+
+  audio.addEventListener("ended", () => {
+    cancelAnimationFrame(animationFrame);
+    audioButton.style.setProperty("--audio-progress", "100%");
+    setAudioState("finished");
+  });
+
+  audio.addEventListener("error", () => {
+    cancelAnimationFrame(animationFrame);
+    setAudioState("idle");
+    audioSubtitle.textContent = "Audio konnte nicht geladen werden";
+  });
 
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);

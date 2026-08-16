@@ -121,7 +121,16 @@ h1{
   padding:14px 18px;
   border:0;
   border-radius:3px;
-  background:var(--ink);
+  --audio-progress:0%;
+  isolation:isolate;
+  background:
+    linear-gradient(
+      90deg,
+      #e9ddca 0,
+      #e9ddca var(--audio-progress),
+      var(--ink) var(--audio-progress),
+      var(--ink) 100%
+    );
   color:#fff;
   display:grid;
   grid-template-columns:24px 1fr auto;
@@ -140,10 +149,16 @@ h1{
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-.primary-action svg{color:#ead9c1}
+.primary-action > *{
+  position:relative;
+  z-index:1;
+  color:#fff;
+  mix-blend-mode:difference;
+}
+.primary-action svg{color:#fff}
 .action-copy{display:flex;flex-direction:column;gap:3px}
 .action-copy strong{font-size:.98rem}
-.action-copy small{color:#c9c4bc;font-size:.72rem;font-weight:500}
+.action-copy small{color:#fff;font-size:.72rem;font-weight:500}
 .action-arrow{font-size:1.15rem;font-weight:400}
 .secondary-actions{margin-top:12px;border-bottom:1px solid var(--line)}
 .text-action{
@@ -164,7 +179,7 @@ h1{
   text-align:left;
 }
 .text-action svg{color:var(--accent)}
-.primary-action:hover{background:var(--accent-2)}
+.primary-action:hover{filter:brightness(.96)}
 .text-action:hover{background:var(--soft)}
 .primary-action:active,
 .text-action:active{transform:translateY(1px)}
