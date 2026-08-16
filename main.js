@@ -3,6 +3,10 @@
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 const VIDEO_ID = "_Yg0ta6Lk9w";
+const ART_STRIPS = {
+  "montan": "/artstrips/montan-horizontal.jpg",
+  "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.jpg",
+};
 
 /* ================== Utilities ================== */
 
@@ -186,6 +190,16 @@ function renderPage(work, exhibition) {
   $("#sub").textContent         = text.dateText;
   $("#work-meta").textContent   = text.workMeta;
   $("#work-title").textContent  = text.workTitle;
+  const artStrip = $("#art-strip");
+  const artStripImage = $("#art-strip-image");
+  const artStripUrl = ART_STRIPS[(work?.id || "").toLowerCase()];
+  if (artStripUrl) {
+    artStripImage.src = artStripUrl;
+    artStrip.hidden = false;
+  } else {
+    artStripImage.removeAttribute("src");
+    artStrip.hidden = true;
+  }
   $("#copyright-year").textContent = new Date().getFullYear();
   document.title = `${text.workTitle} – ${text.venue}`;
   wireButtons(work);
