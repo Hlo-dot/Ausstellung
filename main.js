@@ -1,7 +1,6 @@
 /* ================== Einstellungen ================== */
 
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
-const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 const VIDEO_ID = "_Yg0ta6Lk9w";
 const ART_STRIPS = {
   "tafel1": "/artstrips/Tafel1-horizontal.jpg",
@@ -223,13 +222,10 @@ function wireButtons(work) {
 
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
-    const fileParam = encodeURIComponent(location.origin + pdfUrl);
-    const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
     const html = `
       <iframe class="pdfjs-frame"
-              src="${viewerUrl}"
-              allow="fullscreen"
-              referrerpolicy="no-referrer"></iframe>`;
+              src="${pdfUrl}#page=1&zoom=page-width&view=FitH"
+              title="Werktext als PDF"></iframe>`;
     openModal("Werktext", html, pdfUrl);
   };
 
