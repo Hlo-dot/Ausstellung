@@ -9,15 +9,7 @@
   <link rel="preload" href="/style.css" as="style" />
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/logo.jpg" />
-  <script>
-    (function normalizeWorkPath() {
-      const id = new URLSearchParams(location.search).get("id");
-      if (id && location.pathname === "/") {
-        history.replaceState(null, "", "/work/" + encodeURIComponent(id));
-      }
-    })();
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
+  <script src="/bootstrap.js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -98,8 +90,6 @@
     </div>
   </div>
 
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="/main.js" defer></script>
+  <script src="/main.js" type="module"></script>
 </body>
 </html>

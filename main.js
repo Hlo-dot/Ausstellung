@@ -1,3 +1,7 @@
+import * as pdfjsLib from "/vendor/pdfjs/pdf.mjs";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/vendor/pdfjs/pdf.worker.mjs";
+
 /* ================== Einstellungen ================== */
 
 const ARTIST_WEBSITE = "https://flu.ruhr/uber";
@@ -78,11 +82,7 @@ async function renderPdfDocument(pdfUrl) {
   if (!container) return;
 
   try {
-    if (!window.pdfjsLib) throw new Error("PDF-Komponente konnte nicht geladen werden.");
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-    const pdf = await window.pdfjsLib.getDocument({ url: pdfUrl, withCredentials: true }).promise;
+    const pdf = await pdfjsLib.getDocument({ url: pdfUrl, withCredentials: true }).promise;
     container.innerHTML = "";
 
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
