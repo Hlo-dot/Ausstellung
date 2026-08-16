@@ -4,8 +4,20 @@ const ARTIST_WEBSITE = "https://flu.ruhr/uber";
 const PDF_VIEWER = "https://mozilla.github.io/pdf.js/web/viewer.html";
 const VIDEO_ID = "_Yg0ta6Lk9w";
 const ART_STRIPS = {
+  "tafel1": "/artstrips/Tafel1-horizontal.jpg",
   "montan": "/artstrips/montan-horizontal.jpg",
-  "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.svg",
+  "bodenproben": "/artstrips/Bodenproben-horizontal.jpg",
+  "funde": "/artstrips/Funde-horizontal.jpg",
+  "feuerschacht": "/artstrips/Feuerschacht-horizontal.jpg",
+  "glutkern": "/artstrips/Glutkern-horizontal.jpg",
+  "feuer": "/artstrips/Feuer-horizontal.jpg",
+  "kernbruch": "/artstrips/Kernbruch-horizontal.jpg",
+  "schicht": "/artstrips/Schicht-horizontal.jpg",
+  "lichtachse": "/artstrips/lichtachse-horizontal.jpg",
+  "goldene-schwelle": "/artstrips/Goldene-Schwelle-horizontal.jpg",
+  "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.jpg",
+  "resonanzkern": "/artstrips/resonanzkern-horizontal.jpg",
+  "jenseits-der-grenzen": "/artstrips/jenseits-der-grenzen-horizontal.jpg",
 };
 
 /* ================== Utilities ================== */
@@ -131,7 +143,9 @@ function buildHeaderText(work, exhibition) {
     venue,
     exhibitionTitle,
     dateText,
-    workTitle: work?.werk || "Werk",
+    workTitle: (work?.id || "").toLowerCase() === "tafel1"
+      ? exhibitionTitle
+      : (work?.werk || "Werk"),
     workMeta: workClassification(work),
     theme: workTheme(work),
   };
@@ -192,7 +206,13 @@ function renderPage(work, exhibition) {
   $("#work-title").textContent  = text.workTitle;
   const artStrip = $("#art-strip");
   const artStripImage = $("#art-strip-image");
+  const isIntroduction = (work?.id || "").toLowerCase() === "tafel1";
   const artStripUrl = ART_STRIPS[(work?.id || "").toLowerCase()];
+  artStrip.classList.toggle("art-strip--intro", isIntroduction);
+  $(".wrap").classList.toggle("is-introduction", isIntroduction);
+  $("#audio-title").textContent = isIntroduction ? "Einführung anhören" : "Audiobeschreibung";
+  $("#audio-subtitle").textContent = isIntroduction ? "Zur Ausstellung" : "Das Werk hören";
+  $("#pdf-label").textContent = isIntroduction ? "Ausstellungstext lesen" : "Werktext lesen";
   if (artStripUrl) {
     artStripImage.src = artStripUrl;
     artStrip.hidden = false;

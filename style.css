@@ -82,6 +82,10 @@ body{
   overflow:hidden;
   background:var(--soft);
 }
+.art-strip--intro{
+  height:128px;
+  margin-bottom:30px;
+}
 .art-strip[hidden]{display:none}
 .art-strip img{
   display:block;
@@ -260,6 +264,8 @@ h1{
   .exhibition{margin-top:5px;font-size:.78rem}
   .sub{margin-top:2px;font-size:.72rem}
   .art-strip{height:80px;margin:20px 0 24px}
+  .art-strip--intro{height:112px;margin-bottom:22px}
+  .is-introduction h1{font-size:clamp(2.05rem,10vw,2.65rem)}
   .work-summary{min-height:0}
   .work-meta{font-size:.62rem;letter-spacing:.13em}
   h1{margin-top:8px;font-size:clamp(2.15rem,11vw,2.75rem);line-height:1}
