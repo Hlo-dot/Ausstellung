@@ -156,7 +156,10 @@ function buildHeaderText(work, exhibition) {
 function wireButtons(work) {
   const audioButton = $("#btn-audio");
   const audioSubtitle = $("#audio-subtitle");
+  const audioActionIcon = $("#audio-action-icon");
+  const audioLive = $("#audio-live");
   const idleSubtitle = audioSubtitle.textContent;
+  const audioTitle = $("#audio-title").textContent;
   const audio = new Audio(asRoot(work.audio));
   let animationFrame = null;
 
@@ -177,14 +180,18 @@ function wireButtons(work) {
 
   function setAudioState(state) {
     audioButton.dataset.audioState = state;
+    const labels = {
+      playing: ["Zum Pausieren tippen", "Ⅱ", `${audioTitle} pausieren`, "Audiowiedergabe läuft."],
+      paused: ["Zum Fortsetzen tippen", "▶", `${audioTitle} fortsetzen`, "Audiowiedergabe pausiert."],
+      finished: ["Noch einmal anhören", "↻", `${audioTitle} erneut abspielen`, "Audiowiedergabe vollständig gehört."],
+      idle: [idleSubtitle, "▶", audioTitle, ""],
+    };
+    const [subtitle, icon, ariaLabel, liveMessage] = labels[state] || labels.idle;
     audioButton.setAttribute("aria-pressed", state === "playing" ? "true" : "false");
-    audioSubtitle.textContent = state === "playing"
-      ? "Zum Pausieren tippen"
-      : state === "finished"
-        ? "Noch einmal anhören"
-        : state === "paused"
-          ? "Zum Fortsetzen tippen"
-          : idleSubtitle;
+    audioButton.setAttribute("aria-label", ariaLabel);
+    audioSubtitle.textContent = subtitle;
+    audioActionIcon.textContent = icon;
+    audioLive.textContent = liveMessage;
   }
 
   audioButton.onclick = async () => {
@@ -265,6 +272,9 @@ function renderPage(work, exhibition) {
   $("#sub").textContent         = text.dateText;
   $("#work-meta").textContent   = text.workMeta;
   $("#work-title").textContent  = text.workTitle;
+  const workDetails = [work?.format, work?.jahr].filter(Boolean).join(" · ");
+  $("#work-details").textContent = workDetails;
+  $("#work-details").hidden = !workDetails;
   const artStrip = $("#art-strip");
   const artStripImage = $("#art-strip-image");
   const isIntroduction = (work?.id || "").toLowerCase() === "tafel1";
