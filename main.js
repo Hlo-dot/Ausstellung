@@ -39,20 +39,6 @@ async function fetchJSON(path) {
   return res.json();
 }
 
-function trackUsage(name, work, exhibition) {
-  const workKey = (work?.id || "").trim();
-  if (!workKey || typeof window.va !== "function") return;
-
-  const exhibitionKey = (exhibition?.id || exhibition?.venue || "ohne-ausstellung").trim();
-  window.va("event", {
-    name,
-    data: {
-      work: workKey,
-      exhibition: exhibitionKey,
-    },
-  });
-}
-
 /* ================== Modal ================== */
 
 function openModal(title, innerHtml, fallbackUrl) {
@@ -153,9 +139,8 @@ function buildHeaderText(work, exhibition) {
 
 /* ================== Rendering ================== */
 
-function wireButtons(work, exhibition) {
+function wireButtons(work) {
   $("#btn-audio").onclick = () => {
-    trackUsage("audio_start", work, exhibition);
     const audioHtml = `
       <audio controls autoplay playsinline style="width:100%;height:52px;">
         <source src="${asRoot(work.audio)}" type="audio/mpeg">
@@ -165,7 +150,6 @@ function wireButtons(work, exhibition) {
   };
 
   $("#btn-pdf").onclick = () => {
-    trackUsage("worktext_open", work, exhibition);
     const pdfUrl = asRoot(work.pdf);
     const fileParam = encodeURIComponent(location.origin + pdfUrl);
     const viewerUrl = `${PDF_VIEWER}?file=${fileParam}#page=1&zoom=page-width&pagemode=none&view=FitH`;
@@ -178,7 +162,6 @@ function wireButtons(work, exhibition) {
   };
 
   $("#btn-video").onclick = () => {
-    trackUsage("workprocess_open", work, exhibition);
     const url = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
     const html = `
       <iframe class="video-frame"
@@ -189,7 +172,6 @@ function wireButtons(work, exhibition) {
   };
 
   $("#btn-artist").onclick = () => {
-    trackUsage("artist_open", work, exhibition);
     const url = ARTIST_WEBSITE;
     if (isSameOrigin(url)) {
       const html = `<iframe class="pdfjs-frame" src="${url}" referrerpolicy="no-referrer"></iframe>`;
@@ -220,8 +202,7 @@ function renderPage(work, exhibition) {
   }
   $("#copyright-year").textContent = new Date().getFullYear();
   document.title = `${text.workTitle} – ${text.venue}`;
-  wireButtons(work, exhibition);
-  trackUsage("work_view", work, exhibition);
+  wireButtons(work);
 }
 
 /* ================== Init ================== */
