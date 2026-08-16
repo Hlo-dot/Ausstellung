@@ -73,6 +73,44 @@ function closeModal() {
   modal.classList.remove("open");
 }
 
+async function renderPdfDocument(pdfUrl) {
+  const container = $("#pdf-document");
+  if (!container) return;
+
+  try {
+    if (!window.pdfjsLib) throw new Error("PDF-Komponente konnte nicht geladen werden.");
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await window.pdfjsLib.getDocument({ url: pdfUrl, withCredentials: true }).promise;
+    container.innerHTML = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const naturalViewport = page.getViewport({ scale: 1 });
+      const availableWidth = Math.max(280, container.clientWidth - 20);
+      const cssScale = availableWidth / naturalViewport.width;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      const renderViewport = page.getViewport({ scale: cssScale * outputScale });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d", { alpha: false });
+
+      canvas.width = Math.floor(renderViewport.width);
+      canvas.height = Math.floor(renderViewport.height);
+      canvas.style.width = `${Math.floor(renderViewport.width / outputScale)}px`;
+      canvas.style.height = "auto";
+      canvas.setAttribute("aria-label", `PDF-Seite ${pageNumber} von ${pdf.numPages}`);
+      container.appendChild(canvas);
+
+      await page.render({ canvasContext: context, viewport: renderViewport }).promise;
+    }
+  } catch (err) {
+    console.error(err);
+    container.innerHTML =
+      '<p class="pdf-error">Der Werktext konnte nicht eingebettet werden. Bitte „Extern öffnen“ verwenden.</p>';
+  }
+}
+
 /* ================== Daten und Texte ================== */
 
 function findExhibitionForWork(exhibitions, wId) {
@@ -223,10 +261,11 @@ function wireButtons(work) {
   $("#btn-pdf").onclick = () => {
     const pdfUrl = asRoot(work.pdf);
     const html = `
-      <iframe class="pdfjs-frame"
-              src="${pdfUrl}#page=1&zoom=page-width&view=FitH"
-              title="Werktext als PDF"></iframe>`;
+      <div id="pdf-document" class="pdf-document" aria-busy="true">
+        <p class="pdf-loading">Werktext wird geladen …</p>
+      </div>`;
     openModal("Werktext", html, pdfUrl);
+    renderPdfDocument(pdfUrl);
   };
 
   $("#btn-video").onclick = () => {
