@@ -47,5 +47,12 @@ class SecurityHardeningTests(unittest.TestCase):
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
 
+    def test_local_privacy_notice_is_linked(self):
+        index = (REPO_ROOT / "index.html").read_text(encoding="utf-8")
+        notice = (REPO_ROOT / "datenschutz.html").read_text(encoding="utf-8")
+        self.assertIn('href="/datenschutz"', index)
+        self.assertIn("Vercel Web Analytics", notice)
+        self.assertIn("youtube-nocookie.com", notice)
+
 if __name__ == "__main__":
     unittest.main()
