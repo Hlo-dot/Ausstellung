@@ -220,6 +220,15 @@
     "jahr": 2025
   },
   {
+    "id": "grenzmetall",
+    "werk": "Grenzmetall",
+    "serie": "Grenzzeit",
+    "audio": "audio/Voice_Grenzmetall.mp3",
+    "pdf": "pdf/PDF_Grenzmetall.pdf",
+    "format": "100 × 100 cm",
+    "jahr": 2025
+  },
+  {
     "id": "Bodenproben",
     "werk": "Bodenproben der Erinnerung",
     "serie": "Was bleibt",
