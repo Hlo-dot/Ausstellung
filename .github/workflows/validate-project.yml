@@ -35,7 +35,7 @@ jobs:
           changed_files="$(git diff --name-only HEAD^1 HEAD^2)"
           printf '%s\n' "$changed_files"
 
-          if printf '%s\n' "$changed_files" | grep -Eq '^(works\.json|exhibitions\.json|main\.js|audio/|pdf/|artstrips/|scripts/validate_project\.py|tests/|\.github/workflows/validate-project\.yml)'; then
+          if printf '%s\n' "$changed_files" | grep -Eq '^(works\.json|exhibitions\.json|main\.js|audio/|pdf/|artstrips/|scripts/validate_project\.py|scripts/validate_artstrips\.py|tests/|\.github/workflows/validate-project\.yml)'; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -48,6 +48,10 @@ jobs:
       - name: Projektbestand validieren
         if: steps.changes.outputs.relevant == 'true'
         run: python3 scripts/validate_project.py
+
+      - name: Artstrip-Binärintegrität prüfen
+        if: steps.changes.outputs.relevant == 'true'
+        run: python3 scripts/validate_artstrips.py
 
       - name: Keine Werkprüfung erforderlich
         if: steps.changes.outputs.relevant != 'true'
