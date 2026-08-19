@@ -23,6 +23,7 @@ const ART_STRIPS = {
   "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.jpg",
   "resonanzkern": "/artstrips/resonanzkern-horizontal.jpg",
   "jenseits-der-grenzen": "/artstrips/jenseits-der-grenzen-horizontal.jpg",
+  "ztut": "/artstrips/ZTUT-horizontal.jpg",
 };
 
 /* ================== Utilities ================== */
