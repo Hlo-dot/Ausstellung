@@ -173,7 +173,9 @@
     "werk": "Rotkäppchen",
     "serie": "Einzelwerk",
     "audio": "audio/Voice_Rotkaeppchen.mp3",
-    "pdf": "pdf/Rotkaeppchen.pdf"
+    "pdf": "pdf/Rotkaeppchen.pdf",
+    "format": "80 × 50 cm",
+    "jahr": 2024
   },
   {
     "id": "rotkaeppchens-kleine-schwester",
