@@ -2,16 +2,6 @@ name: Projektvalidierung
 
 on:
   pull_request:
-    paths:
-      - "works.json"
-      - "exhibitions.json"
-      - "main.js"
-      - "audio/**"
-      - "pdf/**"
-      - "artstrips/**"
-      - "scripts/validate_project.py"
-      - "tests/**"
-      - ".github/workflows/validate-project.yml"
   workflow_dispatch:
 
 permissions:
@@ -30,9 +20,35 @@ jobs:
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Relevante Änderungen erkennen
+        id: changes
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed_files="$(git diff --name-only HEAD^1 HEAD^2)"
+          printf '%s\n' "$changed_files"
+
+          if printf '%s\n' "$changed_files" | grep -Eq '^(works\.json|exhibitions\.json|main\.js|audio/|pdf/|artstrips/|scripts/validate_project\.py|tests/|\.github/workflows/validate-project\.yml)'; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Regressionstests ausführen
+        if: steps.changes.outputs.relevant == 'true'
         run: python3 -m unittest discover -s tests -v
 
       - name: Projektbestand validieren
+        if: steps.changes.outputs.relevant == 'true'
         run: python3 scripts/validate_project.py
+
+      - name: Keine Werkprüfung erforderlich
+        if: steps.changes.outputs.relevant != 'true'
+        run: echo "Nur nicht werkrelevante Dateien geändert; Pflichtcheck erfüllt."
