@@ -21,7 +21,7 @@ jobs:
       - name: Repository auschecken
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Relevante Änderungen erkennen
         id: changes
@@ -32,7 +32,7 @@ jobs:
             exit 0
           fi
 
-          changed_files="$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}")"
+          changed_files="$(git diff --name-only HEAD^1 HEAD^2)"
           printf '%s\n' "$changed_files"
 
           if printf '%s\n' "$changed_files" | grep -Eq '^(works\.json|exhibitions\.json|main\.js|audio/|pdf/|artstrips/|scripts/validate_project\.py|tests/|\.github/workflows/validate-project\.yml)'; then
