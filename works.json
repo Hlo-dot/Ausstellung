@@ -161,7 +161,9 @@
     "werk": "Chlorophyllquartett",
     "serie": "Grünzeug",
     "audio": "audio/Voice_Chlorophylquartett.mp3",
-    "pdf": "pdf/Chlorophyllquartett.pdf"
+    "pdf": "pdf/Chlorophyllquartett.pdf",
+    "format": "20 × 20 cm",
+    "jahr": 2025
   },
   {
     "id": "geflecht-des-lebens",

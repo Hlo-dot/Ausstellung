@@ -24,6 +24,7 @@ const ART_STRIPS = {
   "resonanzkern": "/artstrips/resonanzkern-horizontal.jpg",
   "jenseits-der-grenzen": "/artstrips/jenseits-der-grenzen-horizontal.jpg",
   "ztut": "/artstrips/ZTUT-horizontal.jpg",
+  "chlorophyllquartett": "/artstrips/Chlorophyllquartett-horizontal.jpg",
 };
 
 /* ================== Utilities ================== */
