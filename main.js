@@ -19,6 +19,7 @@ const ART_STRIPS = {
   "lichtachse": "/artstrips/lichtachse-horizontal.jpg",
   "goldene-schwelle": "/artstrips/Goldene-Schwelle-horizontal.jpg",
   "grenzmetall": "/artstrips/Grenzmetall-horizontal.jpg",
+  "rotkaeppchen": "/artstrips/Rotkaeppchen-horizontal.jpg",
   "der-moment-eingefroren": "/artstrips/der-moment-eingefroren-horizontal.jpg",
   "resonanzkern": "/artstrips/resonanzkern-horizontal.jpg",
   "jenseits-der-grenzen": "/artstrips/jenseits-der-grenzen-horizontal.jpg",
