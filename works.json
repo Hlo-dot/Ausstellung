@@ -170,7 +170,9 @@
     "werk": "Geflecht des Lebens",
     "serie": "Grünzeug",
     "audio": "audio/Voice_Geflecht_des_Lebens.mp3",
-    "pdf": "pdf/Geflecht_des_Lebens.pdf"
+    "pdf": "pdf/Geflecht_des_Lebens.pdf",
+    "format": "70 × 50 cm",
+    "jahr": 2024
   },
   {
     "id": "rotkaeppchen",
@@ -200,14 +202,18 @@
     "werk": "Schattengrün",
     "serie": "Grünzeug",
     "audio": "audio/Voice_Schattengruen.mp3",
-    "pdf": "pdf/Schattengruen.pdf"
+    "pdf": "pdf/Schattengruen.pdf",
+    "format": "80 × 60 cm",
+    "jahr": 2025
   },
   {
     "id": "spur-im-gruen",
     "werk": "Spur im Grün",
     "serie": "Grünzeug",
     "audio": "audio/Voice_Spur_im_Gruen.mp3",
-    "pdf": "pdf/Spur_im_Gruen.pdf"
+    "pdf": "pdf/Spur_im_Gruen.pdf",
+    "format": "80 × 60 cm",
+    "jahr": 2025
   },
   {
     "id": "Roter-Takt",

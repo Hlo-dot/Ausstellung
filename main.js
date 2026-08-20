@@ -25,6 +25,9 @@ const ART_STRIPS = {
   "jenseits-der-grenzen": "/artstrips/jenseits-der-grenzen-horizontal.jpg",
   "ztut": "/artstrips/ZTUT-horizontal.jpg",
   "chlorophyllquartett": "/artstrips/Chlorophyllquartett-horizontal.jpg",
+  "geflecht-des-lebens": "/artstrips/Geflecht-des-Lebens-horizontal.jpg",
+  "spur-im-gruen": "/artstrips/Spur-im-Gruen-horizontal.jpg",
+  "schattengruen": "/artstrips/Schattengruen-horizontal.jpg",
 };
 
 /* ================== Utilities ================== */
