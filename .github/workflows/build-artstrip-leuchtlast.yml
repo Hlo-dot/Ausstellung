@@ -1,0 +1,64 @@
+name: Artstrip Leuchtlast erzeugen
+
+on:
+  push:
+    branches:
+      - fix/artstrip-leuchtlast
+    paths:
+      - .github/workflows/build-artstrip-leuchtlast.yml
+      - scripts/build_artstrip_from_pdf.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+        with:
+          ref: fix/artstrip-leuchtlast
+
+      - name: Abhängigkeiten bereitstellen
+        run: |
+          command -v pdfimages >/dev/null || (sudo apt-get update && sudo apt-get install -y poppler-utils)
+          python3 -m pip install --disable-pip-version-check pillow
+
+      - name: Artstrip erzeugen
+        run: |
+          python3 scripts/build_artstrip_from_pdf.py \
+            --pdf "pdf/Leuchtlast.pdf" \
+            --output "artstrips/Leuchtlast-horizontal.jpg" \
+            --width 1200 \
+            --height 160 \
+            --focus-y 0.50
+
+      - name: Artstrip in Website registrieren
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("main.js")
+          text = path.read_text(encoding="utf-8")
+          entry = '  "leuchtlast": "/artstrips/Leuchtlast-horizontal.jpg",\n'
+          if entry not in text:
+              marker = '  "schattengruen": "/artstrips/Schattengruen-horizontal.jpg",\n};'
+              if marker not in text:
+                  raise SystemExit("ART_STRIPS-Ende wurde nicht gefunden.")
+              text = text.replace(marker, '  "schattengruen": "/artstrips/Schattengruen-horizontal.jpg",\n' + entry + '};', 1)
+              path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Ergebnis committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add artstrips/Leuchtlast-horizontal.jpg main.js
+          if git diff --cached --quiet; then
+            echo "Keine Änderung erforderlich."
+            exit 0
+          fi
+          git commit -m "Artstrip Leuchtlast ergänzen"
+          git push origin HEAD:fix/artstrip-leuchtlast
