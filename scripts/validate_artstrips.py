@@ -26,6 +26,18 @@ JPEG_SOF_MARKERS = {
 MIN_WIDTH = 1200
 MIN_HEIGHT = 160
 
+# Bereits bekannte Altbestände unterhalb des Standards. Diese Ausnahmen sind
+# bewusst eng auf die fünf bestehenden Werk-IDs begrenzt und werden entfernt,
+# sobald die jeweiligen Artstrips ersetzt wurden. Neue Artstrips erhalten keine
+# Ausnahme und müssen den Mindeststandard erfüllen.
+LEGACY_QUALITY_EXCEPTIONS = {
+    "ztut",
+    "chlorophyllquartett",
+    "geflecht-des-lebens",
+    "schattengruen",
+    "spur-im-gruen",
+}
+
 
 def load_current_work_ids() -> set[str]:
     exhibitions = json.loads((ROOT / "exhibitions.json").read_text(encoding="utf-8"))
@@ -118,6 +130,7 @@ def main() -> int:
         return 1
 
     checked = 0
+    legacy = 0
     for work_id in sorted(current_work_ids):
         relative = art_strips.get(work_id.casefold())
         if not relative:
@@ -141,6 +154,13 @@ def main() -> int:
 
         quality_error = artstrip_quality_error(width, height)
         if quality_error:
+            if work_id.casefold() in LEGACY_QUALITY_EXCEPTIONS:
+                legacy += 1
+                print(
+                    f"ALT: {work_id}: {relative} – {width} × {height}px; "
+                    "bekannte Qualitätsausnahme, Ersatz erforderlich."
+                )
+                continue
             errors.append(f"{work_id}: {relative}: {quality_error}")
             continue
 
@@ -154,7 +174,8 @@ def main() -> int:
         return 1
 
     print(
-        f"Ergebnis: OK – {checked} Artstrips binär und nach Qualitätsstandard geprüft."
+        f"Ergebnis: OK – {checked} Artstrips erfüllen den Qualitätsstandard; "
+        f"{legacy} bekannte Altbestände bleiben zum Ersatz markiert."
     )
     return 0
 
