@@ -31,7 +31,6 @@ MIN_HEIGHT = 160
 # sobald die jeweiligen Artstrips ersetzt wurden. Neue Artstrips erhalten keine
 # Ausnahme und müssen den Mindeststandard erfüllen.
 LEGACY_QUALITY_EXCEPTIONS = {
-    "chlorophyllquartett",
     "geflecht-des-lebens",
     "schattengruen",
     "spur-im-gruen",
