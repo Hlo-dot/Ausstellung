@@ -61,6 +61,35 @@ def crop_to_ratio(image: Image.Image, target_ratio: float, focus_x: float, focus
     return image.crop((0, top, width, top + crop_height))
 
 
+def build_stacked_panel_strip(
+    image: Image.Image,
+    panel_count: int,
+    output_width: int,
+    output_height: int,
+    focus_x: float,
+    focus_y: float,
+) -> Image.Image:
+    """Turn vertically stacked panels into one horizontal strip without inventing image content."""
+    if panel_count < 2:
+        raise ValueError("panel_count muss mindestens 2 sein.")
+    if output_width % panel_count != 0:
+        raise ValueError("Ausgabebreite muss durch die Anzahl der Panels teilbar sein.")
+
+    panel_width = output_width // panel_count
+    panel_ratio = panel_width / output_height
+    result = Image.new("RGB", (output_width, output_height))
+
+    for index in range(panel_count):
+        top = round(index * image.height / panel_count)
+        bottom = round((index + 1) * image.height / panel_count)
+        panel = image.crop((0, top, image.width, bottom))
+        panel = crop_to_ratio(panel, panel_ratio, focus_x, focus_y)
+        panel = panel.resize((panel_width, output_height), Image.Resampling.LANCZOS)
+        result.paste(panel, (index * panel_width, 0))
+
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pdf", required=True, type=Path)
@@ -69,6 +98,12 @@ def main() -> int:
     parser.add_argument("--height", type=int, default=160)
     parser.add_argument("--focus-x", type=float, default=0.5)
     parser.add_argument("--focus-y", type=float, default=0.5)
+    parser.add_argument(
+        "--stacked-panels",
+        type=int,
+        default=1,
+        help="Bei vertikal gestapelten Mehrteilern: Anzahl der Panels, die horizontal angeordnet werden.",
+    )
     args = parser.parse_args()
 
     if not args.pdf.is_file():
@@ -77,12 +112,24 @@ def main() -> int:
         raise SystemExit("Breite und Höhe müssen größer als 0 sein.")
     if not 0 <= args.focus_x <= 1 or not 0 <= args.focus_y <= 1:
         raise SystemExit("focus-x und focus-y müssen zwischen 0 und 1 liegen.")
+    if args.stacked_panels <= 0:
+        raise SystemExit("stacked-panels muss mindestens 1 sein.")
 
-    target_ratio = args.width / args.height
     with tempfile.TemporaryDirectory(prefix="artstrip-") as tmp:
         image = extract_largest_image(args.pdf, Path(tmp))
-        cropped = crop_to_ratio(image, target_ratio, args.focus_x, args.focus_y)
-        resized = cropped.resize((args.width, args.height), Image.Resampling.LANCZOS)
+        if args.stacked_panels > 1:
+            resized = build_stacked_panel_strip(
+                image,
+                args.stacked_panels,
+                args.width,
+                args.height,
+                args.focus_x,
+                args.focus_y,
+            )
+        else:
+            target_ratio = args.width / args.height
+            cropped = crop_to_ratio(image, target_ratio, args.focus_x, args.focus_y)
+            resized = cropped.resize((args.width, args.height), Image.Resampling.LANCZOS)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     resized.save(args.output, format="JPEG", quality=92, optimize=True)
