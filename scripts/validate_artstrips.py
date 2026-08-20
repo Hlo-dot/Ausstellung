@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate binary integrity of artstrip JPEGs used by the current exhibition."""
+"""Validate integrity and display quality of artstrip JPEGs used by the current exhibition."""
 
 from __future__ import annotations
 
@@ -18,6 +18,24 @@ JPEG_SOF_MARKERS = {
     0xC5, 0xC6, 0xC7,
     0xC9, 0xCA, 0xCB,
     0xCD, 0xCE, 0xCF,
+}
+
+# Verbindlicher Mindeststandard für die Werk-Artstrips.
+# Die Höhe darf größer sein, weil einzelne Darstellungen (z. B. die Einführung)
+# bewusst höher angelegt sind und die Website per object-fit: cover zuschneidet.
+MIN_WIDTH = 1200
+MIN_HEIGHT = 160
+
+# Bereits bekannte Altbestände unterhalb des Standards. Diese Ausnahmen sind
+# bewusst eng auf die fünf bestehenden Werk-IDs begrenzt und werden entfernt,
+# sobald die jeweiligen Artstrips ersetzt wurden. Neue Artstrips erhalten keine
+# Ausnahme und müssen den Mindeststandard erfüllen.
+LEGACY_QUALITY_EXCEPTIONS = {
+    "ztut",
+    "chlorophyllquartett",
+    "geflecht-des-lebens",
+    "schattengruen",
+    "spur-im-gruen",
 }
 
 
@@ -92,6 +110,15 @@ def jpeg_dimensions(data: bytes) -> tuple[int, int]:
     raise ValueError("Keine gültigen JPEG-Bilddimensionen gefunden.")
 
 
+def artstrip_quality_error(width: int, height: int) -> str | None:
+    if width < MIN_WIDTH or height < MIN_HEIGHT:
+        return (
+            f"Artstrip zu klein: {width} × {height}px; "
+            f"mindestens {MIN_WIDTH} × {MIN_HEIGHT}px erforderlich."
+        )
+    return None
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -103,6 +130,7 @@ def main() -> int:
         return 1
 
     checked = 0
+    legacy = 0
     for work_id in sorted(current_work_ids):
         relative = art_strips.get(work_id.casefold())
         if not relative:
@@ -124,6 +152,18 @@ def main() -> int:
             errors.append(f"{work_id}: beschädigter Artstrip {relative}: {exc}")
             continue
 
+        quality_error = artstrip_quality_error(width, height)
+        if quality_error:
+            if work_id.casefold() in LEGACY_QUALITY_EXCEPTIONS:
+                legacy += 1
+                print(
+                    f"ALT: {work_id}: {relative} – {width} × {height}px; "
+                    "bekannte Qualitätsausnahme, Ersatz erforderlich."
+                )
+                continue
+            errors.append(f"{work_id}: {relative}: {quality_error}")
+            continue
+
         checked += 1
         print(f"OK: {work_id}: {relative} – {width} × {height}px, {len(data)} Byte")
 
@@ -133,7 +173,10 @@ def main() -> int:
         print(f"Ergebnis: FEHLGESCHLAGEN ({len(errors)} Artstrip-Fehler).", file=sys.stderr)
         return 1
 
-    print(f"Ergebnis: OK – {checked} Artstrips binär geprüft.")
+    print(
+        f"Ergebnis: OK – {checked} Artstrips erfüllen den Qualitätsstandard; "
+        f"{legacy} bekannte Altbestände bleiben zum Ersatz markiert."
+    )
     return 0
 
 
