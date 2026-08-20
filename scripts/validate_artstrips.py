@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate binary integrity of artstrip JPEGs used by the current exhibition."""
+"""Validate integrity and display quality of artstrip JPEGs used by the current exhibition."""
 
 from __future__ import annotations
 
@@ -19,6 +19,13 @@ JPEG_SOF_MARKERS = {
     0xC9, 0xCA, 0xCB,
     0xCD, 0xCE, 0xCF,
 }
+
+# Verbindlicher Artstrip-Standard für die Werkseiten.
+# Größere Dateien sind zulässig, sofern sie dasselbe Seitenverhältnis besitzen.
+MIN_WIDTH = 1200
+MIN_HEIGHT = 200
+TARGET_WIDTH = 1200
+TARGET_HEIGHT = 200
 
 
 def load_current_work_ids() -> set[str]:
@@ -92,6 +99,22 @@ def jpeg_dimensions(data: bytes) -> tuple[int, int]:
     raise ValueError("Keine gültigen JPEG-Bilddimensionen gefunden.")
 
 
+def artstrip_quality_error(width: int, height: int) -> str | None:
+    if width < MIN_WIDTH or height < MIN_HEIGHT:
+        return (
+            f"Artstrip zu klein: {width} × {height}px; "
+            f"mindestens {MIN_WIDTH} × {MIN_HEIGHT}px erforderlich."
+        )
+
+    if width * TARGET_HEIGHT != height * TARGET_WIDTH:
+        return (
+            f"falsches Seitenverhältnis: {width} × {height}px; "
+            f"erwartet wird {TARGET_WIDTH}:{TARGET_HEIGHT} (6:1)."
+        )
+
+    return None
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -124,6 +147,11 @@ def main() -> int:
             errors.append(f"{work_id}: beschädigter Artstrip {relative}: {exc}")
             continue
 
+        quality_error = artstrip_quality_error(width, height)
+        if quality_error:
+            errors.append(f"{work_id}: {relative}: {quality_error}")
+            continue
+
         checked += 1
         print(f"OK: {work_id}: {relative} – {width} × {height}px, {len(data)} Byte")
 
@@ -133,7 +161,9 @@ def main() -> int:
         print(f"Ergebnis: FEHLGESCHLAGEN ({len(errors)} Artstrip-Fehler).", file=sys.stderr)
         return 1
 
-    print(f"Ergebnis: OK – {checked} Artstrips binär geprüft.")
+    print(
+        f"Ergebnis: OK – {checked} Artstrips binär und nach Qualitätsstandard geprüft."
+    )
     return 0
 
 
