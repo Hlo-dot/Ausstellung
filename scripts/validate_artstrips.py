@@ -20,12 +20,11 @@ JPEG_SOF_MARKERS = {
     0xCD, 0xCE, 0xCF,
 }
 
-# Verbindlicher Artstrip-Standard für die Werkseiten.
-# Größere Dateien sind zulässig, sofern sie dasselbe Seitenverhältnis besitzen.
+# Verbindlicher Mindeststandard für die Werk-Artstrips.
+# Die Höhe darf größer sein, weil einzelne Darstellungen (z. B. die Einführung)
+# bewusst höher angelegt sind und die Website per object-fit: cover zuschneidet.
 MIN_WIDTH = 1200
-MIN_HEIGHT = 200
-TARGET_WIDTH = 1200
-TARGET_HEIGHT = 200
+MIN_HEIGHT = 160
 
 
 def load_current_work_ids() -> set[str]:
@@ -105,13 +104,6 @@ def artstrip_quality_error(width: int, height: int) -> str | None:
             f"Artstrip zu klein: {width} × {height}px; "
             f"mindestens {MIN_WIDTH} × {MIN_HEIGHT}px erforderlich."
         )
-
-    if width * TARGET_HEIGHT != height * TARGET_WIDTH:
-        return (
-            f"falsches Seitenverhältnis: {width} × {height}px; "
-            f"erwartet wird {TARGET_WIDTH}:{TARGET_HEIGHT} (6:1)."
-        )
-
     return None
 
 
