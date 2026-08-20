@@ -1,0 +1,163 @@
+name: Verbleibende Artstrips erzeugen
+
+on:
+  push:
+    branches:
+      - batch/artstrips-remaining
+    paths:
+      - .github/workflows/build-artstrips-remaining.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+        with:
+          ref: batch/artstrips-remaining
+
+      - name: Abhängigkeiten bereitstellen
+        run: |
+          command -v pdfimages >/dev/null || (sudo apt-get update && sudo apt-get install -y poppler-utils)
+          python3 -m pip install --disable-pip-version-check pillow
+
+      - name: 18 Artstrips erzeugen
+        run: |
+          set -euo pipefail
+          build() {
+            python3 scripts/build_artstrip_from_pdf.py --pdf "$1" --output "$2" --width 1200 --height 160 --focus-x 0.50 --focus-y 0.50
+          }
+
+          build "pdf/FLU_Partitur_des_Lichts.pdf" "artstrips/Partitur-des-Lichts-horizontal.jpg"
+          build "pdf/FLU_Rot_in_Ruhe.pdf" "artstrips/Rot-in-Ruhe-horizontal.jpg"
+          build "pdf/FLU_verdichtetROT.pdf" "artstrips/verdichtetROT-horizontal.jpg"
+          build "pdf/Bruch_im_Rot.pdf" "artstrips/Bruch-im-Rot-horizontal.jpg"
+          build "pdf/Einschnitt.pdf" "artstrips/Einschnitt-horizontal.jpg"
+          build "pdf/FLU_Konstellation_der_Flaeche.pdf" "artstrips/Konstellation-der-Flaeche-horizontal.jpg"
+          build "pdf/FLU_Lichtraum_Gelb.pdf" "artstrips/Lichtraum-Gelb-horizontal.jpg"
+          build "pdf/FLU_NebelRaeume_III_Verborgene_Horizonte.pdf" "artstrips/NebelRaeume-III-Verborgene-Horizonte-horizontal.jpg"
+          build "pdf/FLU_NebelRaeume_II_Risse_im_Grau.pdf" "artstrips/NebelRaeume-II-Risse-im-Grau-horizontal.jpg"
+          build "pdf/FLU_NebelRaeume_IV_Verwehter_Zwischenraum.pdf" "artstrips/NebelRaeume-IV-Verwehter-Zwischenraum-horizontal.jpg"
+          build "pdf/FLU_NebelRaeume_I_Schichtungen_des_Schweigens.pdf" "artstrips/NebelRaeume-I-Schichtungen-des-Schweigens-horizontal.jpg"
+          build "pdf/FLU_Schnittstelle_Gold.pdf" "artstrips/Schnittstelle-Gold-horizontal.jpg"
+          build "pdf/Ich_wußte_nicht_das_er_fehlt.pdf" "artstrips/Ich-wusste-nicht-das-er-fehlt-horizontal.jpg"
+          build "pdf/Ein_spaeter_Tag.pdf" "artstrips/Ein-spaeter-Tag-horizontal.jpg"
+          build "pdf/Boettcher_Streifen_ENSEMBLE.pdf" "artstrips/Boettcher-Streifen-ENSEMBLE-horizontal.jpg"
+          build "pdf/Rotkaeppchens_kleine_Schwester.pdf" "artstrips/Rotkaeppchens-kleine-Schwester-horizontal.jpg"
+          build "pdf/Ruhezone.pdf" "artstrips/Ruhezone-horizontal.jpg"
+          build "pdf/PDF_Roter_Takt.pdf" "artstrips/Roter-Takt-horizontal.jpg"
+
+      - name: Website-Mapping für alle 18 Werke ergänzen
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("main.js")
+          text = path.read_text(encoding="utf-8")
+          anchor = '  "leuchtlast": "/artstrips/Leuchtlast-horizontal.jpg",\n'
+          if anchor not in text:
+              raise SystemExit("Leuchtlast-Anker in main.js nicht gefunden.")
+
+          mappings = [
+              ('partitur-des-lichts', '/artstrips/Partitur-des-Lichts-horizontal.jpg'),
+              ('rot-in-ruhe', '/artstrips/Rot-in-Ruhe-horizontal.jpg'),
+              ('verdichtetrot', '/artstrips/verdichtetROT-horizontal.jpg'),
+              ('bruch-im-rot', '/artstrips/Bruch-im-Rot-horizontal.jpg'),
+              ('einschnitt', '/artstrips/Einschnitt-horizontal.jpg'),
+              ('flu_konstellation_der_flaeche', '/artstrips/Konstellation-der-Flaeche-horizontal.jpg'),
+              ('flu_lichtraum_gelb', '/artstrips/Lichtraum-Gelb-horizontal.jpg'),
+              ('flu_nebelraeume_iii_verborgene_horizonte', '/artstrips/NebelRaeume-III-Verborgene-Horizonte-horizontal.jpg'),
+              ('flu_nebelraeume_ii_risse_im_grau', '/artstrips/NebelRaeume-II-Risse-im-Grau-horizontal.jpg'),
+              ('flu_nebelraeume_iv_verwehter_zwischenraum', '/artstrips/NebelRaeume-IV-Verwehter-Zwischenraum-horizontal.jpg'),
+              ('flu_nebelraeume_i_schichtungen_des_schweigens', '/artstrips/NebelRaeume-I-Schichtungen-des-Schweigens-horizontal.jpg'),
+              ('flu_schnittstelle_gold', '/artstrips/Schnittstelle-Gold-horizontal.jpg'),
+              ('ich_wusste_nicht_das_er_fehlt', '/artstrips/Ich-wusste-nicht-das-er-fehlt-horizontal.jpg'),
+              ('ein-spaeter-tag', '/artstrips/Ein-spaeter-Tag-horizontal.jpg'),
+              ('boettcher-streifen-ensemble', '/artstrips/Boettcher-Streifen-ENSEMBLE-horizontal.jpg'),
+              ('rotkaeppchens-kleine-schwester', '/artstrips/Rotkaeppchens-kleine-Schwester-horizontal.jpg'),
+              ('ruhezone', '/artstrips/Ruhezone-horizontal.jpg'),
+              ('roter-takt', '/artstrips/Roter-Takt-horizontal.jpg'),
+          ]
+
+          additions = ""
+          for work_id, url in mappings:
+              line = f'  "{work_id}": "{url}",\n'
+              if line not in text:
+                  additions += line
+
+          if additions:
+              text = text.replace(anchor, anchor + additions, 1)
+              path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Batch-Ergebnis technisch prüfen
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          expected = {
+              "Partitur-des-Lichts-horizontal.jpg",
+              "Rot-in-Ruhe-horizontal.jpg",
+              "verdichtetROT-horizontal.jpg",
+              "Bruch-im-Rot-horizontal.jpg",
+              "Einschnitt-horizontal.jpg",
+              "Konstellation-der-Flaeche-horizontal.jpg",
+              "Lichtraum-Gelb-horizontal.jpg",
+              "NebelRaeume-III-Verborgene-Horizonte-horizontal.jpg",
+              "NebelRaeume-II-Risse-im-Grau-horizontal.jpg",
+              "NebelRaeume-IV-Verwehter-Zwischenraum-horizontal.jpg",
+              "NebelRaeume-I-Schichtungen-des-Schweigens-horizontal.jpg",
+              "Schnittstelle-Gold-horizontal.jpg",
+              "Ich-wusste-nicht-das-er-fehlt-horizontal.jpg",
+              "Ein-spaeter-Tag-horizontal.jpg",
+              "Boettcher-Streifen-ENSEMBLE-horizontal.jpg",
+              "Rotkaeppchens-kleine-Schwester-horizontal.jpg",
+              "Ruhezone-horizontal.jpg",
+              "Roter-Takt-horizontal.jpg",
+          }
+
+          for name in sorted(expected):
+              path = Path("artstrips") / name
+              if not path.is_file():
+                  raise SystemExit(f"Fehlender Artstrip: {name}")
+              with Image.open(path) as image:
+                  image.verify()
+              with Image.open(path) as image:
+                  if image.size != (1200, 160):
+                      raise SystemExit(f"Falsche Größe {image.size}: {name}")
+              if path.stat().st_size < 5000:
+                  raise SystemExit(f"Verdächtig kleine Datei: {name} ({path.stat().st_size} Byte)")
+
+          text = Path("main.js").read_text(encoding="utf-8")
+          required_ids = [
+              "partitur-des-lichts", "rot-in-ruhe", "verdichtetrot", "bruch-im-rot", "einschnitt",
+              "flu_konstellation_der_flaeche", "flu_lichtraum_gelb",
+              "flu_nebelraeume_iii_verborgene_horizonte", "flu_nebelraeume_ii_risse_im_grau",
+              "flu_nebelraeume_iv_verwehter_zwischenraum", "flu_nebelraeume_i_schichtungen_des_schweigens",
+              "flu_schnittstelle_gold", "ich_wusste_nicht_das_er_fehlt", "ein-spaeter-tag",
+              "boettcher-streifen-ensemble", "rotkaeppchens-kleine-schwester", "ruhezone", "roter-takt",
+          ]
+          missing = [work_id for work_id in required_ids if f'"{work_id}"' not in text]
+          if missing:
+              raise SystemExit("Fehlende main.js-Mappings: " + ", ".join(missing))
+
+          print("18/18 Artstrips vorhanden, 1200 × 160 px, JPEG intakt, Mapping vollständig.")
+          PY
+
+      - name: Projektvalidierung lokal ausführen
+        run: python3 scripts/validate_artstrips.py
+
+      - name: Temporären Batch-Workflow entfernen und Ergebnis committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/build-artstrips-remaining.yml
+          git add artstrips main.js
+          git commit -m "18 fehlende Artstrips ergänzen"
+          git push origin HEAD:batch/artstrips-remaining
