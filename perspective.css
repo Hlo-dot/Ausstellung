@@ -34,14 +34,18 @@
     padding-bottom:calc(72px + env(safe-area-inset-bottom));
   }
 
+  .hint{
+    margin-top:14px;
+  }
+
   .footer{
     display:flex;
     flex-direction:row;
     align-items:center;
     justify-content:center;
-    gap:6px;
-    margin-top:18px;
-    padding-top:12px;
+    gap:5px;
+    margin-top:12px;
+    padding-top:9px;
     white-space:nowrap;
   }
 
@@ -50,9 +54,18 @@
   }
 
   .footer-links{
-    gap:5px;
-    font-size:.52rem;
+    gap:4px;
+    font-size:.55rem;
     white-space:nowrap;
+  }
+
+  .footer-links a{
+    color:#817b72;
+    font-weight:550;
+  }
+
+  .footer-links span{
+    color:#9a948b;
   }
 
   .footer span{
