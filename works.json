@@ -313,6 +313,15 @@
     "jahr": 2026
   },
   {
+    "id": "flimmernacht",
+    "werk": "Flimmernacht",
+    "serie": "Einzelwerk",
+    "audio": "audio/Flimmernacht.mp3",
+    "pdf": "pdf/Flimmernacht.pdf",
+    "format": "100 × 70 cm",
+    "jahr": 2026
+  },
+  {
     "id": "Tafel1",
     "werk": "Begrüßung",
     "serie": "Vom Bleiben und Werden",
