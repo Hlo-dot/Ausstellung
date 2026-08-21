@@ -19,4 +19,17 @@ Für Änderungen an der digitalen Werkbegleitung gilt standardmäßig dieses Sch
 15. Keine anderen Werke, Dateien oder Ausstellungszuordnungen verändern, sofern dies nicht ausdrücklich beauftragt ist.
 16. Mehrere vollständig vorbereitete Werke möglichst in einem gemeinsamen Lauf bearbeiten, um Prüf- und Deploymentzeiten zu reduzieren.
 
-Ziel: minimale Prüf- und Deploymentzyklen bei technisch erzwungener Integrität und einer belastbaren Live-Prüfung vor der Fertigmeldung.
+## Qualitätsregel für Analyse- und Bewertungsaufgaben
+
+Diese Regel gilt zusätzlich, wenn eine Aufgabe eine Bewertung, Einordnung, Zuordnung, Empfehlung oder Entscheidung erfordert. Sie gilt nicht für rein operative oder deterministische Aufgaben wie Dateiumbenennungen, Linkausgaben, einfache Datenübernahmen, Schemaänderungen, Deployments oder technische Validierungen.
+
+1. Eine belastbare Analyse durchführen und die robusteste Lösung wählen.
+2. Unterschiedliche plausible Ansätze, Interpretationen und Gewichtungen prüfen – nicht nur Varianten derselben Antwort.
+3. Die Vertiefung beenden, sobald weitere Durchläufe keinen relevanten Erkenntnisgewinn mehr erwarten lassen. Keine künstliche Zahl von Iterationen behaupten oder als Qualitätsmerkmal verwenden.
+4. Die bevorzugte Lösung anschließend gezielt auf Schwächen, Gegenargumente und mögliche Fehlinterpretationen prüfen.
+5. Tatsachen vorrangig auf die im Repository vorhandenen Daten und Dokumente stützen. Belegte Angaben, plausible Schlussfolgerungen und Unsicherheiten klar voneinander trennen.
+6. Fehlende Informationen nicht ergänzen, glätten oder als gesichert darstellen. Widersprüche zwischen Quellen ausdrücklich benennen, sofern sie für das Ergebnis relevant sind.
+7. Im Ergebnis knapp nennen: die wesentlichen geprüften Alternativen, warum die bevorzugte Lösung überlegen ist, welche relevanten Schwächen oder Gegenargumente verbleiben und wie belastbar das Ergebnis ist.
+8. Die Analyse auf den konkreten Auftrag begrenzen. Diese Qualitätsregel hebt die Vorgabe aus Punkt 12 nicht auf und ist kein Anlass für eine unbeauftragte Gesamtanalyse des Repositories.
+
+Ziel: minimale Prüf- und Deploymentzyklen bei technisch erzwungener Integrität, belastbaren Analysen und einer überprüfbaren Live-Prüfung vor der Fertigmeldung.
