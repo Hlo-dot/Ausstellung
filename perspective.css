@@ -1,0 +1,10 @@
+.work-perspective{
+  margin-top:9px;
+  color:var(--accent);
+  font-size:.69rem;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+
+.work-perspective[hidden]{display:none}
