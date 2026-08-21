@@ -33,4 +33,31 @@
   .wrap{
     padding-bottom:calc(72px + env(safe-area-inset-bottom));
   }
+
+  .footer{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:18px;
+    padding-top:12px;
+    white-space:nowrap;
+  }
+
+  .footer-credit{
+    font-size:.58rem;
+  }
+
+  .footer-links{
+    gap:5px;
+    font-size:.52rem;
+    white-space:nowrap;
+  }
+
+  .footer span{
+    display:inline;
+    margin-top:0;
+    text-align:inherit;
+  }
 }
