@@ -101,6 +101,25 @@
       "geflecht-des-lebens",
       "spur-im-gruen",
       "schattengruen"
-    ]
+    ],
+    "perspectives": {
+      "Bodenproben": "Erinnerung",
+      "Funde": "Erinnerung",
+      "Feuerschacht": "Erinnerung",
+      "Feuer": "Erinnerung",
+      "Kernbruch": "Erinnerung",
+      "lichtachse": "Entdeckung",
+      "Goldene-Schwelle": "Übergang",
+      "grenzmetall": "Übergang",
+      "der-moment-eingefroren": "Übergang",
+      "resonanzkern": "Übergang",
+      "jenseits-der-grenzen": "Übergang",
+      "rotkaeppchen": "Entdeckung",
+      "ZTUT": "Übergang",
+      "chlorophyllquartett": "Wachstum",
+      "geflecht-des-lebens": "Wachstum",
+      "spur-im-gruen": "Wachstum",
+      "schattengruen": "Wachstum"
+    }
   }
 ]
