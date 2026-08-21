@@ -28,6 +28,7 @@ const ART_STRIPS = {
   "geflecht-des-lebens": "/artstrips/Geflecht-des-Lebens-horizontal.jpg",
   "spur-im-gruen": "/artstrips/Spur-im-Gruen-horizontal.jpg",
   "schattengruen": "/artstrips/Schattengruen-horizontal.jpg",
+  "flimmernacht": "/artstrips/Flimmernacht-horizontal.jpg",
   "leuchtlast": "/artstrips/Leuchtlast-horizontal.jpg",
   "partitur-des-lichts": "/artstrips/Partitur-des-Lichts-horizontal.jpg",
   "rot-in-ruhe": "/artstrips/Rot-in-Ruhe-horizontal.jpg",
